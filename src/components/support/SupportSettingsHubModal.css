@@ -1,0 +1,41 @@
+.settings-hub-nav {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  overflow-x: auto;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #E4DCC9;
+}
+
+.settings-tab-btn {
+  padding: 0.5rem 0.875rem;
+  border-radius: var(--radius-xl, 0.75rem);
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  color: #6B7C70;
+  background-color: #FAF9F6;
+  border: 1px solid #E4DCC9;
+  white-space: nowrap;
+  transition: all var(--transition-fast);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+}
+
+.settings-tab-btn.active {
+  background-color: #18281F;
+  color: #FFFFFF;
+  border-color: #18281F;
+  box-shadow: 0 2px 6px rgba(24, 40, 31, 0.12);
+}
+
+.settings-section-card {
+  padding: 1.25rem;
+  background-color: #FFFFFF;
+  border: 1px solid #E4DCC9;
+  border-radius: var(--radius-lg, 1.25rem);
+  box-shadow: 0 2px 10px rgba(24, 40, 31, 0.03);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}

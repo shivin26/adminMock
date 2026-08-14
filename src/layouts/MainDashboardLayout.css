@@ -1,0 +1,28 @@
+.dashboard-shell {
+  display: flex;
+  min-height: 100vh;
+  background-color: var(--bg-primary);
+  transition: all var(--transition-normal);
+}
+
+.dashboard-main-content {
+  margin-left: var(--sidebar-width, 260px);
+  margin-top: 70px;
+  flex: 1;
+  padding: 2rem;
+  min-height: calc(100vh - 70px);
+  transition: margin-left var(--transition-normal);
+}
+
+.content-container {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* Tablet & Mobile Layout (<1024px) */
+@media (max-width: 1024px) {
+  .dashboard-main-content {
+    margin-left: 0 !important;
+    padding: 1.25rem;
+  }
+}

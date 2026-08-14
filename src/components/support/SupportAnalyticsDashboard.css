@@ -1,0 +1,120 @@
+.support-analytics-dashboard {
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+}
+
+.support-kpi-grid-10 {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 1.25rem;
+}
+
+@media (max-width: 1280px) {
+  .support-kpi-grid-10 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .support-kpi-grid-10 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 480px) {
+  .support-kpi-grid-10 {
+    grid-template-columns: 1fr;
+  }
+}
+
+.charts-row-2 {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.5rem;
+}
+
+.charts-row-3 {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.5rem;
+}
+
+@media (max-width: 1024px) {
+  .charts-row-2,
+  .charts-row-3 {
+    grid-template-columns: 1fr;
+  }
+}
+
+.support-chart-card {
+  padding: 1.5rem;
+  background: #FFFFFF;
+  border: 1px solid #E4DCC9;
+  border-radius: var(--radius-lg, 1.25rem);
+  box-shadow: 0 4px 20px rgba(24, 40, 31, 0.04);
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.support-chart-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.support-chart-title {
+  font-size: var(--font-size-base);
+  font-weight: 700;
+  color: #18281F;
+}
+
+.support-chart-subtitle {
+  font-size: var(--font-size-xs);
+  color: #6B7C70;
+}
+
+.support-widgets-row {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.5rem;
+}
+
+@media (max-width: 1024px) {
+  .support-widgets-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+.support-widget-card {
+  padding: 1.5rem;
+  background: #FFFFFF;
+  border: 1px solid #E4DCC9;
+  border-radius: var(--radius-lg, 1.25rem);
+  box-shadow: 0 4px 20px rgba(24, 40, 31, 0.04);
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.support-widget-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.875rem;
+}
+
+.support-widget-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.875rem;
+  padding: 0.875rem;
+  background-color: #FAF9F6;
+  border-radius: var(--radius-md, 0.875rem);
+  border: 1px solid #E4DCC9/80;
+  transition: border-color var(--transition-fast);
+}
+
+.support-widget-item:hover {
+  border-color: #C4A066;
+}

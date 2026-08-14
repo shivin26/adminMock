@@ -1,0 +1,103 @@
+.power-grid-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.power-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 0.875rem;
+}
+
+/* Unselected Card Style (Light Cream) */
+.power-card {
+  padding: 1rem;
+  background-color: #FAF9F6;
+  border: 1.5px solid #E4DCC9;
+  border-radius: var(--radius-md, 0.875rem);
+  cursor: pointer;
+  transition: all var(--transition-fast, 0.15s ease);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  user-select: none;
+  position: relative;
+}
+
+.power-card:hover {
+  border-color: #C4A066;
+  background-color: #FFFFFF;
+  box-shadow: 0 4px 12px rgba(24, 40, 31, 0.06);
+}
+
+.power-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.power-icon-wrapper {
+  color: #6B7C70;
+  transition: color var(--transition-fast, 0.15s ease);
+}
+
+.power-card:hover .power-icon-wrapper {
+  color: #18281F;
+}
+
+.checkbox-indicator {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 1.5px solid #CBD5E1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #FFFFFF;
+  transition: all var(--transition-fast, 0.15s ease);
+}
+
+.power-card-title {
+  font-size: var(--font-size-xs, 0.8125rem);
+  font-weight: 700;
+  color: #18281F !important;
+  transition: color var(--transition-fast, 0.15s ease);
+}
+
+.power-card-desc {
+  font-size: 11px;
+  color: #6B7C70 !important;
+  line-height: 1.4;
+  transition: color var(--transition-fast, 0.15s ease);
+}
+
+/* Selected Card Style (Dark Ink Theme with Gold Accent) */
+.power-card.selected {
+  background-color: #18281F !important;
+  border-color: #C4A066 !important;
+  box-shadow: 0 6px 18px rgba(24, 40, 31, 0.2);
+}
+
+.power-card.selected:hover {
+  background-color: #243A2D !important;
+  border-color: #E6C35C !important;
+}
+
+.power-card.selected .power-icon-wrapper {
+  color: #E6C35C !important;
+}
+
+.power-card.selected .checkbox-indicator.checked {
+  background-color: #C4A066 !important;
+  border-color: #C4A066 !important;
+  color: #FFFFFF !important;
+}
+
+.power-card.selected .power-card-title {
+  color: #FFFFFF !important;
+}
+
+.power-card.selected .power-card-desc {
+  color: #EFE8D8 !important;
+}

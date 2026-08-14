@@ -1,0 +1,36 @@
+.custom-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-spacing-sm { gap: 0.875rem; }
+.form-spacing-md { gap: 1.25rem; }
+.form-spacing-lg { gap: 1.75rem; }
+
+.form-row-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.form-field-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+  width: 100%;
+}
+
+.form-field-label {
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.form-field-error {
+  font-size: var(--font-size-xs);
+  color: var(--color-danger);
+  font-weight: 500;
+  margin-top: 0.2rem;
+}

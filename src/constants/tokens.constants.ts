@@ -1,0 +1,30 @@
+export const DESIGN_TOKENS = {
+  colors: {
+    primary: '#18281F',
+    primaryCard: '#243A2D',
+    primaryForeground: '#F7F4EE',
+    secondary: '#EFE8D8',
+    background: '#F7F4EE',
+    card: '#FFFFFF',
+    foreground: '#18281F',
+    ink: '#18281F',
+    gold: '#C4A066',
+    goldAccent: '#E6C35C',
+    border: '#E4DCC9',
+    mutedForeground: '#6B7C70',
+    pastelGreen: '#EFE8D8',
+    formBg: '#FAF9F6',
+    statusSuccess: '#10B981',
+    statusWarning: '#F59E0B',
+    statusDanger: '#E11D48',
+  },
+  typography: {
+    sans: "'Plus Jakarta Sans', 'Inter', sans-serif",
+    serif: "'Playfair Display', 'Cormorant Garamond', Georgia, serif",
+  },
+  radius: {
+    bento: '1.75rem',
+    card: '1.25rem',
+    button: '9999px',
+  },
+} as const;

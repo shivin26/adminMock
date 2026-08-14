@@ -1,0 +1,122 @@
+.datatable-container {
+  display: flex;
+  flex-direction: column;
+  background-color: #FFFFFF;
+  border: 1px solid #E4DCC9;
+  border-radius: var(--radius-lg, 1.25rem);
+  box-shadow: 0 4px 20px rgba(24, 40, 31, 0.05);
+  overflow: hidden;
+}
+
+.datatable-scroll-area {
+  overflow-x: auto;
+}
+
+.datatable {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-family: var(--font-sans);
+  font-size: var(--font-size-sm);
+  table-layout: auto;
+}
+
+.datatable th {
+  padding: 1.125rem 1.25rem;
+  background-color: #FAF9F6;
+  border-bottom: 1px solid #E4DCC9;
+  color: #18281F !important;
+  font-size: var(--font-size-xs);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+}
+
+.datatable td {
+  padding: 1.125rem 1.25rem;
+  border-bottom: 1px solid #E4DCC9;
+  color: #18281F !important;
+  vertical-align: middle;
+}
+
+.datatable tbody tr {
+  background-color: #FFFFFF;
+  transition: background-color var(--transition-fast);
+}
+
+.datatable tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.datatable tbody tr:hover {
+  background-color: #FAF9F6;
+}
+
+.clickable-row {
+  cursor: pointer;
+}
+
+/* Specific Column Alignment Rules */
+.th-sno, .td-sno {
+  width: 65px;
+  text-align: center !important;
+}
+
+.th-actions, .td-actions {
+  text-align: right !important;
+  width: 240px;
+}
+
+.td-actions .flex {
+  justify-content: flex-end;
+}
+
+.datatable-loading-cell {
+  text-align: center;
+  padding: 3rem !important;
+  color: #6B7C70;
+}
+
+.infinite-scroll-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.875rem 1.25rem;
+  background-color: #FAF9F6;
+  border-top: 1px solid #E4DCC9;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.infinite-scroll-info {
+  font-size: var(--font-size-xs);
+  color: #6B7C70;
+}
+
+.infinite-scroll-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.infinite-load-more-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.4rem 0.875rem;
+  border-radius: var(--radius-full);
+  background-color: #FFFFFF;
+  border: 1px solid #C4A066;
+  color: #18281F;
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.infinite-load-more-btn:hover {
+  background-color: #EFE8D8;
+  border-color: #18281F;
+  box-shadow: 0 2px 8px rgba(24, 40, 31, 0.08);
+}
