@@ -4,7 +4,7 @@ import { storage } from '../../utils/storage.utils';
 import type { RefreshTokenResponse } from '../../types/auth.types';
 
 
-const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://172.25.12.195:5001/api';
+const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://digi-local-backend.onrender.com/api';
 
 export const apiClient = axios.create({
   baseURL: BASE_URL,

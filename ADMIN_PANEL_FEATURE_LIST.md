@@ -1,0 +1,157 @@
+# DigiLocal Admin Panel — Detailed Feature Specification & Capabilities
+
+This document provides a comprehensive, section-by-section breakdown of every operational and technical feature built into the **DigiLocal Admin Panel**.
+
+---
+
+## 1. Authentication, Identity & Access Security
+* **Super Admin Login**: Secure JWT-based authentication for platform administrators with email and password credentials.
+* **Dual-Token Rotation**: Memory-stored access tokens paired with HTTP-only refresh cookies. Includes automatic 401 handling that queues and retries pending API requests upon token refresh.
+* **Inactivity Session Control**: Tracks user activity (`useSessionTimeout`) and displays a warning pop-up 2 minutes prior to session expiration, automatically terminating inactive sessions upon timeout.
+* **Password Recovery & Account Reset**: Password recovery request workflow (`ForgotPasswordPage`) and secure token-based password reset page (`ResetPasswordPage`).
+* **Route-Level Permission Guards**: High-level RBAC route protection (`ProtectedRoute`) restricting page access based on delegated power permissions (`SOCIETIES`, `VENDORS`, `SUBSCRIPTIONS`, `SUPPORT`, `SUB_ADMINS`, `SETTINGS`).
+
+---
+
+## 2. Executive Dashboard Overview (`/dashboard`)
+* **Key Performance Metric Cards**: Real-time telemetry cards tracking Total Platform Revenue, Active Local Vendors, Active Merchant Subscriptions, and Platform Retention Rate.
+* **Financial Performance Visualizations**: Interactive Area Chart tracking gross revenue alongside net platform commission earnings over time.
+* **Vendor Onboarding Metrics**: Bar chart highlighting monthly merchant onboarding trends across target regions.
+* **Subscription Breakdown**: Donut chart displaying real-time tier distribution across Enterprise, Pro, and Free plans.
+* **Live Operational Feeds**:
+  * Recent payment transactions table.
+  * Newly onboarded local merchant stores feed.
+  * System-wide administrative audit activity stream.
+
+---
+
+## 3. Residential Societies & Enclaves Management (`/dashboard/societies`)
+* **Society Master Directory**: Complete listing table displaying Society Name, Unique Code (e.g., `SOC-GWH-01`), Location, State, Postal Code, Registered Vendor Count, Status Badge, and Onboarding Date.
+* **Directory Search & Filter**: Search by society name, code, or city, with status filter toggles (`active`, `suspended`, `inactive`).
+* **Society Onboarding Form**: Modal form (`SocietyFormModal.tsx`) with strict schema validation enforcing uppercase alphanumeric society code formatting.
+* **Society Profile Drawer**: Slide-over drawer (`SocietyDetailsDrawer.tsx`) breaking down society address details, secretary contact information, and linked registered local vendors.
+* **Status Controls & Deactivation**: Instant activate/suspend toggle for societies with reason input logging.
+* **Bulk Management Toolbar**: Floating toolbar enabling bulk activation, deactivation, or deletion with instant optimistic UI updates.
+
+---
+
+## 4. Vendor Store & Merchant Management (`/dashboard/users`)
+* **Merchant Store Directory**: Complete catalog showing Store Logo/Avatar, Store Name, Owner Name, Store Category, 15-digit Indian GSTIN, Subscription Tier, Store Status (`Active`, `Suspended`, `Pending Approval`), and Lifetime Earnings.
+* **Vendor Application Approval Queue**: Dedicated approval workspace (`/admin/requests`) for reviewing new vendor signups, complete with one-click approval or rejection reason logging.
+* **GSTIN Verification Engine**: Strict regex schema validation for 15-digit Indian GSTIN identification numbers.
+* **4-Tab Vendor Profile Drawer** (`VendorProfileDrawer.tsx`):
+  * **Store Overview**: Revenue metrics, store owner contact, assigned society enclave, and subscription renewal date.
+  * **GST & Tax Info**: Verified GSTIN and registered business structure (LLP, Pvt Ltd, Proprietorship).
+  * **Weekly Operating Hours**: Operating schedule table covering opening/closing times for Monday through Sunday.
+  * **Payout Log**: Detailed history of past merchant payout settlements.
+* **Vendor Account Overrides**: Individual status toggles to activate, suspend, ban, or permanently delete merchant stores.
+* **Bulk Vendor Actions**: Selection controls to bulk activate, suspend, or delete multiple vendors simultaneously.
+
+---
+
+## 5. Resident & User Directory (`/dashboard/people`)
+* **Unified Directory Console**: Directory bringing resident customers, merchant store owners, and platform staff into a single view.
+* **Resident Onboarding**: Form modal (`AddPersonModal.tsx`) to register new resident profiles directly into the system.
+* **Advanced Multi-Criteria Filtering**: Filter by user role, account status, society assignment, or minimum strike count.
+* **User Profile Drawer**: Slide-over view (`PeopleDetailsDrawer.tsx`) showing contact details, total orders placed, activity history, and assigned flags.
+* **Disciplinary Strike & Auto-Ban System**: Strike engine allowing admins to issue warning flags to policy-violating accounts. Accounts automatically get banned from platform access upon accumulating 3 warning strikes.
+* **Account Credentials & Access Control**: Password resets, account blocking/unblocking, and profile deletion capabilities.
+
+---
+
+## 6. Merchant Subscriptions & Billing Engine (`/dashboard/subscriptions`)
+* **Subscription Telemetry**: Live metrics for Total Active Subscriptions, Expiring Soon (≤ 7 days count), Overdue Payments, and Monthly Recurring Revenue (MRR).
+* **Subscription Ledger Table**: Records listing Subscription ID (e.g., `SUB-801`), Vendor Store, Plan Tier, Billing Cycle (Monthly vs. Annual), Price, Expiry Date with countdown badges, Payment Status, and Auto-Renewal state.
+* **Plan Renewal & Tier Upgrades**: Modal (`RenewSubscriptionModal.tsx`) to upgrade/downgrade subscription tiers (Free, Pro, Enterprise), switch billing cycles, or toggle auto-renewal settings.
+* **Subscription Cancellation**: Cancellation workflow (`CancelSubscriptionModal.tsx`) requiring mandatory cancellation reason input before revoking access.
+* **Invoicing & Audit Trail**: Downloadable PDF tax invoices and a complete audit log of past plan changes for every merchant.
+
+---
+
+## 7. Payment Ledger & Financial Refunds (`/dashboard/payments`)
+* **Financial Analytics Dashboard**: 7-day daily volume area chart, payment gateway distribution donut chart (Stripe, Razorpay, Bank Transfer, DigiWallet), Net Platform Commission Revenue (5% fee), and gateway success rate telemetry.
+* **Master Payment Ledger**: Transaction table listing Transaction ID (e.g., `TXN-9001`), Merchant Store Name, Customer Email, Gross Amount, Platform Fee breakdown, Gateway Provider, Status (`Success`, `Pending`, `Failed`, `Refunded`), and Timestamp.
+* **Transaction Details Breakdown**: Drawer (`TransactionDetailsDrawer.tsx`) breaking down gross amounts, 5% platform commission cut, and net merchant payout share.
+* **Refund Execution Engine**: Modal (`IssueRefundModal.tsx`) for executing full or partial refunds back through the payment gateway with reason tracking.
+* **Receipt & Invoice Generator**: One-click generation and PDF export for payment receipts and official tax invoices.
+
+---
+
+## 8. Hero Carousels & Promotional Banner Management
+* **Promotional Banner Directory**: Manager listing all active promotional banners, target placements, thumbnail previews, display sequence order, and visibility toggles.
+* **Banner Content Manager**: Editor for uploading promotional image URLs, setting banner titles, adding descriptions, linking target pages, and setting display sequences.
+* **Main App Synchronization**: Controls promotional carousels displayed on resident customer mobile/web apps and promotional landing pages.
+
+---
+
+## 9. Sub-Admin Delegation & Granular RBAC (`/dashboard/sub-admins`)
+* **Sub-Admin Directory**: Table listing all delegated team accounts, names, emails, role titles, assigned power sections, account status, and creation timestamps.
+* **Sub-Admin Creation Modal**: Form (`CreateSubAdminModal.tsx`) for adding new sub-admin accounts with temporary credentials and assigned role titles.
+* **Granular Power Delegation**: Modal (`EditSubAdminPowersModal.tsx`) to assign modular access permissions (`SOCIETIES`, `VENDORS`, `SUBSCRIPTIONS`, `SUPPORT`, `SUB_ADMINS`, `SETTINGS`).
+* **Access Revocation**: Safety modal (`RevokeSubAdminModal.tsx`) to immediately revoke sub-admin credentials and block dashboard entry.
+
+---
+
+## 10. Support Desk & Ticket Analytics (`/dashboard/support`)
+* **Dual View Modes**: Switchable views between **Ticket Dashboard & Analytics** and **Ticket Queue Management**.
+* **Support Desk Metrics**: Summary cards tracking Open Tickets, In-Progress Tickets, Resolved Tickets, Urgent Escalations, and SLA Breach warnings.
+* **Enterprise Ticket Table**: View containing Ticket ID, Customer/Vendor Subject, Category, Priority (`Low`, `Medium`, `High`, `Urgent`), Status (`Open`, `In Progress`, `Resolved`, `Closed`), SLA countdown timer, and Assigned Agent.
+* **Interactive Ticket Resolution Drawer**: Slide-over ticket workspace (`SupportTicketDetailsDrawer.tsx`) featuring:
+  * Full chronologically ordered conversation thread.
+  * Rich-text admin response composer.
+  * Priority escalation and de-escalation toggles.
+  * Follower tags and ticket merging/unmerging controls.
+  * Direct access to User and Vendor profile detail popups (`UserProfileDetailsModal`, `VendorProfileDetailsModal`).
+* **SLA Configuration**: Modal (`SupportSLAManagementModal.tsx`) to set response and resolution time targets for each priority level.
+* **Custom Inquiry Tags**: Tag manager (`SupportTagManagementModal.tsx`) to define, color-code, and assign custom ticket tags.
+
+---
+
+## 11. Executive Business Intelligence & Reports (`/dashboard/analytics`)
+* **Timeframe Granularity Selector**: Controls to filter analytics across **Daily View** (24-hour clock), **Monthly View**, and **Yearly View**.
+* **Multi-Format Report Exporter**: One-click data export utility generating ready-to-use **CSV**, **Excel**, or **PDF** files.
+* **6 Analytics Visualizations**:
+  * Gross Revenue vs. Net Profit Area Chart.
+  * Fulfilled vs. Cancelled Orders Bar Chart.
+  * Subscription Growth Trajectory Line Chart.
+  * Monthly Merchant Onboarding Bar Chart.
+  * Top Vendor Merchant Store Leaderboard.
+  * Society Enclave Performance & Order Distribution Bar Chart.
+
+---
+
+## 12. Notification Center & Broadcast Engine (`/dashboard/notifications`)
+* **Multi-Category System Feed**: System notifications filtered across categories: `vendor_registration`, `subscription_expiry`, `payment_success`, `payment_failure`, and `announcement`.
+* **Header Popover Synchronization**: Live unread badge count (`NotificationMenu.tsx`) in the top navigation bar with quick-preview dropdown.
+* **Interactive Notification Cards**: Cards (`NotificationCard.tsx`) equipped with category icons, unread pulse indicators, human-readable relative timestamps ("12 mins ago"), quick action links, mark-as-read toggles, and deletion controls.
+* **Global System Announcements**: System broadcast tool (`POST /notifications/broadcast`) to send custom platform push announcements to targeted audiences across resident mobile apps and vendor portals.
+* **Batch Controls**: Quick actions to mark all notifications as read or clear read alerts.
+
+---
+
+## 13. Audit Log & Compliance Trail (`/dashboard/security`)
+* **System Audit Log Ledger**: Table recording Audit ID (e.g., `AUD-5001`), Administrator Name & Email, Action Badge (`VENDOR_SUSPENDED`, `REFUND_ISSUED`, `SOCIETY_CREATED`, `SUBSCRIPTION_RENEWED`, `SETTINGS_UPDATED`), Impacted Target Entity, Client IP Address, Browser User-Agent, and Timestamp.
+* **JSON State Diff Viewer**: Drawer (`AuditLogDetailsDrawer.tsx`) offering a side-by-side JSON comparison highlighting **Previous State** vs. **New State** for every administrative action.
+* **Compliance File Exports**: Tools to export raw audit trail logs to CSV or PDF for security compliance reviews.
+
+---
+
+## 14. Platform Settings & System Configuration (`/dashboard/settings`)
+Centralized configuration hub structured into 8 dedicated sub-modules:
+1. **Admin Profile**: Update administrator full name, email address, contact phone, designation, and preview avatar images.
+2. **Security & Password Manager**: Password update card featuring real-time password strength indicators.
+3. **Email & SMTP Configuration**: Transactional SMTP server settings (Host, Port 587/465, Username, Sender Address, Sender Name, TLS/SSL security toggles) paired with a **Send Test Email** verification tool.
+4. **Tax & GST Configuration**: Platform GST rate controls (e.g., 18%), official GSTIN registration number, HSN/SAC service codes, and automatic tax calculation toggles.
+5. **Subscription Plan Builder**: Price controls, feature toggles, and store limits for Free ($0), Pro ($49/mo), and Enterprise ($199/mo) plans.
+6. **System Parameters**: Platform Maintenance Mode switch, default currency selection (USD, INR, EUR, GBP), and session inactivity timeout limits.
+7. **Notification Preferences**: Delivery channel switches for Email, SMS, Push Notifications, and Security Alerts.
+8. **Branding & Customization**: Platform title, tagline, primary color picker (`#224636`), brand logo upload, and real-time navigation preview.
+
+---
+
+## 15. User Interface, Aesthetics & Performance
+* **Custom OKLCH Color Tokens**: Tailored color system using warm OKLCH tones: Warm Ivory (`#f9f7f2`), Deep Espresso (`#2a2421`), Deep Forest (`#224636`), and Warm Gold (`#cba358`).
+* **Typography System**: Triple font pair using `Cormorant Garamond` (serif display headlines), `Inter` (sans-serif body text & controls), and `JetBrains Mono` (monospace for codes, timestamps, and amounts).
+* **Reusable Data Tables**: Universal `DataTable` component handling multi-column sorting, selection checkboxes, custom badges, action dropdowns, and pagination.
+* **Dynamic Code Splitting**: Performance optimization using `React.lazy()` and `<Suspense>` route splitting to load code bundles on demand with smooth fallback skeletons (`DashboardSkeleton`, `PageLoader`).
+* **Accessibility**: Accessible UI modals and drawers using full `role="dialog"`, `aria-modal="true"`, `aria-labelledby`, and `Escape` key event handling.
