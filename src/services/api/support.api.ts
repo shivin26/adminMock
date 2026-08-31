@@ -534,6 +534,14 @@ export const supportApi = {
     assignedTo?: string
   ): Promise<SupportTicket> => {
     const sId = String(ticketId);
+    try {
+      const res = await axiosInstance.patch(`/admin/support/tickets/${sId}/status`, { status, priority, assignedTo });
+      if (res.data?.data) {
+        const domain = mapRawTicketToDomain(res.data.data);
+        saveLocalTickets([domain, ...getLocalTickets().filter(t => t.id !== domain.id)]);
+        return domain;
+      }
+    } catch {}
     const tickets = getLocalTickets();
 
     const updated = tickets.map((t) => {

@@ -11,3 +11,11 @@ export const apiClient: AxiosInstance = axios.create({
   },
   withCredentials: true,
 });
+
+
+apiClient.interceptors.request.use((config) => {
+  if (config.url && config.baseURL && config.baseURL.endsWith('/api') && config.url.startsWith('/api/')) {
+    config.url = config.url.substring(4);
+  }
+  return config;
+});

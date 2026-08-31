@@ -17,7 +17,7 @@ export const mapUserDTOToDomain = (raw: any): UserProfile & PersonProfile => {
   const name = raw.name || raw.user_name || raw.userName || 'User Profile';
   const email = raw.email || 'user@digilocal.in';
   const phone = raw.phone || raw.phone_number || raw.phoneNumber || '+91 98765 43210';
-  const societyName = raw.society_name || raw.societyName || raw.society || 'Anupam Society';
+  const societyName = raw.area || raw.society_name || raw.societyName || raw.society || 'Anupam Area';
   const flatNumber = raw.flat_number || raw.flatNumber || raw.flat || 'A-101';
   const storeName = raw.store_name || raw.storeName || undefined;
   const category = raw.store_category || raw.category || undefined;

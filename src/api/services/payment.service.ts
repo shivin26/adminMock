@@ -153,7 +153,45 @@ class PaymentService extends BaseApiService {
       };
     }
 
-    return this.getPaginated<PaymentTransaction>('', params);
+    try {
+      const response = await apiClient.get<any>('/payments/transactions', { params });
+      const rawData = response.data?.data || response.data;
+      const rawPagination = response.data?.pagination || response.data?.meta || {};
+      const items: PaymentTransaction[] = Array.isArray(rawData)
+        ? rawData.map((p: any) => ({
+            id: p.transaction_id || `TXN-${p.payment_id}`,
+            vendorId: String(p.vendor_id || '1'),
+            storeName: p.store_name || 'Vendor Merchant',
+            customerName: p.customer_name || 'Resident Customer',
+            customerEmail: p.email || 'customer@digilocal.in',
+            amount: Number(p.amount || 0),
+            platformFee: Number(p.amount || 0) * 0.05,
+            vendorPayout: Number(p.amount || 0) * 0.95,
+            currency: 'INR',
+            gatewayMethod: (p.payment_method || 'razorpay').toLowerCase().includes('stripe') ? 'stripe' : 'razorpay',
+            gatewayTransactionId: p.transaction_id || `pay_${p.payment_id}`,
+            status: (p.status || 'success').toLowerCase() === 'success' ? 'success' : 'pending',
+            date: p.paid_at ? p.paid_at.split('T')[0] : new Date().toISOString().split('T')[0],
+            createdAt: p.paid_at || new Date().toISOString(),
+          }))
+        : [];
+      return {
+        items,
+        meta: {
+          page: Number(rawPagination.page || 1),
+          limit: Number(rawPagination.limit || 10),
+          totalItems: Number(rawPagination.total || items.length),
+          totalPages: Number(rawPagination.total_pages || Math.ceil(items.length / 10) || 1),
+          hasNextPage: Boolean(rawPagination.has_next),
+          hasPrevPage: Boolean(rawPagination.has_prev),
+        },
+      };
+    } catch {
+      return {
+        items: MOCK_PAYMENTS,
+        meta: { page: 1, limit: 10, totalItems: MOCK_PAYMENTS.length, totalPages: 1, hasNextPage: false, hasPrevPage: false },
+      };
+    }
   }
 
   public async getPaymentById(id: string): Promise<PaymentTransaction> {

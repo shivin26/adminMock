@@ -45,7 +45,7 @@ export const configApi = {
    */
   changePassword: async (payload: PasswordChangeRequest): Promise<{ message: string }> => {
     try {
-      const response = await axiosInstance.post<{ message: string }>('/admin/change-password', payload);
+      const response = await axiosInstance.post<{ message: string }>('/admin/settings/change-password', payload);
       return response.data;
     } catch {
       return { message: 'Administrator password updated successfully' };

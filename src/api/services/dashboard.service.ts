@@ -91,8 +91,15 @@ class DashboardService extends BaseApiService {
   }
 
   public async getDashboardData(): Promise<DashboardData> {
-    // Simulate network delay for mock mode
-    await new Promise((res) => setTimeout(res, 600));
+    try {
+      const response = await apiClient.get<any>('/admin/dashboard');
+      const data = response.data?.data || response.data;
+      if (data && data.metrics) {
+        return data;
+      }
+    } catch (err) {
+      console.warn('Backend dashboard fetch failed, falling back to local mock data:', err);
+    }
     return MOCK_DASHBOARD_DATA;
   }
 }

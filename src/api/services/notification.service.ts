@@ -103,7 +103,40 @@ class NotificationService extends BaseApiService {
       };
     }
 
-    return this.get<PaginatedNotifications>('', { params });
+    try {
+      const response = await apiClient.get<any>('/notifications', { params });
+      const rawData = response.data?.data || response.data;
+      const rawPagination = response.data?.pagination || response.data?.meta || {};
+      const items: NotificationItem[] = Array.isArray(rawData)
+        ? rawData.map((n: any) => ({
+            id: n.id || `ntf_${Date.now()}`,
+            title: n.title || 'System Notification',
+            message: n.message || '',
+            category: (n.type || 'announcement').toLowerCase(),
+            isRead: Boolean(n.is_read),
+            createdAt: n.created_at || new Date().toISOString(),
+          }))
+        : [];
+      const unreadCount = items.filter((i) => !i.isRead).length;
+      return {
+        items,
+        unreadCount,
+        meta: {
+          page: Number(rawPagination.page || 1),
+          limit: Number(rawPagination.limit || 10),
+          totalItems: Number(rawPagination.total || items.length),
+          totalPages: Number(rawPagination.total_pages || Math.ceil(items.length / 10) || 1),
+          hasNextPage: Boolean(rawPagination.has_next),
+          hasPrevPage: Boolean(rawPagination.has_prev),
+        },
+      };
+    } catch {
+      return {
+        items: MOCK_NOTIFICATIONS,
+        unreadCount: MOCK_NOTIFICATIONS.filter((n) => !n.isRead).length,
+        meta: { page: 1, limit: 10, totalItems: MOCK_NOTIFICATIONS.length, totalPages: 1, hasNextPage: false, hasPrevPage: false },
+      };
+    }
   }
 
   public async markAsRead(id: string): Promise<NotificationItem> {

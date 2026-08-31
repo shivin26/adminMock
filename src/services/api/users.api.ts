@@ -303,7 +303,7 @@ export const usersApi = {
 
   flagUser: async (userId: string): Promise<{ user: UserProfile; wasBanned: boolean }> => {
     try {
-      const response = await axiosInstance.post(`/admin/users/${userId}/block`, { reason: 'User flagged by admin' });
+      const response = await axiosInstance.post(`/admin/users/${userId}/flag`);
       if (response.data) {
         const users = getStoredUsers();
         const found = users.find((u) => u.id === userId);
@@ -335,7 +335,7 @@ export const usersApi = {
 
   resetUserFlags: async (userId: string): Promise<UserProfile> => {
     try {
-      await axiosInstance.post(`/admin/users/${userId}/unblock`);
+      await axiosInstance.delete(`/admin/users/${userId}/flag`);
     } catch {}
 
     const users = getStoredUsers();

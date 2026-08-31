@@ -29,7 +29,7 @@ export const mapVendorDTOToDomain = (raw: any): Vendor => {
     email: raw.email || 'vendor@digilocal.com',
     phone: formattedPhone,
     address: raw.location || raw.address || 'Block B, Sector 62',
-    societyName: raw.society_name || raw.societyName || (raw.society_id ? `Society #${raw.society_id}` : 'Unassigned'),
+    societyName: raw.area || raw.location_name || raw.society_name || raw.societyName || (raw.location_id ? `Location #${raw.location_id}` : 'Unassigned Area'),
     societyId: raw.society_id !== undefined && raw.society_id !== null ? String(raw.society_id) : (raw.societyId ? String(raw.societyId) : undefined),
     gstin: raw.gst_number || raw.gstin || `07AAAAA${vId}0001Z5`,
     subscriptionTier: (raw.subscription_tier || raw.subscriptionTier || 'pro') as any,

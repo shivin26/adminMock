@@ -26,7 +26,7 @@ export const mapSocietyDTOToDomain = (dto: RawSocietyDTO): Society => {
 
   return {
     id: String(dto.society_id || (dto as any).id || Date.now()),
-    name: dto.society_name || dto.name || 'Unnamed Society',
+    name: (dto as any).area || dto.society_name || dto.name || 'Unnamed Location Area',
     code: dto.public_id || (dto as any).code || `SOC-${dto.society_id || '000'}`,
     city,
     state,

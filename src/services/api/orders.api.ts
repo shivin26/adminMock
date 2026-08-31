@@ -227,7 +227,7 @@ export const ordersApi = {
    */
   issueRefund: async (orderId: string, amount: number): Promise<{ message: string; refundId: string }> => {
     try {
-      const response = await axiosInstance.post(`/orders/${orderId}/refund`, { amount });
+      const response = await axiosInstance.post(`/admin/payments/refund`, { transaction_id: orderId, amount, reason: 'Refund issued via admin panel' });
       if (response.data) return response.data;
     } catch {}
 
