@@ -264,8 +264,22 @@ export const SupportEnterpriseDataTable: React.FC<SupportEnterpriseDataTableProp
 
     if (visibleColumns.category) {
       list.push({
-        header: 'Category',
-        cell: (t) => <Badge variant="neutral">{t.category.toUpperCase()}</Badge>,
+        header: 'Category & Direction',
+        cell: (t) => {
+          let label = t.category.replace(/_/g, ' ').toUpperCase();
+          let variant: 'primary' | 'warning' | 'danger' | 'info' | 'neutral' = 'neutral';
+          if (t.category === 'vendor_vs_user') {
+            label = 'VENDOR → RESIDENT';
+            variant = 'warning';
+          } else if (t.category === 'vendor_vs_vendor') {
+            label = 'VENDOR → VENDOR';
+            variant = 'primary';
+          } else if (t.category === 'user_vs_vendor') {
+            label = 'RESIDENT → VENDOR';
+            variant = 'danger';
+          }
+          return <Badge variant={variant}>{label}</Badge>;
+        },
       });
     }
 

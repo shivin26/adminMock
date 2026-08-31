@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { authService } from '../../api/services/auth.service';
-import { useAuth } from '../../context/AuthContext';
+import { useAuth } from '../useAuth';
 import { toast } from '../../components/feedback/ToastSystem';
 import { env } from '../../env';
 import {

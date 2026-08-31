@@ -47,30 +47,32 @@ export const SupportPage: React.FC = () => {
 
   const [priorityFocus, setPriorityFocus] = useState<string>('all');
 
-  const { data: rawTickets = [], isLoading } = useTickets({
+  const { data: rawTickets, isLoading } = useTickets({
     category: categoryFilter,
     search: searchTerm,
   });
+
+  const tickets = useMemo(() => (Array.isArray(rawTickets) ? rawTickets : []), [rawTickets]);
 
   const updateStatusMutation = useUpdateTicketStatus();
 
   const counts = useMemo(() => {
     return {
-      all: rawTickets.length,
-      open: rawTickets.filter((t) => t.status === 'open').length,
-      in_progress: rawTickets.filter((t) => t.status === 'in_progress').length,
-      resolved: rawTickets.filter((t) => t.status === 'resolved').length,
-      urgent: rawTickets.filter((t) => t.priority === 'urgent').length,
-      high: rawTickets.filter((t) => t.priority === 'high').length,
-      medium: rawTickets.filter((t) => t.priority === 'medium').length,
-      low: rawTickets.filter((t) => t.priority === 'low').length,
+      all: tickets.length,
+      open: tickets.filter((t) => t && t.status === 'open').length,
+      in_progress: tickets.filter((t) => t && t.status === 'in_progress').length,
+      resolved: tickets.filter((t) => t && t.status === 'resolved').length,
+      urgent: tickets.filter((t) => t && t.priority === 'urgent').length,
+      high: tickets.filter((t) => t && t.priority === 'high').length,
+      medium: tickets.filter((t) => t && t.priority === 'medium').length,
+      low: tickets.filter((t) => t && t.priority === 'low').length,
     };
-  }, [rawTickets]);
+  }, [tickets]);
 
   const allTickets = useMemo(() => {
-    let list = rawTickets;
+    let list = tickets;
     if (activeTab !== 'all') {
-      list = list.filter((t) => t.status === activeTab);
+      list = list.filter((t) => t && t.status === activeTab);
     }
     if (priorityFocus !== 'all') {
       list = list.filter((t) => t.priority === priorityFocus);

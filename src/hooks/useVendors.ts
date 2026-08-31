@@ -21,6 +21,14 @@ export const usePendingVendors = () => {
   });
 };
 
+export const useOnHoldVendors = () => {
+  return useQuery({
+    queryKey: ['vendors', 'on_hold'],
+    queryFn: () => vendorsApi.getOnHoldVendors(),
+    staleTime: 1 * 60 * 1000,
+  });
+};
+
 export const useApproveVendor = () => {
   const queryClient = useQueryClient();
   const { addToast } = useToast();
@@ -46,6 +54,39 @@ export const useApproveVendor = () => {
   });
 };
 
+export const useHoldVendor = () => {
+  const queryClient = useQueryClient();
+  const { addToast } = useToast();
+
+  return useMutation({
+    mutationFn: ({
+      vendorId,
+      subject,
+      email_content,
+    }: {
+      vendorId: string | number;
+      subject: string;
+      email_content: string;
+    }) => vendorsApi.holdVendor(vendorId, { subject, email_content }),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: CACHE_KEYS.vendors.all });
+      addToast({
+        type: 'warning',
+        title: 'Application Placed On Hold',
+        description: data.message || 'Merchant application placed on hold. SMTP email notice sent to vendor.',
+      });
+    },
+    onError: (error: unknown) => {
+      const appErr = ErrorHandler.handle(error);
+      addToast({
+        type: 'error',
+        title: 'Hold Action Failed',
+        description: appErr.message,
+      });
+    },
+  });
+};
+
 export const useRejectVendor = () => {
   const queryClient = useQueryClient();
   const { addToast } = useToast();
@@ -57,7 +98,7 @@ export const useRejectVendor = () => {
       queryClient.invalidateQueries({ queryKey: CACHE_KEYS.vendors.all });
       addToast({
         type: 'info',
-        title: 'Vendor Rejected',
+        title: 'Vendor Application Rejected',
         description: data.message || 'Vendor onboarding application has been rejected.',
       });
     },

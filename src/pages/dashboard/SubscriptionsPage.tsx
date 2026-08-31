@@ -66,10 +66,10 @@ export const SubscriptionsPage: React.FC = () => {
   const [renewingSubscription, setRenewingSubscription] = useState<Subscription | null>(null);
   const [invoicingSubscription, setInvoicingSubscription] = useState<Subscription | null>(null);
 
-  const subscriptions = rawSubscriptions;
+  const subscriptions = Array.isArray(rawSubscriptions) ? rawSubscriptions : [];
 
   const activeCount = subscriptions.filter(
-    (s) => s.daysRemaining > 0 && !s.isVendorBlocked && s.status !== 'suspended' && s.status !== 'blocked'
+    (s) => s && s.daysRemaining > 0 && !s.isVendorBlocked && s.status !== 'suspended' && s.status !== 'blocked'
   ).length;
   const pendingCount = subscriptions.filter((s) => s.status === 'pending' || s.vendorStatus === 'pending').length;
   const blockedCount = subscriptions.filter((s) => s.isVendorBlocked || s.status === 'suspended' || s.status === 'blocked').length;

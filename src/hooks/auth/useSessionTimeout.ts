@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef, useCallback } from 'react';
-import { useAuth } from '../../context/AuthContext';
+import { useAuth } from '../useAuth';
 import { toast } from '../../components/feedback/ToastSystem';
 
 // Default config: 15 minutes timeout, warning at 2 minutes remaining

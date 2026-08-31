@@ -40,19 +40,20 @@ const REVENUE_ANALYTICS_DATA = [
 
 export const OverviewPage: React.FC = () => {
   const navigate = useNavigate();
-  const { data: societies = [] } = useSocieties();
-  const { data: rawVendors = [] } = useVendors();
+  const { data: rawSocieties } = useSocieties();
+  const { data: rawVendors } = useVendors();
   const { hasPower } = usePermission();
 
   const [pendingVisibleCount, setPendingVisibleCount] = React.useState(3);
   const [recentVisibleCount, setRecentVisibleCount] = React.useState(3);
 
-  const vendors = rawVendors;
+  const societies = Array.isArray(rawSocieties) ? rawSocieties : [];
+  const vendors = Array.isArray(rawVendors) ? rawVendors : [];
 
   const totalVendors = vendors.length;
-  const activeVendorsCount = vendors.filter((v) => v.status === 'active').length;
-  const pendingVendors = vendors.filter((v) => v.status === 'pending');
-  const activeSocietiesCount = societies.filter((s) => s.status === 'active').length;
+  const activeVendorsCount = vendors.filter((v) => v && v.status === 'active').length;
+  const pendingVendors = vendors.filter((v) => v && v.status === 'pending');
+  const activeSocietiesCount = societies.filter((s) => s && s.status === 'active').length;
 
   const handlePendingScroll = (e: React.UIEvent<HTMLDivElement>) => {
     const { scrollTop, scrollHeight, clientHeight } = e.currentTarget;

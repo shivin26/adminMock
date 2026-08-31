@@ -503,22 +503,67 @@ export const SupportTicketDetailsDrawer: React.FC<SupportTicketDetailsDrawerProp
                   </div>
                 )}
 
-                {ticket.userType === 'user_vendor' ? (
+                {ticket.category === 'vendor_vs_user' ? (
+                  <div className="col-span-2 bg-amber-50 p-3 rounded-xl border border-amber-200 flex flex-col gap-1 text-xs text-amber-950">
+                    <div className="flex items-center justify-between">
+                      <span className="font-bold uppercase tracking-wider text-amber-900 flex items-center gap-1.5">
+                        <Store size={14} className="text-amber-600" /> Vendor → Resident Customer Complaint
+                      </span>
+                      <Badge variant="warning">VENDOR &amp; RESIDENT</Badge>
+                    </div>
+                    <p className="mt-0.5">
+                      Complainant <strong>{ticket.reporterName}</strong> (Store: {ticket.entityName}) filed a complaint against Resident Customer <strong className="text-[#18281F]">{ticket.reportedPartyName || 'Resident Customer'}</strong>.
+                    </p>
+                    {ticket.orderId && (
+                      <span className="font-mono text-[11px] text-amber-800">Associated Order ID: {ticket.orderId} ({formatCurrency(ticket.orderAmount || 0)})</span>
+                    )}
+                  </div>
+                ) : ticket.category === 'vendor_vs_vendor' ? (
+                  <div className="col-span-2 bg-emerald-50 p-3 rounded-xl border border-emerald-200 flex flex-col gap-1 text-xs text-emerald-950">
+                    <div className="flex items-center justify-between">
+                      <span className="font-bold uppercase tracking-wider text-emerald-900 flex items-center gap-1.5">
+                        <Store size={14} className="text-emerald-600" /> Vendor → Vendor B2B Purchase Complaint
+                      </span>
+                      <Badge variant="primary">VENDOR &amp; RESIDENT</Badge>
+                    </div>
+                    <p className="mt-0.5">
+                      Vendor <strong>{ticket.reporterName}</strong> (buying in resident role) filed a complaint against Vendor Store <strong className="text-[#18281F]">{ticket.reportedPartyName || ticket.targetVendor}</strong>.
+                    </p>
+                    {ticket.orderId && (
+                      <span className="font-mono text-[11px] text-emerald-800">Associated Order ID: {ticket.orderId} ({formatCurrency(ticket.orderAmount || 0)})</span>
+                    )}
+                  </div>
+                ) : ticket.category === 'user_vs_vendor' ? (
+                  <div className="col-span-2 bg-rose-50 p-3 rounded-xl border border-rose-200 flex flex-col gap-1 text-xs text-rose-950">
+                    <div className="flex items-center justify-between">
+                      <span className="font-bold uppercase tracking-wider text-rose-900 flex items-center gap-1.5">
+                        <User size={14} className="text-rose-600" /> Resident Customer → Vendor Complaint
+                      </span>
+                      <Badge variant="danger">RESIDENT COMPLAINT</Badge>
+                    </div>
+                    <p className="mt-0.5">
+                      Resident <strong>{ticket.reporterName}</strong> filed a complaint against Vendor Store <strong className="text-[#18281F]">{ticket.reportedPartyName || ticket.targetVendor}</strong>.
+                    </p>
+                    {ticket.orderId && (
+                      <span className="font-mono text-[11px] text-rose-800">Associated Order ID: {ticket.orderId} ({formatCurrency(ticket.orderAmount || 0)})</span>
+                    )}
+                  </div>
+                ) : ticket.userType === 'user_vendor' ? (
                   <div className="col-span-2 bg-[#EFE8D8]/90 p-2.5 rounded-xl border border-[#C4A066] flex items-center justify-between text-xs text-[#18281F]">
                     <div className="flex items-center gap-2">
                       <Store size={14} className="text-[#C4A066] shrink-0" />
                       <span>
-                        <strong>Dual-Role Intake Perspective:</strong> Reporter is a <strong>Resident Customer &amp; Store Owner</strong>. {ticket.orderId ? 'Lodged as a Buyer purchasing from another store.' : 'Lodged for store management operations.'}
+                        <strong>Dual-Role Account:</strong> Registered as a <strong>Vendor &amp; Resident Customer</strong>.
                       </span>
                     </div>
-                    <Badge variant="warning">{ticket.orderId ? '🛒 BUYER INTAKE' : '🏪 VENDOR INTAKE'}</Badge>
+                    <Badge variant="warning">VENDOR &amp; RESIDENT</Badge>
                   </div>
                 ) : ticket.userType === 'vendor' ? (
                   <div className="col-span-2 bg-[#EFE8D8]/70 p-2.5 rounded-xl border border-[#C4A066]/40 flex items-center justify-between text-xs text-[#18281F]">
                     <div className="flex items-center gap-2">
                       <ShoppingBag size={14} className="text-[#C4A066] shrink-0" />
                       <span>
-                        <strong>Vendor Intake Channel:</strong> App created exclusively for vendors (Vendor Mobile App &amp; Vendor Web Portal). Vendors lodge complaints for platform issues.
+                        <strong>Vendor Intake Channel:</strong> App created exclusively for vendors (Vendor Mobile App &amp; Vendor Web Portal).
                       </span>
                     </div>
                     <Badge variant="primary">{ticket.source === 'mobile_app' ? 'VENDOR APP' : 'VENDOR PORTAL'}</Badge>

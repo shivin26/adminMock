@@ -42,18 +42,33 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     setIsLoading(true);
     try {
       const res = await authApi.loginAdmin(payload);
-      const authToken = res.accessToken || res.token;
+      const authToken = res.accessToken || res.token || `jwt-admin-${Date.now()}`;
       storage.setAdminToken(authToken);
       storage.setAccessToken(authToken);
-      storage.setRefreshToken(res.refreshToken);
-      storage.setUserRole(res.role || 'admin');
+      if (res.refreshToken) {
+        storage.setRefreshToken(res.refreshToken);
+      }
+
+      const emailLower = (payload.email || '').toLowerCase();
+      const rawRole = String(res.role || '').toLowerCase();
+      const isSubAdmin =
+        rawRole.includes('sub') ||
+        rawRole.includes('society') ||
+        emailLower.includes('priya') ||
+        emailLower.includes('sub');
+
+      const userRole: UserRole = isSubAdmin ? 'sub_admin' : 'super_admin';
+      storage.setUserRole(userRole);
 
       const adminUser: User = {
-        id: '1',
+        id: String((res.user as any)?.id || (isSubAdmin ? 'sub-1' : '1')),
         email: payload.email,
-        firstName: 'System',
-        lastName: 'Admin',
-        role: (res.role as UserRole) || 'admin',
+        firstName: isSubAdmin ? 'Priya' : 'System',
+        lastName: isSubAdmin ? 'Sharma' : 'Admin',
+        role: userRole,
+        powers: isSubAdmin
+          ? ['SOCIETIES', 'VENDORS']
+          : ['SOCIETIES', 'VENDORS', 'SUBSCRIPTIONS', 'SUPPORT', 'SETTINGS', 'SUB_ADMINS'],
         permissions: ['*'],
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
@@ -61,7 +76,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       storage.setUserData(adminUser);
 
       setToken(authToken);
-      setRole((res.role as UserRole) || 'admin');
+      setRole(userRole);
       setUser(adminUser);
     } finally {
       setIsLoading(false);

@@ -1,6 +1,13 @@
 export type TicketPriority = 'low' | 'medium' | 'high' | 'urgent';
 export type TicketStatus = 'open' | 'in_progress' | 'resolved' | 'closed';
-export type TicketCategory = 'technical' | 'billing' | 'onboarding' | 'general';
+export type TicketCategory =
+  | 'vendor_vs_user'
+  | 'vendor_vs_vendor'
+  | 'user_vs_vendor'
+  | 'technical'
+  | 'billing'
+  | 'onboarding'
+  | 'general';
 export type TicketUserType = 'user' | 'vendor' | 'user_vendor';
 export type TicketSource = 'landing_website' | 'mobile_app' | 'vendor_portal';
 
@@ -24,6 +31,9 @@ export interface SupportTicket {
   priority: TicketPriority;
   status: TicketStatus;
   userType: TicketUserType;
+  complainantRole?: 'vendor_and_resident' | 'vendor' | 'resident';
+  reportedPartyType?: 'user_resident' | 'vendor';
+  reportedPartyName?: string;
   source?: TicketSource;
   reporterName: string;
   reporterEmail: string;

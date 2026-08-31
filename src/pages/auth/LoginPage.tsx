@@ -54,6 +54,11 @@ export const LoginPage: React.FC = () => {
         </div>
 
         <form className="login-form" onSubmit={adminForm.handleSubmit(onAdminSubmit)}>
+          {adminLoginMutation.isError && (
+            <div className="p-3 bg-red-50 border border-red-200 rounded-xl text-xs text-red-700 font-medium">
+              {adminLoginMutation.error?.message || 'Login failed. Please check credentials and try again.'}
+            </div>
+          )}
           <Input
             label="Corporate Email Address"
             placeholder="your.email@digilocal.com"

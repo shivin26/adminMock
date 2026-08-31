@@ -24,18 +24,20 @@ export const UsersPage: React.FC = () => {
     minFlags: 0,
   });
 
-  const { data: peopleList = [], isLoading, refetch } = usePeopleList(filters);
+  const { data: rawPeopleList, isLoading, refetch } = usePeopleList(filters);
   const flagPersonMutation = useFlagPerson();
+
+  const peopleList = Array.isArray(rawPeopleList) ? rawPeopleList : [];
 
   const [selectedPersonId, setSelectedPersonId] = useState<string | null>(null);
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 
   const totalCount = peopleList.length;
-  const residentCount = peopleList.filter((p) => p.personType === 'user').length;
-  const dualRoleCount = peopleList.filter((p) => p.personType === 'user_vendor').length;
+  const residentCount = peopleList.filter((p) => p && p.personType === 'user').length;
+  const dualRoleCount = peopleList.filter((p) => p && p.personType === 'user_vendor').length;
   const flaggedBannedCount = peopleList.filter(
-    (p) => (p.flagsCount && p.flagsCount > 0) || p.status === 'warned' || p.status === 'banned' || p.status === 'suspended'
+    (p) => p && ((p.flagsCount && p.flagsCount > 0) || p.status === 'warned' || p.status === 'banned' || p.status === 'suspended')
   ).length;
 
   let displayedPeople = peopleList;

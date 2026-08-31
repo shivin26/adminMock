@@ -1,6 +1,6 @@
 import React from 'react';
 import './Header.css';
-import { useAuth } from '../../../context/AuthContext';
+import { useAuth } from '../../../hooks/useAuth';
 import { useTheme } from '../../../context/ThemeContext';
 import { Sun, Moon, LogOut, User as UserIcon, Shield } from 'lucide-react';
 

@@ -88,7 +88,10 @@ export const SupportTicketFilterBar: React.FC<SupportTicketFilterBarProps> = ({
           onChange={(e) => onCategoryChange(e.target.value)}
           className="px-3 py-2 bg-[#FAF9F6] border border-[#E4DCC9] rounded-xl text-xs font-semibold text-[#18281F] outline-none focus:border-[#C4A066]"
         >
-          <option value="all">All Categories</option>
+          <option value="all">All Categories & Complaints</option>
+          <option value="vendor_vs_user">Vendor → Resident Customer Complaint</option>
+          <option value="vendor_vs_vendor">Vendor → Vendor (Resident Purchase Complaint)</option>
+          <option value="user_vs_vendor">Resident → Vendor Complaint</option>
           <option value="technical">Technical Inquiries</option>
           <option value="billing">Billing & Settlement</option>
           <option value="onboarding">Onboarding & Verification</option>

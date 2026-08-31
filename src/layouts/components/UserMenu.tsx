@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { LogOut, User as UserIcon, Settings, Shield, KeyRound } from 'lucide-react';
-import { useAuth } from '../../context/AuthContext';
+import { useAuth } from '../../hooks/useAuth';
 import { useLogout } from '../../hooks/auth/useAuthMutations';
 import { Badge } from '../../components/ui/Badge';
 import { ChangePasswordModal } from '../../components/auth/ChangePasswordModal';

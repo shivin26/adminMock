@@ -31,10 +31,12 @@ export const SocietiesPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<SocietyStatusTab>('all');
   const [sortBy, setSortBy] = useState<SocietySortOption>('name-asc');
 
-  const { data: societies = [], isLoading } = useSocieties(searchTerm);
+  const { data: rawSocieties, isLoading } = useSocieties(searchTerm);
   const createSocietyMutation = useCreateSociety();
   const editSocietyMutation = useEditSociety();
   const toggleStatusMutation = useToggleSocietyStatus();
+
+  const societies = useMemo(() => (Array.isArray(rawSocieties) ? rawSocieties : []), [rawSocieties]);
 
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [selectedSociety, setSelectedSociety] = useState<Society | null>(null);
@@ -43,9 +45,9 @@ export const SocietiesPage: React.FC = () => {
   const [approvingSociety, setApprovingSociety] = useState<Society | null>(null);
 
   // Tab counts
-  const pendingCount = useMemo(() => societies.filter((s) => s.status === 'pending').length, [societies]);
-  const activeCount = useMemo(() => societies.filter((s) => s.status === 'active').length, [societies]);
-  const suspendedCount = useMemo(() => societies.filter((s) => s.status === 'suspended').length, [societies]);
+  const pendingCount = useMemo(() => societies.filter((s) => s && s.status === 'pending').length, [societies]);
+  const activeCount = useMemo(() => societies.filter((s) => s && s.status === 'active').length, [societies]);
+  const suspendedCount = useMemo(() => societies.filter((s) => s && s.status === 'suspended').length, [societies]);
 
   // Filtered & Sorted dataset
   const filteredSocieties = useMemo(() => {
@@ -224,14 +226,15 @@ export const SocietiesPage: React.FC = () => {
   return (
     <div className="societies-page">
       <PageHeader
-        title="Societies & Residential Enclaves"
-        description="Review society registration approvals, track registered vendor density, and manage enclave access."
+        title="Location Areas & Societies"
+        description="View registered areas, location enclaves, and society clusters. Vendor service locations are registered during vendor onboarding and approved by admin."
         action={
           <Button
-            leftIcon={<Plus size={16} />}
+            variant="primary"
+            leftIcon={<Plus size={18} />}
             onClick={() => setIsCreateModalOpen(true)}
           >
-            Register Society
+            Add New Area / Location
           </Button>
         }
       />
@@ -243,26 +246,19 @@ export const SocietiesPage: React.FC = () => {
             className={`stab-btn ${activeTab === 'all' ? 'active' : ''}`}
             onClick={() => setActiveTab('all')}
           >
-            All Enclaves ({societies.length})
+            All Location Areas ({societies.length})
           </button>
           <button
             className={`stab-btn ${activeTab === 'active' ? 'active' : ''}`}
             onClick={() => setActiveTab('active')}
           >
-            Active ({activeCount})
-          </button>
-          <button
-            className={`stab-btn ${activeTab === 'pending' ? 'active' : ''}`}
-            onClick={() => setActiveTab('pending')}
-          >
-            Pending Approval ({pendingCount})
-            {pendingCount > 0 && <span className="w-2 h-2 rounded-full bg-amber-500 shrink-0" />}
+            Active Service Areas ({activeCount + pendingCount})
           </button>
           <button
             className={`stab-btn ${activeTab === 'suspended' ? 'active' : ''}`}
             onClick={() => setActiveTab('suspended')}
           >
-            Blocked / Suspended ({suspendedCount})
+            Inactive Areas ({suspendedCount})
           </button>
         </div>
 

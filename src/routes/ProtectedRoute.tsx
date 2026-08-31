@@ -2,6 +2,7 @@ import React from 'react';
 import { Navigate, Outlet } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { usePermission } from '../hooks/usePermission';
+import { DashboardSkeleton } from '../components/ui/DashboardSkeleton';
 import type { PowerSection } from '../types/rbac.types';
 
 export interface ProtectedRouteProps {
@@ -29,7 +30,7 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   const { hasPower } = usePermission();
 
   if (isLoading) {
-    return null;
+    return <DashboardSkeleton />;
   }
 
   if (!isAuthenticated) {

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Search, LogOut, Sun, Moon, Menu } from 'lucide-react';
-import { useAuth } from '../../context/AuthContext';
+import { useAuth } from '../../hooks/useAuth';
 import { Breadcrumbs } from './Breadcrumbs';
 import { NotificationMenu } from '../../components/dashboard/NotificationMenu';
 import { Button } from '../../components/ui/Button';
