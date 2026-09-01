@@ -7,10 +7,10 @@
   z-index: 100;
   display: flex;
   flex-direction: column;
-  background-color: #18281F !important;
+  background-color: #211A19 !important;
   border-right: 1px solid rgba(228, 220, 201, 0.2);
   border-radius: 0;
-  color: #F7F4EE !important;
+  color: #F8F6F0 !important;
   transition: width 0.28s cubic-bezier(0.4, 0, 0.2, 1), transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
   box-shadow: 4px 0 20px rgba(24, 40, 31, 0.15);
   overflow-x: hidden;
@@ -30,7 +30,7 @@
   padding: 1.125rem 0.875rem;
   border-bottom: 1px solid rgba(228, 220, 201, 0.15);
   height: 70px;
-  background-color: #18281F;
+  background-color: #211A19;
   overflow: hidden;
 }
 
@@ -49,7 +49,7 @@
   height: 40px;
   border-radius: var(--radius-md, 0.625rem);
   background-color: #FFFFFF;
-  border: 1px solid #C4A066;
+  border: 1px solid #C8A878;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -100,7 +100,7 @@
 
 .brand-badge {
   font-size: 10px;
-  color: #E6C35C !important;
+  color: #A88B58 !important;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.08em;
@@ -113,9 +113,9 @@
   width: 34px;
   height: 34px;
   border-radius: var(--radius-md, 0.625rem);
-  background-color: #243A2D;
+  background-color: #6B2732;
   border: 1px solid rgba(196, 160, 102, 0.35);
-  color: #F7F4EE;
+  color: #F8F6F0;
   cursor: pointer;
   transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
   flex-shrink: 0;
@@ -131,9 +131,9 @@
 }
 
 .sidebar-collapse-toggle:hover {
-  background-color: #C4A066;
-  color: #18281F;
-  border-color: #E6C35C;
+  background-color: #C8A878;
+  color: #211A19;
+  border-color: #A88B58;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
@@ -167,7 +167,7 @@
   gap: 0.35rem;
   padding: 1.125rem 0.75rem;
   flex: 1;
-  background-color: #18281F;
+  background-color: #211A19;
   overflow-y: auto;
   overflow-x: hidden;
 }
@@ -202,7 +202,7 @@
   height: 44px;
   padding: 0 0.875rem;
   border-radius: var(--radius-md, 0.625rem);
-  color: #F7F4EE !important;
+  color: #F8F6F0 !important;
   font-size: var(--font-size-sm, 0.875rem);
   font-weight: 600;
   transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
@@ -233,14 +233,14 @@
 }
 
 .nav-item:hover {
-  background-color: #243A2D;
+  background-color: #6B2732;
   color: #FFFFFF !important;
   opacity: 1;
 }
 
 .nav-item.active {
-  background-color: #243A2D !important;
-  color: #E6C35C !important;
+  background-color: #6B2732 !important;
+  color: #A88B58 !important;
   border: 1px solid rgba(196, 160, 102, 0.4);
   font-weight: 700;
   opacity: 1;
@@ -258,7 +258,7 @@
 }
 
 .nav-item.active .nav-icon {
-  color: #E6C35C !important;
+  color: #A88B58 !important;
 }
 
 .nav-label {

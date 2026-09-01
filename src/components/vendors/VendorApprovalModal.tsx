@@ -99,25 +99,25 @@ export const VendorApprovalModal: React.FC<VendorApprovalModalProps> = ({
     >
       <div className="flex flex-col gap-5 font-sans">
         {/* Vendor Header */}
-        <div className="flex items-start gap-4 p-4 bg-[#FAF9F6] border border-[#E4DCC9] rounded-2xl">
+        <div className="flex items-start gap-4 p-4 bg-[#FAF8F5] border border-[#E7DFD5] rounded-2xl">
           <img
             src={avatarUrl}
             alt={vendor.storeName}
-            className="w-16 h-16 rounded-xl object-cover border border-[#E4DCC9] shrink-0 cursor-pointer hover:opacity-80 hover:scale-105 transition-all"
+            className="w-16 h-16 rounded-xl object-cover border border-[#E7DFD5] shrink-0 cursor-pointer hover:opacity-80 hover:scale-105 transition-all"
             title="Click to open vendor profile picture"
             onClick={() => setPreviewImage(avatarUrl)}
           />
           <div className="flex-1 min-w-0">
             <div className="flex items-center justify-between gap-2">
-              <h4 className="text-base font-bold text-[#18281F] font-serif truncate">{vendor.storeName}</h4>
+              <h4 className="text-base font-bold text-[#211A19] font-serif truncate">{vendor.storeName}</h4>
               <Badge variant={vendor.status === 'on_hold' ? 'warning' : 'primary'}>
                 {vendor.status === 'on_hold' ? 'ON HOLD' : 'PENDING APPROVAL'}
               </Badge>
             </div>
-            <p className="text-xs text-[#6B7C70] mt-0.5">
-              Category: <strong className="text-[#18281F]">{vendor.category}</strong>
+            <p className="text-xs text-[#78716C] mt-0.5">
+              Category: <strong className="text-[#211A19]">{vendor.category}</strong>
             </p>
-            <p className="text-xs text-[#6B7C70] flex items-center gap-1.5 mt-1 font-mono font-semibold text-[#C4A066]">
+            <p className="text-xs text-[#78716C] flex items-center gap-1.5 mt-1 font-mono font-semibold text-[#C8A878]">
               <Clock size={13} /> Submitted at: {vendor.submissionTimestamp || vendor.createdAt}
             </p>
           </div>
@@ -165,7 +165,7 @@ export const VendorApprovalModal: React.FC<VendorApprovalModalProps> = ({
               ).map((change, idx) => (
                 <div key={idx} className={`p-2.5 bg-white rounded-xl border border-emerald-200 text-xs flex flex-col gap-1 ${change.field === 'address' ? 'sm:col-span-2' : ''}`}>
                   <div className="flex items-center justify-between">
-                    <span className="font-bold text-[#18281F] uppercase text-[11px] flex items-center gap-1">
+                    <span className="font-bold text-[#211A19] uppercase text-[11px] flex items-center gap-1">
                       <span className="w-2 h-2 rounded-full bg-emerald-600 inline-block shrink-0" />
                       {change.label}
                     </span>
@@ -188,13 +188,13 @@ export const VendorApprovalModal: React.FC<VendorApprovalModalProps> = ({
         )}
 
         {/* 7 Mandatory Registration Fields Checklist */}
-        <div className="p-4 bg-white border border-[#E4DCC9] rounded-2xl shadow-xs flex flex-col gap-3">
-          <div className="flex items-center justify-between border-b border-[#E4DCC9] pb-2.5">
+        <div className="p-4 bg-white border border-[#E7DFD5] rounded-2xl shadow-xs flex flex-col gap-3">
+          <div className="flex items-center justify-between border-b border-[#E7DFD5] pb-2.5">
             <div>
-              <h5 className="text-xs font-bold text-[#18281F] uppercase tracking-wider flex items-center gap-1.5">
-                <ShieldCheck size={16} className="text-[#C4A066]" /> Admin Field Verification Checklist ({checkedCount} / 7 Verified)
+              <h5 className="text-xs font-bold text-[#211A19] uppercase tracking-wider flex items-center gap-1.5">
+                <ShieldCheck size={16} className="text-[#C8A878]" /> Admin Field Verification Checklist ({checkedCount} / 7 Verified)
               </h5>
-              <p className="text-[11px] text-[#6B7C70] mt-0.5">
+              <p className="text-[11px] text-[#78716C] mt-0.5">
                 Admin must check and verify all 7 submitted registration items below to unlock the <strong>Approve</strong> button.
               </p>
             </div>
@@ -226,21 +226,21 @@ export const VendorApprovalModal: React.FC<VendorApprovalModalProps> = ({
                     isChecked
                       ? 'bg-emerald-50/80 border-emerald-300 text-emerald-950'
                       : isFieldUpdated
-                      ? 'bg-amber-50/60 border-amber-300 text-[#18281F]'
-                      : 'bg-[#FAF9F6] border-[#E4DCC9] text-[#18281F] hover:border-[#C4A066]'
+                      ? 'bg-amber-50/60 border-amber-300 text-[#211A19]'
+                      : 'bg-[#FAF8F5] border-[#E7DFD5] text-[#211A19] hover:border-[#C8A878]'
                   } ${field.key === 'address' ? 'sm:col-span-2' : ''}`}
                 >
                   <div className="mt-0.5 shrink-0">
                     {isChecked ? (
                       <CheckSquare size={18} className="text-emerald-700 font-bold" />
                     ) : (
-                      <Square size={18} className="text-[#6B7C70]" />
+                      <Square size={18} className="text-[#78716C]" />
                     )}
                   </div>
 
                   <div className="flex flex-col min-w-0">
                     <div className="flex items-center gap-1.5">
-                      <span className={`text-[11px] font-bold uppercase tracking-wider ${isChecked ? 'text-emerald-800' : 'text-[#6B7C70]'}`}>
+                      <span className={`text-[11px] font-bold uppercase tracking-wider ${isChecked ? 'text-emerald-800' : 'text-[#78716C]'}`}>
                         {field.label}
                       </span>
                       {isFieldUpdated && (
@@ -249,7 +249,7 @@ export const VendorApprovalModal: React.FC<VendorApprovalModalProps> = ({
                         </span>
                       )}
                     </div>
-                    <span className="font-semibold text-xs mt-0.5 font-mono text-[#18281F] break-words">
+                    <span className="font-semibold text-xs mt-0.5 font-mono text-[#211A19] break-words">
                       {field.value}
                     </span>
                   </div>
@@ -282,18 +282,18 @@ export const VendorApprovalModal: React.FC<VendorApprovalModalProps> = ({
 
         {/* Payment History Verification Card */}
         <div className="flex flex-col gap-2">
-          <h5 className="text-xs font-bold text-[#18281F] uppercase tracking-wider flex items-center gap-1.5">
-            <CreditCard size={15} className="text-[#C4A066]" /> Onboarding Subscription Payment Receipt
+          <h5 className="text-xs font-bold text-[#211A19] uppercase tracking-wider flex items-center gap-1.5">
+            <CreditCard size={15} className="text-[#C8A878]" /> Onboarding Subscription Payment Receipt
           </h5>
           {vendor.payments && vendor.payments.length > 0 ? (
             vendor.payments.map((pmt) => (
               <div
                 key={pmt.payment_id}
-                className="p-3 bg-[#EFE8D8] border border-[#E4DCC9] rounded-xl flex justify-between items-center text-xs font-mono"
+                className="p-3 bg-[#EEE5DA] border border-[#E7DFD5] rounded-xl flex justify-between items-center text-xs font-mono"
               >
                 <div>
-                  <span className="font-bold text-[#18281F]">Txn ID: {pmt.transaction_id}</span>
-                  <span className="text-[#6B7C70] block text-[11px] font-sans">
+                  <span className="font-bold text-[#211A19]">Txn ID: {pmt.transaction_id}</span>
+                  <span className="text-[#78716C] block text-[11px] font-sans">
                     Paid {formatCurrency(pmt.amount)} via {pmt.payment_method} on {formatDate(pmt.paid_at)}
                   </span>
                 </div>
@@ -301,14 +301,14 @@ export const VendorApprovalModal: React.FC<VendorApprovalModalProps> = ({
               </div>
             ))
           ) : (
-            <div className="p-3 text-center text-xs text-[#6B7C70] bg-[#FAF9F6] border border-[#E4DCC9] rounded-xl">
+            <div className="p-3 text-center text-xs text-[#78716C] bg-[#FAF8F5] border border-[#E7DFD5] rounded-xl">
               No subscription payment receipts attached.
             </div>
           )}
         </div>
 
         {/* Action Controls: Hold & Reject always enabled, Approve gated */}
-        <div className="flex flex-wrap justify-between items-center gap-3 mt-2 pt-4 border-t border-[#E4DCC9]">
+        <div className="flex flex-wrap justify-between items-center gap-3 mt-2 pt-4 border-t border-[#E7DFD5]">
           <Button variant="secondary" onClick={onClose}>
             Close
           </Button>

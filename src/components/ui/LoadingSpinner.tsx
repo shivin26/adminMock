@@ -22,7 +22,7 @@ export const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
   label,
 }) => {
   return (
-    <div className={`inline-flex items-center justify-center gap-2 text-[#18281F] ${className}`}>
+    <div className={`inline-flex items-center justify-center gap-2 text-[#211A19] ${className}`}>
 
       <Loader2 size={sizeMap[size]} className="animate-spin" />
       {label && <span className="text-xs font-medium text-slate-400">{label}</span>}

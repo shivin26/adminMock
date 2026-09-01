@@ -25,7 +25,7 @@ export const PeopleAnalyticsHeader: React.FC<PeopleAnalyticsHeaderProps> = ({
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 animate-pulse">
         {[1, 2, 3, 4].map((i) => (
-          <div key={i} className="h-28 bg-[#FAF9F6] border border-[#E4DCC9] rounded-2xl" />
+          <div key={i} className="h-28 bg-[#FAF8F5] border border-[#E7DFD5] rounded-2xl" />
         ))}
       </div>
     );
@@ -37,7 +37,7 @@ export const PeopleAnalyticsHeader: React.FC<PeopleAnalyticsHeaderProps> = ({
         title="Total Directory Users"
         value={totalPeopleCount.toLocaleString()}
         subtitle="Registered resident & dual-role accounts"
-        icon={<Users size={22} className="text-[#C4A066]" />}
+        icon={<Users size={22} className="text-[#C8A878]" />}
         change={`${totalPeopleCount} Total Accounts`}
         isPositive={true}
         onClick={() => onSelectCategory?.('all')}
@@ -57,7 +57,7 @@ export const PeopleAnalyticsHeader: React.FC<PeopleAnalyticsHeaderProps> = ({
         title="User & Vendor (Dual Role)"
         value={dualRoleCount.toLocaleString()}
         subtitle="Dual role customer & store owners"
-        icon={<Store size={22} className="text-[#18281F]" />}
+        icon={<Store size={22} className="text-[#211A19]" />}
         change={`${dualRoleCount} Dual Role Stores`}
         isPositive={true}
         onClick={() => onSelectCategory?.('user_vendor')}

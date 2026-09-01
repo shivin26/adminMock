@@ -1,5 +1,5 @@
 .custom-card {
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius-bento, 2rem);
   display: flex;
   flex-direction: column;
   transition: all var(--transition-fast);
@@ -7,22 +7,22 @@
 }
 
 .card-glass {
-  background: var(--color-bg-card);
+  background: var(--color-bg-card, #FFFFFF);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 1px solid var(--color-border);
+  border: 1px solid var(--color-border, #E7DFD5);
   box-shadow: var(--shadow-md);
 }
 
 .card-solid {
-  background-color: var(--color-bg-secondary);
-  border: 1px solid var(--color-border);
+  background-color: var(--color-bg-secondary, #FFFFFF);
+  border: 1px solid var(--color-border, #E7DFD5);
   box-shadow: var(--shadow-sm);
 }
 
 .card-bordered {
   background-color: transparent;
-  border: 1px solid var(--color-border);
+  border: 1px solid var(--color-border, #E7DFD5);
 }
 
 .padding-none { padding: 0; }
@@ -33,7 +33,7 @@
 .is-hoverable:hover {
   transform: translateY(-2px);
   box-shadow: var(--shadow-lg);
-  border-color: var(--color-border-hover);
+  border-color: var(--color-border-hover, #C8A878);
 }
 
 .card-header-section {
@@ -41,7 +41,7 @@
   align-items: center;
   justify-content: space-between;
   padding-bottom: 1rem;
-  border-bottom: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border, #E7DFD5);
 }
 
 .card-body-section {
@@ -51,7 +51,7 @@
 
 .card-footer-section {
   padding-top: 1rem;
-  border-top: 1px solid var(--color-border);
+  border-top: 1px solid var(--color-border, #E7DFD5);
   display: flex;
   align-items: center;
   justify-content: flex-end;

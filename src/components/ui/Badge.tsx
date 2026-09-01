@@ -24,8 +24,8 @@ export const Badge: React.FC<BadgeProps> = ({
     warning: 'bg-[#F9EFE2] text-[#8C6B38] border-[#EEDFCD]',
     violet: 'bg-[#EBF3F9] text-[#2C5282] border-[#D5E4F1]',
     cyan: 'bg-[#EBF3F9] text-[#2C5282] border-[#D5E4F1]',
-    secondary: 'bg-[#EFE8D8] text-[#18281F] border-[#E4DCC9]',
-    outline: 'bg-white text-[#6B7C70] border-[#E4DCC9]',
+    secondary: 'bg-[#EEE5DA] text-[#211A19] border-[#E7DFD5]',
+    outline: 'bg-white text-[#78716C] border-[#E7DFD5]',
     destructive: 'bg-[#FEE2E2] text-[#B91C1C] border-[#FCA5A5]',
   };
 
@@ -36,8 +36,8 @@ export const Badge: React.FC<BadgeProps> = ({
     warning: 'bg-[#8C6B38]',
     violet: 'bg-[#2C5282]',
     cyan: 'bg-[#2C5282]',
-    secondary: 'bg-[#6B7C70]',
-    outline: 'bg-[#6B7C70]',
+    secondary: 'bg-[#78716C]',
+    outline: 'bg-[#78716C]',
     destructive: 'bg-[#B91C1C]',
   };
 

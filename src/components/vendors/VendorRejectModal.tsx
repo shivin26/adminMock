@@ -64,18 +64,18 @@ export const VendorRejectModal: React.FC<VendorRejectModalProps> = ({
         {vendor.status === 'on_hold' && vendor.holdReason && (
           <div className="p-3 bg-amber-50 border border-amber-200 rounded-xl text-xs text-amber-900">
             <span className="font-bold block mb-0.5 text-amber-950">Previous Hold Reason:</span>
-            <p className="italic font-serif text-[#18281F]">"{vendor.holdReason}"</p>
+            <p className="italic font-serif text-[#211A19]">"{vendor.holdReason}"</p>
           </div>
         )}
 
         <div>
-          <label className="block text-xs font-bold text-[#18281F] uppercase tracking-wider mb-1">
+          <label className="block text-xs font-bold text-[#211A19] uppercase tracking-wider mb-1">
             Rejection Reason (Logged & Dispatched)
           </label>
           <textarea
             required
             rows={3}
-            className="w-full p-3 text-xs bg-white border border-[#E4DCC9] rounded-xl text-[#18281F] focus:outline-none focus:border-[#C4A066]"
+            className="w-full p-3 text-xs bg-white border border-[#E7DFD5] rounded-xl text-[#211A19] focus:outline-none focus:border-[#541D26] focus:ring-2 focus:ring-[#541D26]/10"
             placeholder="Specify reason for rejecting this vendor application..."
             value={reason}
             onChange={(e) => setReason(e.target.value)}
@@ -84,7 +84,7 @@ export const VendorRejectModal: React.FC<VendorRejectModalProps> = ({
 
         {/* Preset Reasons */}
         <div className="flex flex-col gap-1">
-          <span className="text-[11px] font-bold text-[#6B7C70] uppercase tracking-wider flex items-center gap-1">
+          <span className="text-[11px] font-bold text-[#78716C] uppercase tracking-wider flex items-center gap-1">
             <FileText size={12} /> Common Rejection Reasons:
           </span>
           {presetReasons.map((preset, idx) => (
@@ -92,14 +92,14 @@ export const VendorRejectModal: React.FC<VendorRejectModalProps> = ({
               key={idx}
               type="button"
               onClick={() => setReason(preset)}
-              className="text-left text-xs p-2 bg-[#F8F5EE] hover:bg-[#EFE8D8] border border-[#E4DCC9] rounded-lg text-[#18281F] transition-all"
+              className="text-left text-xs p-2 bg-[#FAF8F5] hover:bg-[#EEE5DA] border border-[#E7DFD5] rounded-lg text-[#211A19] transition-all cursor-pointer"
             >
               • {preset}
             </button>
           ))}
         </div>
 
-        <div className="flex justify-end gap-3 mt-3 pt-3 border-t border-[#E4DCC9]">
+        <div className="flex justify-end gap-3 mt-3 pt-3 border-t border-[#E7DFD5]">
           <Button type="button" variant="secondary" onClick={onClose}>
             Cancel
           </Button>

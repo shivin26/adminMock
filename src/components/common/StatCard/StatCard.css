@@ -4,9 +4,9 @@
   flex-direction: column;
   gap: 0.875rem;
   background-color: var(--card, #FFFFFF);
-  border: 1px solid var(--border, #E4DCC9);
+  border: 1px solid var(--border, #E7DFD5);
   border-radius: var(--radius-lg, 1.25rem);
-  box-shadow: 0 4px 20px rgba(24, 40, 31, 0.05);
+  box-shadow: 0 4px 20px rgba(33, 26, 25, 0.04);
   cursor: pointer;
   transition: transform var(--transition-fast), box-shadow var(--transition-fast), border-color var(--transition-fast);
   user-select: none;
@@ -14,8 +14,8 @@
 
 .stat-card:hover {
   transform: translateY(-3px);
-  box-shadow: 0 12px 30px -10px rgba(24, 40, 31, 0.12);
-  border-color: var(--gold, #C4A066);
+  box-shadow: 0 12px 30px -10px rgba(33, 26, 25, 0.12);
+  border-color: var(--gold, #C8A878);
 }
 
 .stat-card-header {
@@ -27,7 +27,7 @@
 .stat-card-title {
   font-size: var(--font-size-xs);
   font-weight: 700;
-  color: var(--muted-foreground, #6B7C70);
+  color: var(--muted-foreground, #78716C);
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
@@ -39,9 +39,9 @@
   width: 42px;
   height: 42px;
   border-radius: var(--radius-md);
-  background-color: var(--secondary, #EFE8D8);
-  color: var(--primary, #18281F);
-  border: 1px solid var(--border, #E4DCC9);
+  background-color: var(--form-bg, #FAF8F5);
+  color: var(--primary, #541D26);
+  border: 1px solid var(--border, #E7DFD5);
 }
 
 .stat-card-body {
@@ -53,7 +53,7 @@
 .stat-card-value {
   font-size: var(--font-size-2xl);
   font-weight: 800;
-  color: var(--ink, #18281F);
+  color: var(--ink, #211A19);
   font-family: var(--font-sans);
   letter-spacing: -0.02em;
 }
@@ -70,18 +70,18 @@
 }
 
 .stat-card-change.positive {
-  background-color: var(--secondary, #EFE8D8);
-  color: var(--primary, #18281F);
-  border: 1px solid var(--border, #E4DCC9);
+  background-color: #F0FDF4;
+  color: #16A34A;
+  border: 1px solid #BBF7D0;
 }
 
 .stat-card-change.negative {
-  background-color: rgba(225, 29, 72, 0.08);
-  color: var(--status-danger, #E11D48);
-  border: 1px solid rgba(225, 29, 72, 0.2);
+  background-color: #FEF2F2;
+  color: #DC2626;
+  border: 1px solid #FECACA;
 }
 
 .stat-card-subtitle {
   font-size: var(--font-size-xs);
-  color: var(--muted-foreground, #6B7C70);
+  color: var(--muted-foreground, #78716C);
 }

@@ -20,6 +20,8 @@ export const useSubAdmins = () => {
   });
 };
 
+import { logBackendMutation } from '../services/audit.service';
+
 export const useCreateSubAdmin = () => {
   const queryClient = useQueryClient();
   const { addToast } = useToast();
@@ -29,6 +31,7 @@ export const useCreateSubAdmin = () => {
 
     onSuccess: (newSubAdmin) => {
       queryClient.invalidateQueries({ queryKey: SUBADMIN_QUERY_KEYS.all });
+      logBackendMutation('SUB_ADMINS', 'CREATE', `Created Sub-Admin account "${newSubAdmin.name}" (${newSubAdmin.email})`, `Assigned powers: ${newSubAdmin.powers.join(', ')}`, String(newSubAdmin.id));
       addToast({
         type: 'success',
         title: 'Sub-Admin Account Created',
@@ -57,6 +60,7 @@ export const useUpdateSubAdminPowers = () => {
 
     onSuccess: (updated) => {
       queryClient.invalidateQueries({ queryKey: SUBADMIN_QUERY_KEYS.all });
+      logBackendMutation('SUB_ADMINS', 'UPDATE', `Updated power permissions for Sub-Admin "${updated.name}"`, `New powers: ${updated.powers.join(', ')}`, String(updated.id));
       addToast({
         type: 'success',
         title: 'Powers Updated',
@@ -82,8 +86,9 @@ export const useDeleteSubAdmin = () => {
   return useMutation({
     mutationFn: (id: string) => subAdminsApi.deleteSubAdmin(id),
 
-    onSuccess: () => {
+    onSuccess: (_data, id) => {
       queryClient.invalidateQueries({ queryKey: SUBADMIN_QUERY_KEYS.all });
+      logBackendMutation('SUB_ADMINS', 'DELETE', `Revoked access for Sub-Admin #${id}`, 'Account deleted or access revoked.', String(id));
       addToast({
         type: 'info',
         title: 'Sub-Admin Revoked',

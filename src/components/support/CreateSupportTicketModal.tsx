@@ -110,13 +110,13 @@ export const CreateSupportTicketModal: React.FC<CreateSupportTicketModalProps> =
         {/* 4. Reporter Type & Channel Source */}
         <div className="grid grid-cols-2 gap-3">
           <div className="flex flex-col gap-1.5">
-            <label className="text-xs font-bold text-[#18281F] uppercase tracking-wider">
+            <label className="text-xs font-bold text-[#211A19] uppercase tracking-wider">
               Reporter Type
             </label>
             <select
               value={userType}
               onChange={(e) => handleUserTypeChange(e.target.value as TicketUserType)}
-              className="w-full p-2.5 bg-[#FAF9F6] border border-[#E4DCC9] rounded-xl text-xs font-medium text-[#18281F] outline-none cursor-pointer"
+              className="w-full p-2.5 bg-[#FAF8F5] border border-[#E7DFD5] rounded-xl text-xs font-medium text-[#211A19] outline-none cursor-pointer"
             >
               <option value="user">User (Customer / Resident)</option>
               <option value="vendor">Vendor Store Owner</option>
@@ -125,8 +125,8 @@ export const CreateSupportTicketModal: React.FC<CreateSupportTicketModalProps> =
           </div>
 
           <div className="flex flex-col gap-1.5">
-            <label className="text-xs font-bold text-[#18281F] uppercase tracking-wider flex items-center gap-1">
-              {userType === 'user' ? <Globe size={12} className="text-[#D97706]" /> : <Smartphone size={12} className="text-[#C4A066]" />}
+            <label className="text-xs font-bold text-[#211A19] uppercase tracking-wider flex items-center gap-1">
+              {userType === 'user' ? <Globe size={12} className="text-[#D97706]" /> : <Smartphone size={12} className="text-[#C8A878]" />}
               Channel Source
             </label>
             {userType === 'user' ? (
@@ -137,7 +137,7 @@ export const CreateSupportTicketModal: React.FC<CreateSupportTicketModalProps> =
               <select
                 value={source}
                 onChange={(e) => setSource(e.target.value as TicketSource)}
-                className="w-full p-2.5 bg-[#FAF9F6] border border-[#E4DCC9] rounded-xl text-xs font-medium text-[#18281F] outline-none cursor-pointer"
+                className="w-full p-2.5 bg-[#FAF8F5] border border-[#E7DFD5] rounded-xl text-xs font-medium text-[#211A19] outline-none cursor-pointer"
               >
                 <option value="vendor_portal">Vendor Web Portal</option>
                 <option value="mobile_app">Vendor Mobile App</option>
@@ -147,7 +147,7 @@ export const CreateSupportTicketModal: React.FC<CreateSupportTicketModalProps> =
         </div>
 
         {/* Intake Channel Rules Info Callout */}
-        <div className="p-3 bg-[#EFE8D8]/70 border border-[#C4A066]/40 rounded-xl text-xs text-[#18281F]">
+        <div className="p-3 bg-[#EEE5DA]/70 border border-[#C8A878]/40 rounded-xl text-xs text-[#211A19]">
           {userType === 'user' ? (
             <span className="leading-snug block">
               ℹ️ <strong>User Intake Rules:</strong> Users <strong>cannot lodge complaints from an app</strong> as there is NO app for users. Users lodge complaints strictly via the Website for orders.
@@ -175,16 +175,16 @@ export const CreateSupportTicketModal: React.FC<CreateSupportTicketModalProps> =
         <Input
           label="Associated Order ID (Optional)"
           placeholder="e.g. ORD-9842 (Admin can click View Order Details to inspect full order breakdown)"
-          leftIcon={<ShoppingBag size={14} className="text-[#C4A066]" />}
+          leftIcon={<ShoppingBag size={14} className="text-[#C8A878]" />}
           value={orderId}
           onChange={(e) => setOrderId(e.target.value)}
         />
 
         {/* 7. Category Dropdown - Changes Dynamically per Reporter Type */}
         <div className="flex flex-col gap-1.5">
-          <label className="text-xs font-bold text-[#18281F] uppercase tracking-wider flex items-center justify-between">
+          <label className="text-xs font-bold text-[#211A19] uppercase tracking-wider flex items-center justify-between">
             <span>Ticket Category</span>
-            <span className="text-[10px] text-[#C4A066] font-normal">
+            <span className="text-[10px] text-[#C8A878] font-normal">
               {userType === 'user'
                 ? '(User Categories)'
                 : userType === 'vendor'
@@ -195,7 +195,7 @@ export const CreateSupportTicketModal: React.FC<CreateSupportTicketModalProps> =
           <select
             value={category}
             onChange={(e) => setCategory(e.target.value as TicketCategory)}
-            className="w-full p-2.5 bg-[#FAF9F6] border border-[#E4DCC9] rounded-xl text-xs font-medium text-[#18281F] outline-none cursor-pointer focus:border-[#C4A066]"
+            className="w-full p-2.5 bg-[#FAF8F5] border border-[#E7DFD5] rounded-xl text-xs font-medium text-[#211A19] outline-none cursor-pointer focus:border-[#C8A878]"
           >
             {userType === 'user' && (
               <>
@@ -227,7 +227,7 @@ export const CreateSupportTicketModal: React.FC<CreateSupportTicketModalProps> =
 
         {/* Issue Description */}
         <div className="flex flex-col gap-1.5">
-          <label className="text-xs font-bold text-[#18281F] uppercase tracking-wider">
+          <label className="text-xs font-bold text-[#211A19] uppercase tracking-wider">
             Issue Description
           </label>
           <textarea
@@ -235,12 +235,12 @@ export const CreateSupportTicketModal: React.FC<CreateSupportTicketModalProps> =
             placeholder="Detailed description of the issue or request..."
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            className="w-full p-3 bg-[#FAF9F6] border border-[#E4DCC9] rounded-xl text-xs text-[#18281F] outline-none focus:border-[#C4A066] resize-none"
+            className="w-full p-3 bg-[#FAF8F5] border border-[#E7DFD5] rounded-xl text-xs text-[#211A19] outline-none focus:border-[#C8A878] resize-none"
             required
           />
         </div>
 
-        <div className="flex items-center justify-end gap-2 pt-2 border-t border-[#E4DCC9]">
+        <div className="flex items-center justify-end gap-2 pt-2 border-t border-[#E7DFD5]">
           <Button type="button" variant="ghost" onClick={onClose}>
             Cancel
           </Button>

@@ -8,7 +8,7 @@
 .input-label {
   font-size: var(--font-size-xs);
   font-weight: 700;
-  color: var(--ink, #18281F);
+  color: var(--ink, #211A19);
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
@@ -23,19 +23,19 @@
 .input-control {
   width: 100%;
   padding: 0.625rem 1rem;
-  background-color: var(--form-bg, #FAF9F6);
-  border: 1px solid var(--border, #E4DCC9);
-  border-radius: var(--radius-full);
+  background-color: var(--form-bg, #FAF8F5);
+  border: 1px solid var(--border, #E7DFD5);
+  border-radius: var(--radius-xl, 1.75rem);
   font-size: var(--font-size-xs);
-  font-weight: 500;
-  color: var(--ink, #18281F);
+  font-weight: 600;
+  color: var(--ink, #211A19);
   outline: none;
   transition: all var(--transition-fast);
 }
 
 .input-control:focus {
-  border-color: var(--gold, #C4A066);
-  box-shadow: 0 0 0 3px rgba(196, 160, 102, 0.2);
+  border-color: var(--primary, #541D26);
+  box-shadow: 0 0 0 4px rgba(84, 29, 38, 0.12);
   background-color: #FFFFFF;
 }
 
@@ -48,7 +48,7 @@
 }
 
 .input-wrapper.has-error .input-control {
-  border-color: var(--status-danger, #E11D48);
+  border-color: var(--status-danger, #DC2626);
 }
 
 .input-icon {
@@ -58,7 +58,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--muted-foreground, #6B7C70);
+  color: var(--muted-foreground, #78716C);
   pointer-events: none;
   z-index: 2;
 }
@@ -73,13 +73,13 @@
 
 .input-error-msg {
   font-size: var(--font-size-xs);
-  color: var(--status-danger, #E11D48);
+  color: var(--status-danger, #DC2626);
   font-weight: 500;
 }
 
 .input-helper-msg {
   font-size: var(--font-size-xs);
-  color: var(--muted-foreground, #6B7C70);
+  color: var(--muted-foreground, #78716C);
 }
 
 .input-password-toggle-btn {
@@ -92,7 +92,7 @@
   justify-content: center;
   background: transparent;
   border: none;
-  color: var(--muted-foreground, #6B7C70);
+  color: var(--muted-foreground, #78716C);
   cursor: pointer;
   z-index: 5;
   padding: 0.25rem;
@@ -101,5 +101,5 @@
 }
 
 .input-password-toggle-btn:hover {
-  color: var(--ink, #18281F);
+  color: var(--ink, #211A19);
 }

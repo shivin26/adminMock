@@ -8,6 +8,7 @@ import type {
 import { useToast } from '../context/ToastContext';
 import { ErrorHandler } from '../services/handlers/errorHandler';
 import { CACHE_KEYS } from '../constants/cache.keys';
+import { logBackendMutation } from '../services/audit.service';
 
 export const useSocieties = (search?: string) => {
   return useQuery({
@@ -66,7 +67,8 @@ export const useCreateSociety = () => {
       });
     },
 
-    onSuccess: (data) => {
+    onSuccess: (data, variables) => {
+      logBackendMutation('SOCIETIES', 'CREATE', `Registered new society enclave "${variables.society_name}"`, `Location: ${variables.location}`, String(data.society_id || ''));
       addToast({
         type: 'success',
         title: 'Society Registered (Pending Approval)',
@@ -124,7 +126,8 @@ export const useEditSociety = () => {
       });
     },
 
-    onSuccess: () => {
+    onSuccess: (_data, variables) => {
+      logBackendMutation('SOCIETIES', 'UPDATE', `Updated society enclave parameters #${variables.id}`, `Updated name or address to ${variables.payload.society_name}`, String(variables.id));
       addToast({
         type: 'success',
         title: 'Society Details Updated',

@@ -11,10 +11,10 @@ export const Card: React.FC<CardProps> = ({ children, className, interactive = f
   return (
     <div
       className={cn(
-        'rounded-[12px] border border-[#E4DCC9] bg-white p-6 text-[#18281F] shadow-xs transition-all duration-150 relative overflow-hidden',
-        dark && 'bg-[#243A2D] text-[#F8F5EE] border-[#243A2D]',
+        'rounded-[2rem] border border-[#E7DFD5] bg-white p-6 text-[#211A19] shadow-xs transition-all duration-150 relative overflow-hidden',
+        dark && 'bg-[#211A19] text-white border-[#211A19]',
         interactive &&
-          'hover:border-[#C4A066] hover:shadow-sm cursor-pointer',
+          'hover:border-[#C8A878] hover:shadow-sm cursor-pointer',
         className
       )}
       {...props}
@@ -42,7 +42,7 @@ export const CardTitle: React.FC<React.HTMLAttributes<HTMLHeadingElement>> = ({
   ...props
 }) => {
   return (
-    <h3 className={cn('font-serif font-bold text-[18px] tracking-tight text-[#18281F]', className)} {...props}>
+    <h3 className={cn('font-serif font-bold text-[18px] tracking-tight text-[#211A19]', className)} {...props}>
       {children}
     </h3>
   );
@@ -54,7 +54,7 @@ export const CardDescription: React.FC<React.HTMLAttributes<HTMLParagraphElement
   ...props
 }) => {
   return (
-    <p className={cn('font-sans text-[12px] text-[#6B7C70] font-semibold tracking-wide', className)} {...props}>
+    <p className={cn('font-sans text-[12px] text-[#78716C] font-semibold tracking-wide', className)} {...props}>
       {children}
     </p>
   );
@@ -78,7 +78,7 @@ export const CardFooter: React.FC<React.HTMLAttributes<HTMLDivElement>> = ({
   ...props
 }) => {
   return (
-    <div className={cn('flex items-center pt-4 border-t border-[#E4DCC9] mt-4', className)} {...props}>
+    <div className={cn('flex items-center pt-4 border-t border-[#E7DFD5] mt-4', className)} {...props}>
       {children}
     </div>
   );

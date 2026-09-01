@@ -36,56 +36,56 @@ export const SubscriptionInvoiceModal: React.FC<SubscriptionInvoiceModalProps> =
     >
       <div className="flex flex-col gap-5">
         {/* Invoice Header Card */}
-        <div className="p-4 bg-[#FAF9F6] border border-[#E4DCC9] rounded-2xl flex justify-between items-start">
+        <div className="p-4 bg-[#FAF8F5] border border-[#E7DFD5] rounded-2xl flex justify-between items-start">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-[#18281F] text-[#E6C35C] flex items-center justify-center shrink-0">
+            <div className="w-10 h-10 rounded-xl bg-[#211A19] text-[#A88B58] flex items-center justify-center shrink-0">
               <FileText size={20} />
             </div>
             <div>
-              <span className="text-xs font-bold text-[#C4A066] uppercase tracking-wider block">
+              <span className="text-xs font-bold text-[#C8A878] uppercase tracking-wider block">
                 DigiLocal Enterprise Invoice
               </span>
-              <h4 className="text-base font-bold text-[#18281F] font-serif mt-0.5">{subscription.storeName}</h4>
-              <p className="text-xs text-[#6B7C70]">Society Enclave: {subscription.societyName}</p>
+              <h4 className="text-base font-bold text-[#211A19] font-serif mt-0.5">{subscription.storeName}</h4>
+              <p className="text-xs text-[#78716C]">Society Enclave: {subscription.societyName}</p>
             </div>
           </div>
           <div className="text-right">
-            <span className="text-xs text-[#6B7C70]">Issued On:</span>
-            <span className="text-xs font-bold text-[#18281F] block">
+            <span className="text-xs text-[#78716C]">Issued On:</span>
+            <span className="text-xs font-bold text-[#211A19] block">
               {formatDate(subscription.startDate)}
             </span>
           </div>
         </div>
 
         {/* GST Invoice Details Table */}
-        <div className="border border-[#E4DCC9] rounded-2xl overflow-hidden shadow-sm bg-white">
-          <div className="p-3 bg-[#FAF9F6] text-xs font-bold text-[#18281F] flex justify-between uppercase border-b border-[#E4DCC9]">
+        <div className="border border-[#E7DFD5] rounded-2xl overflow-hidden shadow-sm bg-white">
+          <div className="p-3 bg-[#FAF8F5] text-xs font-bold text-[#211A19] flex justify-between uppercase border-b border-[#E7DFD5]">
             <span>Item Description</span>
             <span>Amount</span>
           </div>
-          <div className="p-3.5 text-xs flex justify-between text-[#18281F] border-b border-[#E4DCC9]/60 font-semibold">
+          <div className="p-3.5 text-xs flex justify-between text-[#211A19] border-b border-[#E7DFD5]/60 font-semibold">
             <span>
               DigiLocal Vendor Platform Fee ({subscription.tier.toUpperCase()} Tier)
             </span>
             <span>{formatCurrency(basePrice)}</span>
           </div>
-          <div className="p-3.5 text-xs flex justify-between text-[#6B7C70] border-b border-[#E4DCC9]/60">
+          <div className="p-3.5 text-xs flex justify-between text-[#78716C] border-b border-[#E7DFD5]/60">
             <span>CGST + SGST Tax (18%)</span>
             <span>{formatCurrency(gstAmount)}</span>
           </div>
-          <div className="p-3.5 text-sm flex justify-between font-extrabold text-[#18281F] bg-[#EFE8D8]">
+          <div className="p-3.5 text-sm flex justify-between font-extrabold text-[#211A19] bg-[#EEE5DA]">
             <span>Total Payable Amount</span>
             <span>{formatCurrency(totalAmount)}</span>
           </div>
         </div>
 
-        <div className="flex items-center gap-2 text-xs text-[#18281F] bg-[#FAF9F6] border border-[#E4DCC9] p-3 rounded-xl">
-          <CheckCircle2 size={16} className="text-[#18281F] shrink-0" />
+        <div className="flex items-center gap-2 text-xs text-[#211A19] bg-[#FAF8F5] border border-[#E7DFD5] p-3 rounded-xl">
+          <CheckCircle2 size={16} className="text-[#211A19] shrink-0" />
           <span>Payment Verified & Cleared via Razorpay Payment Gateway.</span>
         </div>
 
         {/* Actions */}
-        <div className="flex justify-end gap-3 pt-4 border-t border-[#E4DCC9]">
+        <div className="flex justify-end gap-3 pt-4 border-t border-[#E7DFD5]">
           <Button variant="secondary" onClick={onClose}>
             Close
           </Button>

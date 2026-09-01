@@ -205,7 +205,7 @@ export const VendorsPage: React.FC = () => {
   const columns: Column<Vendor>[] = [
     {
       header: 'S.No.',
-      cell: (_item, index) => <span className="font-mono text-xs text-[#18281F] font-bold">{index + 1}</span>,
+      cell: (_item, index) => <span className="font-mono text-xs text-[#211A19] font-bold">{index + 1}</span>,
     },
 
     {
@@ -227,7 +227,7 @@ export const VendorsPage: React.FC = () => {
             }}
           />
           <div>
-            <span className="vendor-store-title">{vendor.storeName}</span>
+            <span className="vendor-store-title font-serif">{vendor.storeName}</span>
             <span className="vendor-owner-title">
               {vendor.ownerName} • {vendor.email}
             </span>
@@ -240,7 +240,7 @@ export const VendorsPage: React.FC = () => {
       header: 'Submitted Date',
       cell: (vendor) => (
         <div>
-          <span className="cell-primary-text font-mono text-xs text-[#18281F]">
+          <span className="cell-primary-text font-mono text-xs text-[#211A19]">
             {vendor.createdAtReadable || formatDate(vendor.submissionTimestamp || vendor.createdAt)}
           </span>
           <span className="cell-sub-text font-mono text-[11px]">
@@ -262,8 +262,8 @@ export const VendorsPage: React.FC = () => {
       header: 'Location & Area',
       cell: (vendor) => (
         <div>
-          <span className="cell-primary-text flex items-center gap-1 font-bold text-[#18281F]">
-            <MapPin size={12} className="text-[#C4A066]" /> {vendor.locationArea || vendor.societyName || vendor.area}
+          <span className="cell-primary-text flex items-center gap-1 font-bold text-[#211A19]">
+            <MapPin size={12} className="text-[#C8A878]" /> {vendor.locationArea || vendor.societyName || vendor.area}
           </span>
           <span className="cell-sub-text truncate max-w-[200px]" title={vendor.address}>
             {vendor.address}

@@ -25,18 +25,18 @@ export const PeopleEnterpriseDataTable: React.FC<PeopleEnterpriseDataTableProps>
       header: 'Person / Profile Name',
       cell: (p) => (
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl bg-[#18281F] text-white flex items-center justify-center font-bold text-xs shrink-0 shadow-xs">
+          <div className="w-9 h-9 rounded-xl bg-[#211A19] text-white flex items-center justify-center font-bold text-xs shrink-0 shadow-xs">
             {p.name.charAt(0)}
           </div>
           <div className="flex flex-col min-w-0">
             <button
               type="button"
               onClick={() => onSelectPerson(p.id)}
-              className="font-bold text-[#18281F] text-xs hover:text-[#C4A066] underline text-left truncate cursor-pointer transition-colors"
+              className="font-bold text-[#211A19] text-xs hover:text-[#C8A878] underline text-left truncate cursor-pointer transition-colors"
             >
               {p.name}
             </button>
-            <span className="text-[11px] text-[#6B7C70] truncate">{p.email}</span>
+            <span className="text-[11px] text-[#78716C] truncate">{p.email}</span>
           </div>
         </div>
       ),
@@ -49,8 +49,8 @@ export const PeopleEnterpriseDataTable: React.FC<PeopleEnterpriseDataTableProps>
         }
         if (p.personType === 'vendor') {
           return (
-            <span className="text-[11px] font-bold px-2 py-0.5 rounded-lg bg-[#EFE8D8] text-[#18281F] border border-[#C4A066]/40 inline-flex items-center gap-1">
-              <Store size={12} className="text-[#C4A066]" /> VENDOR STORE
+            <span className="text-[11px] font-bold px-2 py-0.5 rounded-lg bg-[#EEE5DA] text-[#211A19] border border-[#C8A878]/40 inline-flex items-center gap-1">
+              <Store size={12} className="text-[#C8A878]" /> VENDOR STORE
             </span>
           );
         }
@@ -62,7 +62,7 @@ export const PeopleEnterpriseDataTable: React.FC<PeopleEnterpriseDataTableProps>
           );
         }
         return (
-          <span className="text-[11px] font-bold px-2 py-0.5 rounded-lg bg-[#FAF9F6] text-[#6B7C70] border border-[#E4DCC9] inline-flex items-center gap-1">
+          <span className="text-[11px] font-bold px-2 py-0.5 rounded-lg bg-[#FAF8F5] text-[#78716C] border border-[#E7DFD5] inline-flex items-center gap-1">
             <User size={12} /> RESIDENT USER
           </span>
         );
@@ -72,11 +72,11 @@ export const PeopleEnterpriseDataTable: React.FC<PeopleEnterpriseDataTableProps>
       header: 'Society & Contact',
       cell: (p) => (
         <div className="flex flex-col text-xs">
-          <span className="font-bold text-[#18281F] flex items-center gap-1 truncate">
-            <Home size={12} className="text-[#C4A066]" /> {p.societyName}
+          <span className="font-bold text-[#211A19] flex items-center gap-1 truncate">
+            <Home size={12} className="text-[#C8A878]" /> {p.societyName}
           </span>
-          <span className="text-[11px] text-[#6B7C70] flex items-center gap-1">
-            <Phone size={11} className="text-[#6B7C70]" /> {p.phone}
+          <span className="text-[11px] text-[#78716C] flex items-center gap-1">
+            <Phone size={11} className="text-[#78716C]" /> {p.phone}
           </span>
         </div>
       ),
@@ -91,7 +91,7 @@ export const PeopleEnterpriseDataTable: React.FC<PeopleEnterpriseDataTableProps>
             </span>
           ) : (
             <div className="flex items-center gap-1">
-              <span className="text-[11px] font-mono font-bold text-[#18281F]">
+              <span className="text-[11px] font-mono font-bold text-[#211A19]">
                 {p.flagsCount} / 3 Strikes
               </span>
               <div className="flex items-center gap-0.5 ml-1">
@@ -112,7 +112,7 @@ export const PeopleEnterpriseDataTable: React.FC<PeopleEnterpriseDataTableProps>
               </div>
             </div>
           )}
-          <span className="text-[10px] text-[#6B7C70]">
+          <span className="text-[10px] text-[#78716C]">
             {p.totalOrdersCount} orders • {p.totalComplaintsCount} tickets
           </span>
         </div>
@@ -134,10 +134,10 @@ export const PeopleEnterpriseDataTable: React.FC<PeopleEnterpriseDataTableProps>
       header: 'Registered Timestamp',
       cell: (p) => (
         <div className="flex flex-col text-xs font-mono">
-          <span className="font-bold text-[#18281F] flex items-center gap-1">
-            <Clock size={11} className="text-[#C4A066]" /> {formatDate(p.createdAt)}
+          <span className="font-bold text-[#211A19] flex items-center gap-1">
+            <Clock size={11} className="text-[#C8A878]" /> {formatDate(p.createdAt)}
           </span>
-          <span className="text-[10px] text-[#6B7C70] pl-4">
+          <span className="text-[10px] text-[#78716C] pl-4">
             {formatTime(p.createdAt) || '10:30:00 AM'}
           </span>
         </div>

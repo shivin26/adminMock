@@ -167,16 +167,16 @@ export const UserFilterModal: React.FC<UserFilterModalProps> = ({
     >
       <form onSubmit={handleApply} className="flex flex-col gap-5 text-xs">
         {/* Saved Presets Section */}
-        <div className="p-3 bg-[#FAF9F6] border border-[#E4DCC9] rounded-xl flex flex-col gap-2">
+        <div className="p-3 bg-[#FAF8F5] border border-[#E7DFD5] rounded-xl flex flex-col gap-2">
           <div className="flex items-center justify-between">
-            <span className="font-bold text-[#18281F] flex items-center gap-1.5 uppercase tracking-wider text-[11px]">
-              <Bookmark size={13} className="text-[#C4A066]" /> Saved Filter Presets
+            <span className="font-bold text-[#211A19] flex items-center gap-1.5 uppercase tracking-wider text-[11px]">
+              <Bookmark size={13} className="text-[#C8A878]" /> Saved Filter Presets
             </span>
             {!isSavingPreset && (
               <button
                 type="button"
                 onClick={() => setIsSavingPreset(true)}
-                className="text-[11px] font-bold text-[#C4A066] hover:underline cursor-pointer"
+                className="text-[11px] font-bold text-[#C8A878] hover:underline cursor-pointer"
               >
                 + Save Current Criteria
               </button>
@@ -189,7 +189,7 @@ export const UserFilterModal: React.FC<UserFilterModalProps> = ({
                 key={p.id}
                 type="button"
                 onClick={() => applyPreset(p)}
-                className="px-2.5 py-1 bg-white border border-[#E4DCC9] rounded-lg font-semibold text-[#18281F] hover:border-[#C4A066] hover:bg-[#EFE8D8] transition-all cursor-pointer shadow-2xs"
+                className="px-2.5 py-1 bg-white border border-[#E7DFD5] rounded-lg font-semibold text-[#211A19] hover:border-[#C8A878] hover:bg-[#EEE5DA] transition-all cursor-pointer shadow-2xs"
               >
                 {p.name}
               </button>
@@ -197,13 +197,13 @@ export const UserFilterModal: React.FC<UserFilterModalProps> = ({
           </div>
 
           {isSavingPreset && (
-            <div className="flex items-center gap-2 pt-2 border-t border-[#E4DCC9]/60">
+            <div className="flex items-center gap-2 pt-2 border-t border-[#E7DFD5]/60">
               <input
                 type="text"
                 placeholder="Enter preset name (e.g. VIP Anupam Buyers)..."
                 value={presetNameInput}
                 onChange={(e) => setPresetNameInput(e.target.value)}
-                className="p-2 border border-[#E4DCC9] rounded-xl text-xs flex-1 outline-none"
+                className="p-2 border border-[#E7DFD5] rounded-xl text-xs flex-1 outline-none"
               />
               <Button type="button" size="sm" onClick={handleSavePreset}>
                 Save
@@ -219,7 +219,7 @@ export const UserFilterModal: React.FC<UserFilterModalProps> = ({
         <Input
           label="Multi-Field Text Search"
           placeholder="Search by Full Name, Email, Phone Number, or User ID..."
-          leftIcon={<Search size={14} className="text-[#C4A066]" />}
+          leftIcon={<Search size={14} className="text-[#C8A878]" />}
           value={localCriteria.search}
           onChange={(e) => setLocalCriteria((prev) => ({ ...prev, search: e.target.value }))}
         />
@@ -227,9 +227,9 @@ export const UserFilterModal: React.FC<UserFilterModalProps> = ({
         {/* 2 & 3. Status Multi-Select & Society Multi-Select Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {/* Status Multi-Select */}
-          <div className="flex flex-col gap-2 p-3 bg-white border border-[#E4DCC9] rounded-xl">
-            <span className="font-bold text-[#18281F] uppercase tracking-wider text-[11px] flex items-center gap-1.5">
-              <ShieldCheck size={13} className="text-[#C4A066]" /> Account Status (Multi-Select)
+          <div className="flex flex-col gap-2 p-3 bg-white border border-[#E7DFD5] rounded-xl">
+            <span className="font-bold text-[#211A19] uppercase tracking-wider text-[11px] flex items-center gap-1.5">
+              <ShieldCheck size={13} className="text-[#C8A878]" /> Account Status (Multi-Select)
             </span>
             <div className="flex flex-col gap-1.5">
               {[
@@ -242,14 +242,14 @@ export const UserFilterModal: React.FC<UserFilterModalProps> = ({
                   <div
                     key={s.id}
                     onClick={() => toggleStatus(s.id)}
-                    className="flex items-center gap-2 cursor-pointer p-1.5 rounded-lg hover:bg-[#FAF9F6]"
+                    className="flex items-center gap-2 cursor-pointer p-1.5 rounded-lg hover:bg-[#FAF8F5]"
                   >
                     {isSelected ? (
-                      <CheckSquare size={16} className="text-[#C4A066]" />
+                      <CheckSquare size={16} className="text-[#C8A878]" />
                     ) : (
-                      <Square size={16} className="text-[#6B7C70]" />
+                      <Square size={16} className="text-[#78716C]" />
                     )}
-                    <span className="font-semibold text-[#18281F]">{s.label}</span>
+                    <span className="font-semibold text-[#211A19]">{s.label}</span>
                   </div>
                 );
               })}
@@ -257,9 +257,9 @@ export const UserFilterModal: React.FC<UserFilterModalProps> = ({
           </div>
 
           {/* Society Multi-Select */}
-          <div className="flex flex-col gap-2 p-3 bg-white border border-[#E4DCC9] rounded-xl">
-            <span className="font-bold text-[#18281F] uppercase tracking-wider text-[11px] flex items-center gap-1.5">
-              <Building2 size={13} className="text-[#C4A066]" /> Residential Society (Multi-Select)
+          <div className="flex flex-col gap-2 p-3 bg-white border border-[#E7DFD5] rounded-xl">
+            <span className="font-bold text-[#211A19] uppercase tracking-wider text-[11px] flex items-center gap-1.5">
+              <Building2 size={13} className="text-[#C8A878]" /> Residential Society (Multi-Select)
             </span>
             <div className="flex flex-col gap-1.5 max-h-36 overflow-y-auto">
               {societiesList.map((soc) => {
@@ -268,14 +268,14 @@ export const UserFilterModal: React.FC<UserFilterModalProps> = ({
                   <div
                     key={soc}
                     onClick={() => toggleSociety(soc)}
-                    className="flex items-center gap-2 cursor-pointer p-1.5 rounded-lg hover:bg-[#FAF9F6]"
+                    className="flex items-center gap-2 cursor-pointer p-1.5 rounded-lg hover:bg-[#FAF8F5]"
                   >
                     {isSelected ? (
-                      <CheckSquare size={16} className="text-[#C4A066]" />
+                      <CheckSquare size={16} className="text-[#C8A878]" />
                     ) : (
-                      <Square size={16} className="text-[#6B7C70]" />
+                      <Square size={16} className="text-[#78716C]" />
                     )}
-                    <span className="font-semibold text-[#18281F] truncate">{soc}</span>
+                    <span className="font-semibold text-[#211A19] truncate">{soc}</span>
                   </div>
                 );
               })}
@@ -293,12 +293,12 @@ export const UserFilterModal: React.FC<UserFilterModalProps> = ({
             onChange={(e) => setLocalCriteria((prev) => ({ ...prev, apartmentBlock: e.target.value }))}
           />
 
-          <div className="flex flex-col gap-1.5 font-bold text-[#18281F]">
+          <div className="flex flex-col gap-1.5 font-bold text-[#211A19]">
             <label className="uppercase tracking-wider text-[11px]">Verification Status</label>
             <select
               value={localCriteria.verificationStatus}
               onChange={(e) => setLocalCriteria((prev) => ({ ...prev, verificationStatus: e.target.value }))}
-              className="w-full p-2.5 bg-[#FAF9F6] border border-[#E4DCC9] rounded-xl text-xs font-medium text-[#18281F] outline-none cursor-pointer"
+              className="w-full p-2.5 bg-[#FAF8F5] border border-[#E7DFD5] rounded-xl text-xs font-medium text-[#211A19] outline-none cursor-pointer"
             >
               <option value="all">All Verification Statuses</option>
               <option value="verified">Verified Phone &amp; Residence</option>
@@ -309,8 +309,8 @@ export const UserFilterModal: React.FC<UserFilterModalProps> = ({
 
         {/* 6. Registration Date Range */}
         <div className="flex flex-col gap-1.5">
-          <label className="font-bold text-[#18281F] uppercase tracking-wider text-[11px] flex items-center gap-1.5">
-            <Calendar size={13} className="text-[#C4A066]" /> Registration Date Range
+          <label className="font-bold text-[#211A19] uppercase tracking-wider text-[11px] flex items-center gap-1.5">
+            <Calendar size={13} className="text-[#C8A878]" /> Registration Date Range
           </label>
           <div className="grid grid-cols-2 gap-3">
             <Input
@@ -328,14 +328,14 @@ export const UserFilterModal: React.FC<UserFilterModalProps> = ({
 
         {/* 7 & 8. Last Active & Complaints Filter */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-          <div className="flex flex-col gap-1.5 font-bold text-[#18281F]">
+          <div className="flex flex-col gap-1.5 font-bold text-[#211A19]">
             <label className="uppercase tracking-wider text-[11px] flex items-center gap-1">
-              <Clock size={13} className="text-[#C4A066]" /> Last Active Session
+              <Clock size={13} className="text-[#C8A878]" /> Last Active Session
             </label>
             <select
               value={localCriteria.lastActiveRange}
               onChange={(e) => setLocalCriteria((prev) => ({ ...prev, lastActiveRange: e.target.value }))}
-              className="w-full p-2.5 bg-[#FAF9F6] border border-[#E4DCC9] rounded-xl text-xs font-medium text-[#18281F] outline-none cursor-pointer"
+              className="w-full p-2.5 bg-[#FAF8F5] border border-[#E7DFD5] rounded-xl text-xs font-medium text-[#211A19] outline-none cursor-pointer"
             >
               <option value="all">All Active Sessions</option>
               <option value="24h">Active in Last 24 Hours</option>
@@ -345,14 +345,14 @@ export const UserFilterModal: React.FC<UserFilterModalProps> = ({
             </select>
           </div>
 
-          <div className="flex flex-col gap-1.5 font-bold text-[#18281F]">
+          <div className="flex flex-col gap-1.5 font-bold text-[#211A19]">
             <label className="uppercase tracking-wider text-[11px] flex items-center gap-1">
-              <Headphones size={13} className="text-[#C4A066]" /> Support Complaints Range
+              <Headphones size={13} className="text-[#C8A878]" /> Support Complaints Range
             </label>
             <select
               value={localCriteria.complaintsRange}
               onChange={(e) => setLocalCriteria((prev) => ({ ...prev, complaintsRange: e.target.value }))}
-              className="w-full p-2.5 bg-[#FAF9F6] border border-[#E4DCC9] rounded-xl text-xs font-medium text-[#18281F] outline-none cursor-pointer"
+              className="w-full p-2.5 bg-[#FAF8F5] border border-[#E7DFD5] rounded-xl text-xs font-medium text-[#211A19] outline-none cursor-pointer"
             >
               <option value="all">Any Complaint History</option>
               <option value="none">Zero Complaints (Clean Record)</option>
@@ -393,7 +393,7 @@ export const UserFilterModal: React.FC<UserFilterModalProps> = ({
         </div>
 
         {/* Action Controls */}
-        <div className="flex items-center justify-between pt-3 border-t border-[#E4DCC9]">
+        <div className="flex items-center justify-between pt-3 border-t border-[#E7DFD5]">
           <Button
             type="button"
             variant="ghost"

@@ -4,7 +4,7 @@
   gap: 0.5rem;
   overflow-x: auto;
   padding-bottom: 0.5rem;
-  border-bottom: 1px solid #E4DCC9;
+  border-bottom: 1px solid #E7DFD5;
 }
 
 .settings-tab-btn {
@@ -12,29 +12,30 @@
   border-radius: var(--radius-xl, 0.75rem);
   font-size: var(--font-size-xs);
   font-weight: 700;
-  color: #6B7C70;
-  background-color: #FAF9F6;
-  border: 1px solid #E4DCC9;
+  color: #78716C;
+  background-color: #FAF8F5;
+  border: 1px solid #E7DFD5;
   white-space: nowrap;
   transition: all var(--transition-fast);
   display: inline-flex;
   align-items: center;
   gap: 0.375rem;
+  cursor: pointer;
 }
 
 .settings-tab-btn.active {
-  background-color: #18281F;
+  background-color: #541D26;
   color: #FFFFFF;
-  border-color: #18281F;
-  box-shadow: 0 2px 6px rgba(24, 40, 31, 0.12);
+  border-color: rgba(200, 168, 120, 0.4);
+  box-shadow: 0 2px 6px rgba(84, 29, 38, 0.2);
 }
 
 .settings-section-card {
   padding: 1.25rem;
   background-color: #FFFFFF;
-  border: 1px solid #E4DCC9;
-  border-radius: var(--radius-lg, 1.25rem);
-  box-shadow: 0 2px 10px rgba(24, 40, 31, 0.03);
+  border: 1px solid #E7DFD5;
+  border-radius: var(--radius-bento, 2rem);
+  box-shadow: 0 2px 10px rgba(33, 26, 25, 0.03);
   display: flex;
   flex-direction: column;
   gap: 1rem;

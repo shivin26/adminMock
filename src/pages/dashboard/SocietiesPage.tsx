@@ -129,18 +129,18 @@ export const SocietiesPage: React.FC = () => {
   const columns: Column<Society>[] = [
     {
       header: 'S.No.',
-      cell: (_item, index) => <span className="font-mono text-xs text-[#18281F] font-bold">{index + 1}</span>,
+      cell: (_item, index) => <span className="font-mono text-xs text-[#211A19] font-bold">{index + 1}</span>,
     },
     {
       header: 'Society Details',
       cell: (society) => (
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl bg-[#EFE8D8] text-[#18281F] border border-[#E4DCC9] flex items-center justify-center shrink-0">
-            <Building2 size={18} />
+          <div className="w-9 h-9 rounded-xl bg-[#FAF8F5] text-[#211A19] border border-[#E7DFD5] flex items-center justify-center shrink-0">
+            <Building2 size={18} className="text-[#541D26]" />
           </div>
           <div>
-            <span className="font-bold text-[#18281F] text-xs block">{society.name}</span>
-            <span className="text-[11px] text-[#6B7C70]">Code: {society.code}</span>
+            <span className="font-bold text-[#211A19] text-xs block font-serif">{society.name}</span>
+            <span className="text-[11px] text-[#78716C] font-mono">Code: {society.code}</span>
           </div>
         </div>
       ),
@@ -148,8 +148,8 @@ export const SocietiesPage: React.FC = () => {
     {
       header: 'Location',
       cell: (society) => (
-        <div className="flex items-center gap-1.5 text-xs text-[#18281F]">
-          <MapPin size={14} className="text-[#C4A066] shrink-0" />
+        <div className="flex items-center gap-1.5 text-xs text-[#211A19]">
+          <MapPin size={14} className="text-[#C8A878] shrink-0" />
           <span>{society.address}</span>
         </div>
       ),

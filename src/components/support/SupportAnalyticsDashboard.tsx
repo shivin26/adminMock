@@ -73,8 +73,8 @@ const MONTHLY_TICKETS_DATA = [
 ];
 
 const CATEGORY_DISTRIBUTION = [
-  { name: 'Technical Issues', value: 485, color: '#18281F' },
-  { name: 'Billing & Payments', value: 412, color: '#C4A066' },
+  { name: 'Technical Issues', value: 485, color: '#211A19' },
+  { name: 'Billing & Payments', value: 412, color: '#C8A878' },
   { name: 'Vendor Onboarding', value: 340, color: '#3B82F6' },
   { name: 'General Inquiries', value: 245, color: '#10B981' },
 ];
@@ -83,7 +83,7 @@ const PRIORITY_DISTRIBUTION = [
   { name: 'Urgent SLA', count: 42, color: '#EF4444' },
   { name: 'High Priority', count: 185, color: '#F59E0B' },
   { name: 'Medium Priority', count: 680, color: '#3B82F6' },
-  { name: 'Low Priority', count: 575, color: '#6B7C70' },
+  { name: 'Low Priority', count: 575, color: '#78716C' },
 ];
 
 const AGENT_PERFORMANCE = [
@@ -102,10 +102,10 @@ const TOP_RECURRING_ISSUES = [
 ];
 
 const HEATMAP_LOAD_DATA = [
-  { time: '00:00 - 06:00', load: 'Low (4%)', color: '#FAF9F6' },
+  { time: '00:00 - 06:00', load: 'Low (4%)', color: '#FAF8F5' },
   { time: '06:00 - 12:00', load: 'Peak (42%)', color: '#FEF3C7' },
   { time: '12:00 - 18:00', load: 'High (38%)', color: '#FDE68A' },
-  { time: '18:00 - 24:00', load: 'Moderate (16%)', color: '#FAF9F6' },
+  { time: '18:00 - 24:00', load: 'Moderate (16%)', color: '#FAF8F5' },
 ];
 
 export const SupportAnalyticsDashboard: React.FC<SupportAnalyticsDashboardProps> = ({
@@ -160,13 +160,13 @@ export const SupportAnalyticsDashboard: React.FC<SupportAnalyticsDashboardProps>
       const cat = t.category || 'General';
       map[cat] = (map[cat] || 0) + 1;
     });
-    const colors = ['#18281F', '#C4A066', '#3B82F6', '#10B981', '#F59E0B', '#EF4444'];
+    const colors = ['#211A19', '#C8A878', '#3B82F6', '#10B981', '#F59E0B', '#EF4444'];
     const res = Object.entries(map).map(([name, value], idx) => ({
       name,
       value,
       color: colors[idx % colors.length],
     }));
-    return res.length > 0 ? res : [{ name: 'No Data', value: 1, color: '#E4DCC9' }];
+    return res.length > 0 ? res : [{ name: 'No Data', value: 1, color: '#E7DFD5' }];
   }, [tickets]);
 
   const priorityDistribution = React.useMemo(() => {
@@ -178,7 +178,7 @@ export const SupportAnalyticsDashboard: React.FC<SupportAnalyticsDashboardProps>
       { name: 'Urgent SLA', count: urgent, color: '#EF4444' },
       { name: 'High Priority', count: high, color: '#F59E0B' },
       { name: 'Medium Priority', count: medium, color: '#3B82F6' },
-      { name: 'Low Priority', count: low, color: '#6B7C70' },
+      { name: 'Low Priority', count: low, color: '#78716C' },
     ];
   }, [tickets]);
 
@@ -227,10 +227,10 @@ export const SupportAnalyticsDashboard: React.FC<SupportAnalyticsDashboardProps>
   // Dynamic 24x7 Load Heatmap
   const heatmapLoadData = React.useMemo(() => {
     const slots = [
-      { time: '00:00 - 06:00', color: '#FAF9F6' },
+      { time: '00:00 - 06:00', color: '#FAF8F5' },
       { time: '06:00 - 12:00', color: '#FEF3C7' },
       { time: '12:00 - 18:00', color: '#FDE68A' },
-      { time: '18:00 - 24:00', color: '#FAF9F6' },
+      { time: '18:00 - 24:00', color: '#FAF8F5' },
     ];
 
     const countsArr = [0, 0, 0, 0];
@@ -361,8 +361,8 @@ export const SupportAnalyticsDashboard: React.FC<SupportAnalyticsDashboardProps>
 
   if (isLoading) {
     return (
-      <div className="p-8 text-center bg-white border border-[#E4DCC9] rounded-2xl">
-        <span className="text-xs font-semibold text-[#6B7C70]">Generating Service Analytics...</span>
+      <div className="p-8 text-center bg-white border border-[#E7DFD5] rounded-2xl">
+        <span className="text-xs font-semibold text-[#78716C]">Generating Service Analytics...</span>
       </div>
     );
   }
@@ -370,12 +370,12 @@ export const SupportAnalyticsDashboard: React.FC<SupportAnalyticsDashboardProps>
   return (
     <div className="support-analytics-dashboard">
       {/* Analytics Toolbar Header */}
-      <div className="flex items-center justify-between p-4 bg-white border border-[#E4DCC9] rounded-2xl shadow-sm flex-wrap gap-3">
+      <div className="flex items-center justify-between p-4 bg-white border border-[#E7DFD5] rounded-2xl shadow-sm flex-wrap gap-3">
         <div className="flex items-center gap-2">
-          <Award size={18} className="text-[#C4A066]" />
+          <Award size={18} className="text-[#C8A878]" />
           <div>
-            <h2 className="text-sm font-bold text-[#18281F]">Executive Support Intelligence &amp; SLA Reports</h2>
-            <p className="text-xs text-[#6B7C70]">24x7 resolution performance, heatmaps, agent productivity, and top issue trends.</p>
+            <h2 className="text-sm font-bold text-[#211A19]">Executive Support Intelligence &amp; SLA Reports</h2>
+            <p className="text-xs text-[#78716C]">24x7 resolution performance, heatmaps, agent productivity, and top issue trends.</p>
           </div>
         </div>
 
@@ -488,27 +488,27 @@ export const SupportAnalyticsDashboard: React.FC<SupportAnalyticsDashboardProps>
               <AreaChart data={dailyTicketsData}>
                 <defs>
                   <linearGradient id="colorInc" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#C4A066" stopOpacity={0.4} />
-                    <stop offset="95%" stopColor="#C4A066" stopOpacity={0} />
+                    <stop offset="5%" stopColor="#C8A878" stopOpacity={0.4} />
+                    <stop offset="95%" stopColor="#C8A878" stopOpacity={0} />
                   </linearGradient>
                   <linearGradient id="colorRes" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="5%" stopColor="#10B981" stopOpacity={0.4} />
                     <stop offset="95%" stopColor="#10B981" stopOpacity={0} />
                   </linearGradient>
                 </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="#E4DCC9" />
-                <XAxis dataKey="day" stroke="#6B7C70" fontSize={12} />
-                <YAxis stroke="#6B7C70" fontSize={12} />
+                <CartesianGrid strokeDasharray="3 3" stroke="#E7DFD5" />
+                <XAxis dataKey="day" stroke="#78716C" fontSize={12} />
+                <YAxis stroke="#78716C" fontSize={12} />
                 <Tooltip
                   contentStyle={{
-                    backgroundColor: '#FAF9F6',
-                    borderColor: '#E4DCC9',
+                    backgroundColor: '#FAF8F5',
+                    borderColor: '#E7DFD5',
                     borderRadius: '0.875rem',
-                    color: '#18281F',
+                    color: '#211A19',
                   }}
                 />
                 <Legend />
-                <Area type="monotone" dataKey="incoming" name="Incoming Tickets" stroke="#C4A066" fill="url(#colorInc)" strokeWidth={2} />
+                <Area type="monotone" dataKey="incoming" name="Incoming Tickets" stroke="#C8A878" fill="url(#colorInc)" strokeWidth={2} />
                 <Area type="monotone" dataKey="resolved" name="Resolved Tickets" stroke="#10B981" fill="url(#colorRes)" strokeWidth={2} />
               </AreaChart>
             </ResponsiveContainer>
@@ -526,20 +526,20 @@ export const SupportAnalyticsDashboard: React.FC<SupportAnalyticsDashboardProps>
           <div className="chart-wrapper">
             <ResponsiveContainer width="100%" height={260}>
               <BarChart data={monthlyTicketsData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#E4DCC9" />
-                <XAxis dataKey="month" stroke="#6B7C70" fontSize={12} />
-                <YAxis stroke="#6B7C70" fontSize={12} />
+                <CartesianGrid strokeDasharray="3 3" stroke="#E7DFD5" />
+                <XAxis dataKey="month" stroke="#78716C" fontSize={12} />
+                <YAxis stroke="#78716C" fontSize={12} />
                 <Tooltip
                   contentStyle={{
-                    backgroundColor: '#FAF9F6',
-                    borderColor: '#E4DCC9',
+                    backgroundColor: '#FAF8F5',
+                    borderColor: '#E7DFD5',
                     borderRadius: '0.875rem',
-                    color: '#18281F',
+                    color: '#211A19',
                   }}
                 />
                 <Legend />
-                <Bar dataKey="volume" name="Total Volume" fill="#18281F" radius={[6, 6, 0, 0]} />
-                <Bar dataKey="slaMet" name="Resolved within SLA" fill="#C4A066" radius={[6, 6, 0, 0]} />
+                <Bar dataKey="volume" name="Total Volume" fill="#211A19" radius={[6, 6, 0, 0]} />
+                <Bar dataKey="slaMet" name="Resolved within SLA" fill="#C8A878" radius={[6, 6, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </div>
@@ -547,13 +547,13 @@ export const SupportAnalyticsDashboard: React.FC<SupportAnalyticsDashboardProps>
       </div>
 
       {/* Vendor Fraud & Dispute Complaints by Area Section */}
-      <div className="p-5 bg-white border border-[#E4DCC9] rounded-2xl shadow-sm space-y-4">
+      <div className="p-5 bg-white border border-[#E7DFD5] rounded-2xl shadow-sm space-y-4">
         <div className="flex items-center justify-between flex-wrap gap-2">
           <div className="flex items-center gap-2">
             <ShieldAlert size={20} className="text-rose-600" />
             <div>
-              <h3 className="text-sm font-bold text-[#18281F]">Vendor Fraud &amp; Dispute Complaints by Area</h3>
-              <p className="text-xs text-[#6B7C70]">Regional distribution of merchant-reported payment disputes, fake customer orders, and B2B vendor claims.</p>
+              <h3 className="text-sm font-bold text-[#211A19]">Vendor Fraud &amp; Dispute Complaints by Area</h3>
+              <p className="text-xs text-[#78716C]">Regional distribution of merchant-reported payment disputes, fake customer orders, and B2B vendor claims.</p>
             </div>
           </div>
           <Badge variant={vendorFraudByArea.length > 0 ? "warning" : "success"}>
@@ -562,10 +562,10 @@ export const SupportAnalyticsDashboard: React.FC<SupportAnalyticsDashboardProps>
         </div>
 
         {vendorFraudByArea.length === 0 ? (
-          <div className="p-8 text-center bg-[#FAF9F6] border border-[#E4DCC9] rounded-xl flex flex-col items-center justify-center gap-2">
+          <div className="p-8 text-center bg-[#FAF8F5] border border-[#E7DFD5] rounded-xl flex flex-col items-center justify-center gap-2">
             <ShieldCheck size={32} className="text-emerald-600" />
-            <span className="text-xs font-bold text-[#18281F]">No Vendor Fraud or Dispute Complaints Reported</span>
-            <span className="text-[11px] text-[#6B7C70]">All vendor location areas across the network have 0 active fraud alerts.</span>
+            <span className="text-xs font-bold text-[#211A19]">No Vendor Fraud or Dispute Complaints Reported</span>
+            <span className="text-[11px] text-[#78716C]">All vendor location areas across the network have 0 active fraud alerts.</span>
           </div>
         ) : (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -573,15 +573,15 @@ export const SupportAnalyticsDashboard: React.FC<SupportAnalyticsDashboardProps>
             <div className="chart-wrapper">
               <ResponsiveContainer width="100%" height={260}>
                 <BarChart data={vendorFraudByArea} layout="vertical">
-                  <CartesianGrid strokeDasharray="3 3" stroke="#E4DCC9" />
-                  <XAxis type="number" stroke="#6B7C70" fontSize={12} />
-                  <YAxis dataKey="area" type="category" stroke="#6B7C70" fontSize={11} width={130} />
+                  <CartesianGrid strokeDasharray="3 3" stroke="#E7DFD5" />
+                  <XAxis type="number" stroke="#78716C" fontSize={12} />
+                  <YAxis dataKey="area" type="category" stroke="#78716C" fontSize={11} width={130} />
                   <Tooltip
                     contentStyle={{
-                      backgroundColor: '#FAF9F6',
-                      borderColor: '#E4DCC9',
+                      backgroundColor: '#FAF8F5',
+                      borderColor: '#E7DFD5',
                       borderRadius: '0.875rem',
-                      color: '#18281F',
+                      color: '#211A19',
                     }}
                     formatter={(val: any) => [`${val} Fraud Complaints`, 'Volume']}
                   />
@@ -593,19 +593,19 @@ export const SupportAnalyticsDashboard: React.FC<SupportAnalyticsDashboardProps>
             {/* Ranking Breakdown List */}
             <div className="flex flex-col gap-2.5 text-xs max-h-[260px] overflow-y-auto pr-1">
               {vendorFraudByArea.map((item, idx) => (
-                <div key={idx} className="p-3 bg-[#FAF9F6] border border-[#E4DCC9] rounded-xl flex items-center justify-between gap-3 shadow-xs hover:border-[#EF4444] transition-all">
+                <div key={idx} className="p-3 bg-[#FAF8F5] border border-[#E7DFD5] rounded-xl flex items-center justify-between gap-3 shadow-xs hover:border-[#EF4444] transition-all">
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center gap-2">
                       <span className="font-mono font-bold text-rose-600 text-xs">#{idx + 1}</span>
-                      <span className="font-bold text-[#18281F] truncate">{item.area}</span>
+                      <span className="font-bold text-[#211A19] truncate">{item.area}</span>
                     </div>
-                    <span className="text-[11px] text-[#6B7C70] line-clamp-1 mt-0.5">{item.primaryIssue}</span>
+                    <span className="text-[11px] text-[#78716C] line-clamp-1 mt-0.5">{item.primaryIssue}</span>
                   </div>
                   <div className="flex items-center gap-2 shrink-0">
                     <Badge variant={item.riskLevel === 'HIGH RISK' ? 'danger' : item.riskLevel === 'MODERATE' ? 'warning' : 'info'}>
                       {item.riskLevel}
                     </Badge>
-                    <span className="font-mono font-bold text-[#18281F] bg-white px-2 py-1 rounded-lg border border-[#E4DCC9]">
+                    <span className="font-mono font-bold text-[#211A19] bg-white px-2 py-1 rounded-lg border border-[#E7DFD5]">
                       {item.fraudCount} Complaints
                     </span>
                   </div>
@@ -623,7 +623,7 @@ export const SupportAnalyticsDashboard: React.FC<SupportAnalyticsDashboardProps>
           <div className="support-chart-header">
             <div>
               <h3 className="support-chart-title flex items-center gap-1.5">
-                <Award size={16} className="text-[#C4A066]" /> Agent Productivity Leaderboard
+                <Award size={16} className="text-[#C8A878]" /> Agent Productivity Leaderboard
               </h3>
               <p className="support-chart-subtitle">Resolution speed &amp; CSAT satisfaction per agent</p>
             </div>
@@ -631,18 +631,18 @@ export const SupportAnalyticsDashboard: React.FC<SupportAnalyticsDashboardProps>
 
           <div className="flex flex-col gap-2 text-xs">
             {agentPerformance.length === 0 ? (
-              <div className="p-4 text-center text-xs text-[#6B7C70] bg-[#FAF9F6] rounded-xl border border-[#E4DCC9]">
+              <div className="p-4 text-center text-xs text-[#78716C] bg-[#FAF8F5] rounded-xl border border-[#E7DFD5]">
                 No agent performance records available.
               </div>
             ) : (
               agentPerformance.map((ag) => (
-                <div key={ag.name} className="p-3 bg-[#FAF9F6] border border-[#E4DCC9] rounded-xl flex items-center justify-between">
+                <div key={ag.name} className="p-3 bg-[#FAF8F5] border border-[#E7DFD5] rounded-xl flex items-center justify-between">
                   <div>
-                    <span className="font-bold text-[#18281F] block">{ag.name}</span>
-                    <span className="text-[11px] text-[#6B7C70]">Avg Resolution Time: <strong>{ag.avgTime}</strong></span>
+                    <span className="font-bold text-[#211A19] block">{ag.name}</span>
+                    <span className="text-[11px] text-[#78716C]">Avg Resolution Time: <strong>{ag.avgTime}</strong></span>
                   </div>
                   <div className="flex items-center gap-3">
-                    <span className="font-bold text-[#18281F]">{ag.resolved} Resolved</span>
+                    <span className="font-bold text-[#211A19]">{ag.resolved} Resolved</span>
                     <Badge variant="success">{ag.csat} CSAT</Badge>
                   </div>
                 </div>
@@ -656,7 +656,7 @@ export const SupportAnalyticsDashboard: React.FC<SupportAnalyticsDashboardProps>
           <div className="support-chart-header">
             <div>
               <h3 className="support-chart-title flex items-center gap-1.5">
-                <Layers size={16} className="text-[#C4A066]" /> Top 5 Recurring Support Topics
+                <Layers size={16} className="text-[#C8A878]" /> Top 5 Recurring Support Topics
               </h3>
               <p className="support-chart-subtitle">Most frequent issue inquiries across network</p>
             </div>
@@ -664,17 +664,17 @@ export const SupportAnalyticsDashboard: React.FC<SupportAnalyticsDashboardProps>
 
           <div className="flex flex-col gap-2 text-xs">
             {topRecurringIssues.length === 0 ? (
-              <div className="p-4 text-center text-xs text-[#6B7C70] bg-[#FAF9F6] rounded-xl border border-[#E4DCC9]">
+              <div className="p-4 text-center text-xs text-[#78716C] bg-[#FAF8F5] rounded-xl border border-[#E7DFD5]">
                 No recurring support topics recorded.
               </div>
             ) : (
               topRecurringIssues.map((issue, idx) => (
-                <div key={idx} className="p-3 bg-[#FAF9F6] border border-[#E4DCC9] rounded-xl flex items-center justify-between">
+                <div key={idx} className="p-3 bg-[#FAF8F5] border border-[#E7DFD5] rounded-xl flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <span className="font-mono font-bold text-[#C4A066] text-xs">#{idx + 1}</span>
+                    <span className="font-mono font-bold text-[#C8A878] text-xs">#{idx + 1}</span>
                     <div>
-                      <span className="font-bold text-[#18281F] block">{issue.issue}</span>
-                      <span className="text-[10px] text-[#6B7C70] uppercase font-semibold">{issue.category}</span>
+                      <span className="font-bold text-[#211A19] block">{issue.issue}</span>
+                      <span className="text-[10px] text-[#78716C] uppercase font-semibold">{issue.category}</span>
                     </div>
                   </div>
                   <Badge variant="primary">{issue.count} Reports</Badge>
@@ -719,11 +719,11 @@ export const SupportAnalyticsDashboard: React.FC<SupportAnalyticsDashboardProps>
           <div className="chart-wrapper">
             <ResponsiveContainer width="100%" height={230}>
               <BarChart data={priorityDistribution} layout="vertical">
-                <CartesianGrid strokeDasharray="3 3" stroke="#E4DCC9" />
-                <XAxis type="number" stroke="#6B7C70" fontSize={12} />
-                <YAxis dataKey="name" type="category" stroke="#6B7C70" fontSize={11} width={100} />
+                <CartesianGrid strokeDasharray="3 3" stroke="#E7DFD5" />
+                <XAxis type="number" stroke="#78716C" fontSize={12} />
+                <YAxis dataKey="name" type="category" stroke="#78716C" fontSize={11} width={100} />
                 <Tooltip />
-                <Bar dataKey="count" fill="#C4A066" radius={[0, 6, 6, 0]} />
+                <Bar dataKey="count" fill="#C8A878" radius={[0, 6, 6, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </div>
@@ -742,9 +742,9 @@ export const SupportAnalyticsDashboard: React.FC<SupportAnalyticsDashboardProps>
 
           <div className="flex flex-col gap-2 text-xs">
             {heatmapLoadData.map((h) => (
-              <div key={h.time} className="p-2.5 rounded-xl border border-[#E4DCC9] flex items-center justify-between" style={{ backgroundColor: h.color }}>
-                <span className="font-bold text-[#18281F]">{h.time}</span>
-                <span className="font-semibold text-[#18281F]">{h.load}</span>
+              <div key={h.time} className="p-2.5 rounded-xl border border-[#E7DFD5] flex items-center justify-between" style={{ backgroundColor: h.color }}>
+                <span className="font-bold text-[#211A19]">{h.time}</span>
+                <span className="font-semibold text-[#211A19]">{h.load}</span>
               </div>
             ))}
           </div>
@@ -766,7 +766,7 @@ export const SupportAnalyticsDashboard: React.FC<SupportAnalyticsDashboardProps>
 
           <div className="support-widget-list">
             {urgentTickets.length === 0 ? (
-              <div className="p-4 text-center text-xs text-[#6B7C70] bg-[#FAF9F6] rounded-xl border border-[#E4DCC9]">
+              <div className="p-4 text-center text-xs text-[#78716C] bg-[#FAF8F5] rounded-xl border border-[#E7DFD5]">
                 ✓ No high priority escalated tickets.
               </div>
             ) : (
@@ -778,11 +778,11 @@ export const SupportAnalyticsDashboard: React.FC<SupportAnalyticsDashboardProps>
                 >
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-1.5">
-                      <span className="font-mono text-[11px] font-bold text-[#C4A066]">{t.ticketNumber}</span>
+                      <span className="font-mono text-[11px] font-bold text-[#C8A878]">{t.ticketNumber}</span>
                       <SupportTicketStatusBadge priority={t.priority} />
                     </div>
-                    <span className="text-xs font-bold text-[#18281F] line-clamp-1 mt-0.5">{t.subject}</span>
-                    <span className="text-[11px] text-[#6B7C70] font-medium">{t.reporterName} • {t.entityName}</span>
+                    <span className="text-xs font-bold text-[#211A19] line-clamp-1 mt-0.5">{t.subject}</span>
+                    <span className="text-[11px] text-[#78716C] font-medium">{t.reporterName} • {t.entityName}</span>
                   </div>
                   <Button variant="ghost" size="sm" rightIcon={<ArrowRight size={12} />}>
                     View
@@ -806,7 +806,7 @@ export const SupportAnalyticsDashboard: React.FC<SupportAnalyticsDashboardProps>
 
           <div className="support-widget-list">
             {slaViolations.length === 0 ? (
-              <div className="p-4 text-center text-xs text-[#6B7C70] bg-[#FAF9F6] rounded-xl border border-[#E4DCC9]">
+              <div className="p-4 text-center text-xs text-[#78716C] bg-[#FAF8F5] rounded-xl border border-[#E7DFD5]">
                 ✓ All active tickets are currently SLA compliant!
               </div>
             ) : (
@@ -818,11 +818,11 @@ export const SupportAnalyticsDashboard: React.FC<SupportAnalyticsDashboardProps>
                 >
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-1.5">
-                      <span className="font-mono text-[11px] font-bold text-[#C4A066]">{t.ticketNumber}</span>
+                      <span className="font-mono text-[11px] font-bold text-[#C8A878]">{t.ticketNumber}</span>
                       <Badge variant="warning">{t.slaMinutesRemaining}m LEFT</Badge>
                     </div>
-                    <span className="text-xs font-bold text-[#18281F] line-clamp-1 mt-0.5">{t.subject}</span>
-                    <span className="text-[11px] text-[#6B7C70] font-medium">Assigned: {t.assignedTo}</span>
+                    <span className="text-xs font-bold text-[#211A19] line-clamp-1 mt-0.5">{t.subject}</span>
+                    <span className="text-[11px] text-[#78716C] font-medium">Assigned: {t.assignedTo}</span>
                   </div>
                   <Button variant="ghost" size="sm" rightIcon={<ArrowRight size={12} />}>
                     View
@@ -837,8 +837,8 @@ export const SupportAnalyticsDashboard: React.FC<SupportAnalyticsDashboardProps>
         <div className="support-widget-card">
           <div className="support-chart-header">
             <div>
-              <h3 className="support-chart-title flex items-center gap-1.5 text-[#18281F]">
-                <Activity size={16} className="text-[#C4A066]" /> Live Support Feed
+              <h3 className="support-chart-title flex items-center gap-1.5 text-[#211A19]">
+                <Activity size={16} className="text-[#C8A878]" /> Live Support Feed
               </h3>
               <p className="support-chart-subtitle">Recent agent actions &amp; staff notes</p>
             </div>
@@ -846,7 +846,7 @@ export const SupportAnalyticsDashboard: React.FC<SupportAnalyticsDashboardProps>
 
           <div className="support-widget-list">
             {tickets.length === 0 ? (
-              <div className="p-4 text-center text-xs text-[#6B7C70] bg-[#FAF9F6] rounded-xl border border-[#E4DCC9]">
+              <div className="p-4 text-center text-xs text-[#78716C] bg-[#FAF8F5] rounded-xl border border-[#E7DFD5]">
                 No recent agent actions or notes recorded.
               </div>
             ) : (
@@ -854,13 +854,13 @@ export const SupportAnalyticsDashboard: React.FC<SupportAnalyticsDashboardProps>
                 <div
                   key={t.id}
                   onClick={() => onSelectTicket(t.id)}
-                  className="p-2.5 bg-[#FAF9F6] rounded-xl border border-[#E4DCC9] text-xs cursor-pointer hover:bg-[#EFE8D8] hover:border-[#C4A066] transition-all flex flex-col gap-0.5 shadow-xs"
+                  className="p-2.5 bg-[#FAF8F5] rounded-xl border border-[#E7DFD5] text-xs cursor-pointer hover:bg-[#EEE5DA] hover:border-[#C8A878] transition-all flex flex-col gap-0.5 shadow-xs"
                 >
                   <div>
-                    <span className="font-bold text-[#18281F]">{t.assignedTo || t.reporterName}</span> recorded activity on{' '}
-                    <span className="font-mono font-bold text-[#C4A066] underline">{t.ticketNumber}</span>
+                    <span className="font-bold text-[#211A19]">{t.assignedTo || t.reporterName}</span> recorded activity on{' '}
+                    <span className="font-mono font-bold text-[#C8A878] underline">{t.ticketNumber}</span>
                   </div>
-                  <span className="text-[10px] text-[#6B7C70]">Status: {t.status.toUpperCase()} • {t.subject}</span>
+                  <span className="text-[10px] text-[#78716C]">Status: {t.status.toUpperCase()} • {t.subject}</span>
                 </div>
               ))
             )}

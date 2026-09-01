@@ -125,14 +125,14 @@ export const SupportPage: React.FC = () => {
       />
 
       {/* View Switcher Tabs & Live Web Intake Stream */}
-      <div className="flex items-center justify-between p-2 bg-white border border-[#E4DCC9] rounded-2xl shadow-sm flex-wrap gap-2">
+      <div className="flex items-center justify-between p-2 bg-white border border-[#E7DFD5] rounded-2xl shadow-xs flex-wrap gap-2">
         <div className="flex items-center gap-2">
           <button
             type="button"
-            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
+            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
               viewMode === 'analytics'
-                ? 'bg-[#18281F] text-white shadow-sm'
-                : 'bg-[#FAF9F6] text-[#6B7C70] hover:bg-[#EFE8D8]'
+                ? 'bg-[#541D26] text-white shadow-xs border border-[#C8A878]/30'
+                : 'bg-[#FAF8F5] text-[#78716C] hover:bg-[#EEE5DA]'
             }`}
             onClick={() => setViewMode('analytics')}
           >
@@ -142,10 +142,10 @@ export const SupportPage: React.FC = () => {
 
           <button
             type="button"
-            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
+            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
               viewMode === 'queue'
-                ? 'bg-[#18281F] text-white shadow-sm'
-                : 'bg-[#FAF9F6] text-[#6B7C70] hover:bg-[#EFE8D8]'
+                ? 'bg-[#541D26] text-white shadow-xs border border-[#C8A878]/30'
+                : 'bg-[#FAF8F5] text-[#78716C] hover:bg-[#EEE5DA]'
             }`}
             onClick={() => setViewMode('queue')}
           >
@@ -155,14 +155,14 @@ export const SupportPage: React.FC = () => {
         </div>
 
         {/* Interactive Priority Focus View Selector */}
-        <div className="px-3.5 py-1.5 bg-[#FAF9F6] border border-[#E4DCC9] rounded-xl flex items-center gap-2 text-xs font-bold shadow-sm">
-          <span className="text-[#6B7C70] flex items-center gap-1.5 whitespace-nowrap">
+        <div className="px-3.5 py-1.5 bg-[#FAF8F5] border border-[#E7DFD5] rounded-xl flex items-center gap-2 text-xs font-bold shadow-xs">
+          <span className="text-[#78716C] flex items-center gap-1.5 whitespace-nowrap">
             <Flame size={14} className="text-rose-500" /> Priority Focus View:
           </span>
           <select
             value={priorityFocus}
             onChange={(e) => setPriorityFocus(e.target.value)}
-            className="bg-transparent text-xs font-bold text-[#18281F] outline-none cursor-pointer"
+            className="bg-transparent text-xs font-bold text-[#211A19] outline-none cursor-pointer"
           >
             <option value="all">All Priorities ({counts.all})</option>
             <option value="urgent">🔥 Urgent SLA ({counts.urgent})</option>

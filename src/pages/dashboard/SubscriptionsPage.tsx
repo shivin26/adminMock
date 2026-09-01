@@ -41,9 +41,9 @@ import { SubscriptionRenewalModal } from '../../components/subscriptions/Subscri
 import { SubscriptionInvoiceModal } from '../../components/subscriptions/SubscriptionInvoiceModal';
 
 const TIER_COLORS = {
-  free: '#6B7C70',
+  free: '#78716C',
   pro: '#10B981',
-  enterprise: '#18281F',
+  enterprise: '#211A19',
 };
 
 
@@ -122,7 +122,7 @@ export const SubscriptionsPage: React.FC = () => {
   const columns: Column<Subscription>[] = [
     {
       header: 'S.No.',
-      cell: (_item, index) => <span className="font-mono text-xs text-[#18281F] font-bold">{index + 1}</span>,
+      cell: (_item, index) => <span className="font-mono text-xs text-[#211A19] font-bold">{index + 1}</span>,
     },
 
     {

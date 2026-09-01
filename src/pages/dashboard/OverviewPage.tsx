@@ -162,26 +162,26 @@ export const OverviewPage: React.FC = () => {
                 <AreaChart data={revenueChartData}>
                   <defs>
                     <linearGradient id="colorRev" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#C4A066" stopOpacity={0.4} />
-                      <stop offset="95%" stopColor="#C4A066" stopOpacity={0} />
+                      <stop offset="5%" stopColor="#C8A878" stopOpacity={0.4} />
+                      <stop offset="95%" stopColor="#C8A878" stopOpacity={0} />
                     </linearGradient>
                   </defs>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#E4DCC9" />
-                  <XAxis dataKey="month" stroke="#6B7C70" fontSize={12} />
-                  <YAxis stroke="#6B7C70" fontSize={12} />
+                  <CartesianGrid strokeDasharray="3 3" stroke="#E7DFD5" />
+                  <XAxis dataKey="month" stroke="#78716C" fontSize={12} />
+                  <YAxis stroke="#78716C" fontSize={12} />
                   <Tooltip
                     contentStyle={{
-                      backgroundColor: '#FAF9F6',
-                      borderColor: '#E4DCC9',
+                      backgroundColor: '#FAF8F5',
+                      borderColor: '#E7DFD5',
                       borderRadius: '0.875rem',
-                      color: '#18281F',
+                      color: '#211A19',
                     }}
                     formatter={(val: any) => [formatCurrency(Number(val) || 0), 'Revenue']}
                   />
                   <Area
                     type="monotone"
                     dataKey="revenue"
-                    stroke="#18281F"
+                    stroke="#541D26"
                     strokeWidth={3}
                     fillOpacity={1}
                     fill="url(#colorRev)"
@@ -204,18 +204,18 @@ export const OverviewPage: React.FC = () => {
             <div className="chart-wrapper">
               <ResponsiveContainer width="100%" height={260}>
                 <BarChart data={revenueChartData}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#E4DCC9" />
-                  <XAxis dataKey="month" stroke="#6B7C70" fontSize={12} />
-                  <YAxis stroke="#6B7C70" fontSize={12} />
+                  <CartesianGrid strokeDasharray="3 3" stroke="#E7DFD5" />
+                  <XAxis dataKey="month" stroke="#78716C" fontSize={12} />
+                  <YAxis stroke="#78716C" fontSize={12} />
                   <Tooltip
                     contentStyle={{
-                      backgroundColor: '#FAF9F6',
-                      borderColor: '#E4DCC9',
+                      backgroundColor: '#FAF8F5',
+                      borderColor: '#E7DFD5',
                       borderRadius: '0.875rem',
-                      color: '#18281F',
+                      color: '#211A19',
                     }}
                   />
-                  <Bar dataKey="vendors" fill="#18281F" radius={[6, 6, 0, 0]} />
+                  <Bar dataKey="vendors" fill="#541D26" radius={[6, 6, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             </div>

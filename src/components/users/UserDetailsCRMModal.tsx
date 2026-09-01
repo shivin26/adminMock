@@ -136,7 +136,7 @@ export const UserDetailsCRMModal: React.FC<UserDetailsCRMModalProps> = ({
       title: 'Support Complaint Lodged',
       detail: 'Filed ticket #TICK-9082 regarding delivery delay via Website Intake.',
       time: '2 hours ago',
-      icon: <Headphones size={13} className="text-[#C4A066]" />,
+      icon: <Headphones size={13} className="text-[#C8A878]" />,
     },
     {
       id: 't-2',
@@ -157,7 +157,7 @@ export const UserDetailsCRMModal: React.FC<UserDetailsCRMModalProps> = ({
       title: 'Account Registered',
       detail: 'Verified phone +91 98765 43210 & joined Anupam Society.',
       time: '3 months ago',
-      icon: <User size={13} className="text-[#18281F]" />,
+      icon: <User size={13} className="text-[#211A19]" />,
     },
   ];
 
@@ -273,37 +273,37 @@ export const UserDetailsCRMModal: React.FC<UserDetailsCRMModalProps> = ({
       ) : (
         <div className="flex flex-col gap-5">
           {/* CRM Profile Header Banner */}
-          <div className="p-4 bg-[#FAF9F6] border border-[#E4DCC9] rounded-2xl flex flex-col md:flex-row items-start md:items-center justify-between gap-4 shadow-sm">
+          <div className="p-4 bg-[#FAF8F5] border border-[#E7DFD5] rounded-2xl flex flex-col md:flex-row items-start md:items-center justify-between gap-4 shadow-sm">
             <div className="flex items-center gap-3.5">
-              <div className="w-14 h-14 rounded-2xl bg-[#18281F] text-white flex items-center justify-center font-bold text-xl shadow-xs shrink-0">
+              <div className="w-14 h-14 rounded-2xl bg-[#211A19] text-white flex items-center justify-center font-bold text-xl shadow-xs shrink-0">
                 {user.name.charAt(0)}
               </div>
               <div className="flex flex-col">
                 <div className="flex items-center gap-2">
-                  <h2 className="font-bold text-[#18281F] text-base font-serif">{user.name}</h2>
+                  <h2 className="font-bold text-[#211A19] text-base font-serif">{user.name}</h2>
                   <Badge variant={user.flagsCount >= 3 ? 'danger' : user.flagsCount >= 2 ? 'warning' : 'success'}>
                     {user.flagsCount >= 3 ? 'BANNED' : user.flagsCount >= 2 ? 'WARNED' : 'ACTIVE'}
                   </Badge>
                 </div>
-                <span className="text-xs text-[#6B7C70] flex items-center gap-2 mt-0.5">
-                  <span className="flex items-center gap-1"><Mail size={12} className="text-[#C4A066]" /> {user.email}</span>
+                <span className="text-xs text-[#78716C] flex items-center gap-2 mt-0.5">
+                  <span className="flex items-center gap-1"><Mail size={12} className="text-[#C8A878]" /> {user.email}</span>
                   <span>•</span>
-                  <span className="flex items-center gap-1"><Phone size={12} className="text-[#C4A066]" /> {user.phone}</span>
+                  <span className="flex items-center gap-1"><Phone size={12} className="text-[#C8A878]" /> {user.phone}</span>
                 </span>
               </div>
             </div>
 
-            <div className="flex items-center gap-3 text-xs w-full md:w-auto justify-between border-t md:border-t-0 pt-2 md:pt-0 border-[#E4DCC9]">
-              <div className="flex flex-col px-3 py-1.5 bg-white border border-[#E4DCC9] rounded-xl text-center">
-                <span className="text-[10px] text-[#6B7C70] uppercase font-bold">Total Orders</span>
-                <span className="font-bold text-[#18281F]">{user.totalOrders || 28}</span>
+            <div className="flex items-center gap-3 text-xs w-full md:w-auto justify-between border-t md:border-t-0 pt-2 md:pt-0 border-[#E7DFD5]">
+              <div className="flex flex-col px-3 py-1.5 bg-white border border-[#E7DFD5] rounded-xl text-center">
+                <span className="text-[10px] text-[#78716C] uppercase font-bold">Total Orders</span>
+                <span className="font-bold text-[#211A19]">{user.totalOrders || 28}</span>
               </div>
-              <div className="flex flex-col px-3 py-1.5 bg-white border border-[#E4DCC9] rounded-xl text-center">
-                <span className="text-[10px] text-[#6B7C70] uppercase font-bold">Total Spend</span>
+              <div className="flex flex-col px-3 py-1.5 bg-white border border-[#E7DFD5] rounded-xl text-center">
+                <span className="text-[10px] text-[#78716C] uppercase font-bold">Total Spend</span>
                 <span className="font-bold text-emerald-700">₹{(user.totalSpend || 14500).toLocaleString('en-IN')}</span>
               </div>
-              <div className="flex flex-col px-3 py-1.5 bg-white border border-[#E4DCC9] rounded-xl text-center">
-                <span className="text-[10px] text-[#6B7C70] uppercase font-bold">Strikes Meter</span>
+              <div className="flex flex-col px-3 py-1.5 bg-white border border-[#E7DFD5] rounded-xl text-center">
+                <span className="text-[10px] text-[#78716C] uppercase font-bold">Strikes Meter</span>
                 <span className="font-bold text-amber-700">{user.flagsCount} / 3 Flags</span>
               </div>
             </div>
@@ -314,12 +314,12 @@ export const UserDetailsCRMModal: React.FC<UserDetailsCRMModalProps> = ({
             {/* Left 9 Columns: Tab Content */}
             <div className="lg:col-span-8 flex flex-col gap-4">
               {/* 8 Tabs Header Bar */}
-              <div className="flex items-center gap-1 border-b border-[#E4DCC9] pb-2 text-xs overflow-x-auto">
+              <div className="flex items-center gap-1 border-b border-[#E7DFD5] pb-2 text-xs overflow-x-auto">
                 <button
                   type="button"
                   onClick={() => setActiveTab('overview')}
                   className={`px-3 py-1.5 rounded-xl font-bold transition-all whitespace-nowrap ${
-                    activeTab === 'overview' ? 'bg-[#18281F] text-white shadow-sm' : 'bg-[#FAF9F6] text-[#6B7C70] hover:bg-[#EFE8D8]'
+                    activeTab === 'overview' ? 'bg-[#211A19] text-white shadow-sm' : 'bg-[#FAF8F5] text-[#78716C] hover:bg-[#EEE5DA]'
                   }`}
                 >
                   Overview
@@ -328,7 +328,7 @@ export const UserDetailsCRMModal: React.FC<UserDetailsCRMModalProps> = ({
                   type="button"
                   onClick={() => setActiveTab('orders')}
                   className={`px-3 py-1.5 rounded-xl font-bold transition-all whitespace-nowrap ${
-                    activeTab === 'orders' ? 'bg-[#18281F] text-white shadow-sm' : 'bg-[#FAF9F6] text-[#6B7C70] hover:bg-[#EFE8D8]'
+                    activeTab === 'orders' ? 'bg-[#211A19] text-white shadow-sm' : 'bg-[#FAF8F5] text-[#78716C] hover:bg-[#EEE5DA]'
                   }`}
                 >
                   Orders ({mockOrders.length})
@@ -337,7 +337,7 @@ export const UserDetailsCRMModal: React.FC<UserDetailsCRMModalProps> = ({
                   type="button"
                   onClick={() => setActiveTab('payments')}
                   className={`px-3 py-1.5 rounded-xl font-bold transition-all whitespace-nowrap ${
-                    activeTab === 'payments' ? 'bg-[#18281F] text-white shadow-sm' : 'bg-[#FAF9F6] text-[#6B7C70] hover:bg-[#EFE8D8]'
+                    activeTab === 'payments' ? 'bg-[#211A19] text-white shadow-sm' : 'bg-[#FAF8F5] text-[#78716C] hover:bg-[#EEE5DA]'
                   }`}
                 >
                   Payments
@@ -346,7 +346,7 @@ export const UserDetailsCRMModal: React.FC<UserDetailsCRMModalProps> = ({
                   type="button"
                   onClick={() => setActiveTab('complaints')}
                   className={`px-3 py-1.5 rounded-xl font-bold transition-all whitespace-nowrap ${
-                    activeTab === 'complaints' ? 'bg-[#18281F] text-white shadow-sm' : 'bg-[#FAF9F6] text-[#6B7C70] hover:bg-[#EFE8D8]'
+                    activeTab === 'complaints' ? 'bg-[#211A19] text-white shadow-sm' : 'bg-[#FAF8F5] text-[#78716C] hover:bg-[#EEE5DA]'
                   }`}
                 >
                   Complaints ({userPastTickets.length})
@@ -355,7 +355,7 @@ export const UserDetailsCRMModal: React.FC<UserDetailsCRMModalProps> = ({
                   type="button"
                   onClick={() => setActiveTab('timeline')}
                   className={`px-3 py-1.5 rounded-xl font-bold transition-all whitespace-nowrap ${
-                    activeTab === 'timeline' ? 'bg-[#18281F] text-white shadow-sm' : 'bg-[#FAF9F6] text-[#6B7C70] hover:bg-[#EFE8D8]'
+                    activeTab === 'timeline' ? 'bg-[#211A19] text-white shadow-sm' : 'bg-[#FAF8F5] text-[#78716C] hover:bg-[#EEE5DA]'
                   }`}
                 >
                   Timeline
@@ -364,7 +364,7 @@ export const UserDetailsCRMModal: React.FC<UserDetailsCRMModalProps> = ({
                   type="button"
                   onClick={() => setActiveTab('addresses')}
                   className={`px-3 py-1.5 rounded-xl font-bold transition-all whitespace-nowrap ${
-                    activeTab === 'addresses' ? 'bg-[#18281F] text-white shadow-sm' : 'bg-[#FAF9F6] text-[#6B7C70] hover:bg-[#EFE8D8]'
+                    activeTab === 'addresses' ? 'bg-[#211A19] text-white shadow-sm' : 'bg-[#FAF8F5] text-[#78716C] hover:bg-[#EEE5DA]'
                   }`}
                 >
                   Addresses
@@ -373,7 +373,7 @@ export const UserDetailsCRMModal: React.FC<UserDetailsCRMModalProps> = ({
                   type="button"
                   onClick={() => setActiveTab('notifications')}
                   className={`px-3 py-1.5 rounded-xl font-bold transition-all whitespace-nowrap ${
-                    activeTab === 'notifications' ? 'bg-[#18281F] text-white shadow-sm' : 'bg-[#FAF9F6] text-[#6B7C70] hover:bg-[#EFE8D8]'
+                    activeTab === 'notifications' ? 'bg-[#211A19] text-white shadow-sm' : 'bg-[#FAF8F5] text-[#78716C] hover:bg-[#EEE5DA]'
                   }`}
                 >
                   Notifications
@@ -382,7 +382,7 @@ export const UserDetailsCRMModal: React.FC<UserDetailsCRMModalProps> = ({
                   type="button"
                   onClick={() => setActiveTab('audit_logs')}
                   className={`px-3 py-1.5 rounded-xl font-bold transition-all whitespace-nowrap ${
-                    activeTab === 'audit_logs' ? 'bg-[#18281F] text-white shadow-sm' : 'bg-[#FAF9F6] text-[#6B7C70] hover:bg-[#EFE8D8]'
+                    activeTab === 'audit_logs' ? 'bg-[#211A19] text-white shadow-sm' : 'bg-[#FAF8F5] text-[#78716C] hover:bg-[#EEE5DA]'
                   }`}
                 >
                   Audit Logs
@@ -393,19 +393,19 @@ export const UserDetailsCRMModal: React.FC<UserDetailsCRMModalProps> = ({
               {activeTab === 'overview' && (
                 <div className="flex flex-col gap-4 text-xs animate-fadeIn">
                   {/* Strike Meter */}
-                  <div className="p-4 bg-white border border-[#E4DCC9] rounded-2xl shadow-sm flex flex-col gap-2">
+                  <div className="p-4 bg-white border border-[#E7DFD5] rounded-2xl shadow-sm flex flex-col gap-2">
                     <div className="flex items-center justify-between">
-                      <span className="font-bold text-[#18281F] uppercase tracking-wider flex items-center gap-1.5">
+                      <span className="font-bold text-[#211A19] uppercase tracking-wider flex items-center gap-1.5">
                         <Flag size={14} className="text-[#D97706]" /> Dispute Flags &amp; Strike Meter
                       </span>
-                      <span className="font-mono font-bold text-[#18281F]">{user.flagsCount} / 3 Strikes</span>
+                      <span className="font-mono font-bold text-[#211A19]">{user.flagsCount} / 3 Strikes</span>
                     </div>
                     <div className="grid grid-cols-3 gap-2">
                       <div className={`h-2.5 rounded-full ${user.flagsCount >= 1 ? 'bg-amber-400' : 'bg-gray-200'}`} />
                       <div className={`h-2.5 rounded-full ${user.flagsCount >= 2 ? 'bg-orange-500' : 'bg-gray-200'}`} />
                       <div className={`h-2.5 rounded-full ${user.flagsCount >= 3 ? 'bg-rose-600 animate-pulse' : 'bg-gray-200'}`} />
                     </div>
-                    <span className="text-[11px] text-[#6B7C70]">
+                    <span className="text-[11px] text-[#78716C]">
                       {user.flagsCount >= 3
                         ? 'CRITICAL: Account reached 3 strikes limit and is automatically BANNED.'
                         : `Account has ${user.flagsCount} flag(s). If 3 flags are reached, system auto-bans this user.`}
@@ -414,50 +414,50 @@ export const UserDetailsCRMModal: React.FC<UserDetailsCRMModalProps> = ({
 
                   {/* Profile Details Cards Grid */}
                   <div className="grid grid-cols-2 gap-3">
-                    <div className="p-3 bg-[#FAF9F6] border border-[#E4DCC9] rounded-xl flex items-center gap-2.5">
-                      <Home size={16} className="text-[#C4A066]" />
+                    <div className="p-3 bg-[#FAF8F5] border border-[#E7DFD5] rounded-xl flex items-center gap-2.5">
+                      <Home size={16} className="text-[#C8A878]" />
                       <div>
-                        <span className="text-[#6B7C70] block text-[10px] uppercase font-bold">Residence Unit</span>
-                        <span className="font-bold text-[#18281F]">{user.flatNumber || 'B-304'}, {user.societyName}</span>
+                        <span className="text-[#78716C] block text-[10px] uppercase font-bold">Residence Unit</span>
+                        <span className="font-bold text-[#211A19]">{user.flatNumber || 'B-304'}, {user.societyName}</span>
                       </div>
                     </div>
 
-                    <div className="p-3 bg-[#FAF9F6] border border-[#E4DCC9] rounded-xl flex items-center gap-2.5">
-                      <Clock size={16} className="text-[#C4A066]" />
+                    <div className="p-3 bg-[#FAF8F5] border border-[#E7DFD5] rounded-xl flex items-center gap-2.5">
+                      <Clock size={16} className="text-[#C8A878]" />
                       <div>
-                        <span className="text-[#6B7C70] block text-[10px] uppercase font-bold">Member Since</span>
-                        <span className="font-bold text-[#18281F]">{formatDate(user.createdAt)}</span>
+                        <span className="text-[#78716C] block text-[10px] uppercase font-bold">Member Since</span>
+                        <span className="font-bold text-[#211A19]">{formatDate(user.createdAt)}</span>
                       </div>
                     </div>
                   </div>
 
                   {/* Dual Role Partner Store Card */}
-                  <div className="p-4 bg-[#FAF9F6] border border-[#E4DCC9] rounded-2xl flex flex-col gap-2.5 shadow-xs">
+                  <div className="p-4 bg-[#FAF8F5] border border-[#E7DFD5] rounded-2xl flex flex-col gap-2.5 shadow-xs">
                     <div className="flex items-center justify-between">
-                      <span className="font-bold text-[#18281F] font-serif text-sm flex items-center gap-1.5">
-                        <ShoppingBag size={16} className="text-[#C4A066]" /> Dual Role Partner Store Telemetry
+                      <span className="font-bold text-[#211A19] font-serif text-sm flex items-center gap-1.5">
+                        <ShoppingBag size={16} className="text-[#C8A878]" /> Dual Role Partner Store Telemetry
                       </span>
                       <Badge variant="warning">USER &amp; VENDOR DUAL ROLE</Badge>
                     </div>
 
-                    <div className="grid grid-cols-3 gap-3 text-xs pt-1 border-t border-[#E4DCC9]">
-                      <div className="p-2.5 bg-white border border-[#E4DCC9] rounded-xl flex flex-col">
-                        <span className="text-[10px] text-[#6B7C70] uppercase font-bold">Store Name</span>
-                        <span className="font-bold text-[#18281F] truncate">Priya Organic Mart</span>
+                    <div className="grid grid-cols-3 gap-3 text-xs pt-1 border-t border-[#E7DFD5]">
+                      <div className="p-2.5 bg-white border border-[#E7DFD5] rounded-xl flex flex-col">
+                        <span className="text-[10px] text-[#78716C] uppercase font-bold">Store Name</span>
+                        <span className="font-bold text-[#211A19] truncate">Priya Organic Mart</span>
                       </div>
 
-                      <div className="p-2.5 bg-white border border-[#E4DCC9] rounded-xl flex flex-col">
-                        <span className="text-[10px] text-[#6B7C70] uppercase font-bold">Category</span>
-                        <span className="font-bold text-[#18281F] truncate">Organic Fruits &amp; Produce</span>
+                      <div className="p-2.5 bg-white border border-[#E7DFD5] rounded-xl flex flex-col">
+                        <span className="text-[10px] text-[#78716C] uppercase font-bold">Category</span>
+                        <span className="font-bold text-[#211A19] truncate">Organic Fruits &amp; Produce</span>
                       </div>
 
-                      <div className="p-2.5 bg-white border border-[#E4DCC9] rounded-xl flex flex-col">
-                        <span className="text-[10px] text-[#6B7C70] uppercase font-bold">Store Rating</span>
+                      <div className="p-2.5 bg-white border border-[#E7DFD5] rounded-xl flex flex-col">
+                        <span className="text-[10px] text-[#78716C] uppercase font-bold">Store Rating</span>
                         <span className="font-mono font-bold text-amber-700">4.6 / 5.0 ⭐</span>
                       </div>
                     </div>
 
-                    <div className="p-2.5 bg-[#EFE8D8]/70 rounded-xl border border-[#C4A066]/30 text-[11px] text-[#18281F] font-semibold flex items-center justify-between">
+                    <div className="p-2.5 bg-[#EEE5DA]/70 rounded-xl border border-[#C8A878]/30 text-[11px] text-[#211A19] font-semibold flex items-center justify-between">
                       <span>Purchasing &amp; Ordering Privilege:</span>
                       <span className="text-[#D97706] font-bold">CAN PLACE ORDERS DIRECTLY FROM WEBSITE PORTAL</span>
                     </div>
@@ -471,15 +471,15 @@ export const UserDetailsCRMModal: React.FC<UserDetailsCRMModalProps> = ({
                   {mockOrders.map((ord) => (
                     <div
                       key={ord.id}
-                      className="p-3.5 bg-[#FAF9F6] border border-[#E4DCC9] rounded-xl flex items-center justify-between shadow-xs hover:border-[#C4A066] transition-all"
+                      className="p-3.5 bg-[#FAF8F5] border border-[#E7DFD5] rounded-xl flex items-center justify-between shadow-xs hover:border-[#C8A878] transition-all"
                     >
                       <div className="flex flex-col gap-0.5 min-w-0">
                         <div className="flex items-center gap-2">
-                          <span className="font-mono font-bold text-[#C4A066]">{ord.id}</span>
-                          <span className="font-bold text-[#18281F]">{ord.storeName}</span>
+                          <span className="font-mono font-bold text-[#C8A878]">{ord.id}</span>
+                          <span className="font-bold text-[#211A19]">{ord.storeName}</span>
                         </div>
-                        <span className="text-[11px] text-[#6B7C70] truncate">{ord.items}</span>
-                        <span className="text-[10px] text-[#6B7C70]">{formatDate(ord.date)}</span>
+                        <span className="text-[11px] text-[#78716C] truncate">{ord.items}</span>
+                        <span className="text-[10px] text-[#78716C]">{formatDate(ord.date)}</span>
                       </div>
 
                       <div className="flex items-center gap-3 shrink-0">
@@ -510,12 +510,12 @@ export const UserDetailsCRMModal: React.FC<UserDetailsCRMModalProps> = ({
                   {mockPayments.map((pay) => (
                     <div
                       key={pay.txnId}
-                      className="p-3.5 bg-[#FAF9F6] border border-[#E4DCC9] rounded-xl flex items-center justify-between shadow-xs"
+                      className="p-3.5 bg-[#FAF8F5] border border-[#E7DFD5] rounded-xl flex items-center justify-between shadow-xs"
                     >
                       <div className="flex flex-col gap-0.5">
-                        <span className="font-mono font-bold text-[#18281F] text-[11px]">{pay.txnId}</span>
-                        <span className="text-[#6B7C70] font-semibold">{pay.method} • Order {pay.orderId}</span>
-                        <span className="text-[10px] text-[#6B7C70]">{formatDate(pay.date)}</span>
+                        <span className="font-mono font-bold text-[#211A19] text-[11px]">{pay.txnId}</span>
+                        <span className="text-[#78716C] font-semibold">{pay.method} • Order {pay.orderId}</span>
+                        <span className="text-[10px] text-[#78716C]">{formatDate(pay.date)}</span>
                       </div>
 
                       <div className="flex items-center gap-3">
@@ -531,7 +531,7 @@ export const UserDetailsCRMModal: React.FC<UserDetailsCRMModalProps> = ({
               {activeTab === 'complaints' && (
                 <div className="flex flex-col gap-2 text-xs animate-fadeIn">
                   {userPastTickets.length === 0 ? (
-                    <div className="p-6 text-center text-[#6B7C70] bg-[#FAF9F6] rounded-xl border border-[#E4DCC9]">
+                    <div className="p-6 text-center text-[#78716C] bg-[#FAF8F5] rounded-xl border border-[#E7DFD5]">
                       No ticket complaints on record for {user.name}.
                     </div>
                   ) : (
@@ -542,14 +542,14 @@ export const UserDetailsCRMModal: React.FC<UserDetailsCRMModalProps> = ({
                           onClose();
                           if (onSelectTicket) onSelectTicket(t.id);
                         }}
-                        className="p-3.5 bg-[#FAF9F6] border border-[#E4DCC9] rounded-xl flex items-center justify-between cursor-pointer hover:border-[#C4A066] transition-all shadow-xs"
+                        className="p-3.5 bg-[#FAF8F5] border border-[#E7DFD5] rounded-xl flex items-center justify-between cursor-pointer hover:border-[#C8A878] transition-all shadow-xs"
                       >
                         <div className="flex flex-col gap-0.5 min-w-0 pr-2">
                           <div className="flex items-center gap-2">
-                            <span className="font-mono font-bold text-[#C4A066]">#{t.ticketNumber}</span>
-                            <span className="font-bold text-[#18281F] truncate">{t.subject}</span>
+                            <span className="font-mono font-bold text-[#C8A878]">#{t.ticketNumber}</span>
+                            <span className="font-bold text-[#211A19] truncate">{t.subject}</span>
                           </div>
-                          <span className="text-[11px] text-[#6B7C70]">Website Intake • Category: {t.category.toUpperCase()}</span>
+                          <span className="text-[11px] text-[#78716C]">Website Intake • Category: {t.category.toUpperCase()}</span>
                         </div>
 
                         <SupportTicketStatusBadge status={t.status} />
@@ -561,15 +561,15 @@ export const UserDetailsCRMModal: React.FC<UserDetailsCRMModalProps> = ({
 
               {/* 5. TAB: TIMELINE */}
               {activeTab === 'timeline' && (
-                <div className="flex flex-col gap-3 text-xs animate-fadeIn pl-2 border-l-2 border-[#C4A066]/40 ml-2">
+                <div className="flex flex-col gap-3 text-xs animate-fadeIn pl-2 border-l-2 border-[#C8A878]/40 ml-2">
                   {mockTimeline.map((item) => (
                     <div key={item.id} className="relative pl-4 flex flex-col gap-0.5">
-                      <div className="absolute -left-[21px] top-0 p-1 bg-white border border-[#C4A066] rounded-full">
+                      <div className="absolute -left-[21px] top-0 p-1 bg-white border border-[#C8A878] rounded-full">
                         {item.icon}
                       </div>
-                      <span className="font-bold text-[#18281F]">{item.title}</span>
-                      <span className="text-[#6B7C70]">{item.detail}</span>
-                      <span className="text-[10px] text-[#6B7C70] font-mono">{item.time}</span>
+                      <span className="font-bold text-[#211A19]">{item.title}</span>
+                      <span className="text-[#78716C]">{item.detail}</span>
+                      <span className="text-[10px] text-[#78716C] font-mono">{item.time}</span>
                     </div>
                   ))}
                 </div>
@@ -579,13 +579,13 @@ export const UserDetailsCRMModal: React.FC<UserDetailsCRMModalProps> = ({
               {activeTab === 'addresses' && (
                 <div className="flex flex-col gap-2.5 text-xs animate-fadeIn">
                   {mockAddresses.map((addr) => (
-                    <div key={addr.id} className="p-3.5 bg-[#FAF9F6] border border-[#E4DCC9] rounded-xl flex items-start justify-between">
+                    <div key={addr.id} className="p-3.5 bg-[#FAF8F5] border border-[#E7DFD5] rounded-xl flex items-start justify-between">
                       <div className="flex flex-col gap-1">
-                        <span className="font-bold text-[#18281F] flex items-center gap-1.5">
-                          <MapPin size={14} className="text-[#C4A066]" /> {addr.label}
+                        <span className="font-bold text-[#211A19] flex items-center gap-1.5">
+                          <MapPin size={14} className="text-[#C8A878]" /> {addr.label}
                           {addr.isDefault && <Badge variant="primary">DEFAULT</Badge>}
                         </span>
-                        <span className="text-[#6B7C70] leading-relaxed">{addr.fullAddress}</span>
+                        <span className="text-[#78716C] leading-relaxed">{addr.fullAddress}</span>
                       </div>
                     </div>
                   ))}
@@ -596,12 +596,12 @@ export const UserDetailsCRMModal: React.FC<UserDetailsCRMModalProps> = ({
               {activeTab === 'notifications' && (
                 <div className="flex flex-col gap-2 text-xs animate-fadeIn">
                   {mockNotifications.map((notif) => (
-                    <div key={notif.id} className="p-3 bg-[#FAF9F6] border border-[#E4DCC9] rounded-xl flex flex-col gap-1">
-                      <span className="font-bold text-[#18281F] flex items-center gap-1.5">
-                        <Bell size={13} className="text-[#C4A066]" /> {notif.title}
+                    <div key={notif.id} className="p-3 bg-[#FAF8F5] border border-[#E7DFD5] rounded-xl flex flex-col gap-1">
+                      <span className="font-bold text-[#211A19] flex items-center gap-1.5">
+                        <Bell size={13} className="text-[#C8A878]" /> {notif.title}
                       </span>
-                      <span className="text-[#6B7C70]">{notif.body}</span>
-                      <span className="text-[10px] text-[#6B7C70] font-mono">{notif.date}</span>
+                      <span className="text-[#78716C]">{notif.body}</span>
+                      <span className="text-[10px] text-[#78716C] font-mono">{notif.date}</span>
                     </div>
                   ))}
                 </div>
@@ -611,12 +611,12 @@ export const UserDetailsCRMModal: React.FC<UserDetailsCRMModalProps> = ({
               {activeTab === 'audit_logs' && (
                 <div className="flex flex-col gap-2 text-xs animate-fadeIn">
                   {mockAuditLogs.map((log) => (
-                    <div key={log.id} className="p-3 bg-[#FAF9F6] border border-[#E4DCC9] rounded-xl flex items-center justify-between">
+                    <div key={log.id} className="p-3 bg-[#FAF8F5] border border-[#E7DFD5] rounded-xl flex items-center justify-between">
                       <div className="flex flex-col gap-0.5">
-                        <span className="font-bold text-[#18281F]">{log.action}</span>
-                        <span className="text-[11px] text-[#6B7C70]">Performed by {log.performedBy} (IP: {log.ip})</span>
+                        <span className="font-bold text-[#211A19]">{log.action}</span>
+                        <span className="text-[11px] text-[#78716C]">Performed by {log.performedBy} (IP: {log.ip})</span>
                       </div>
-                      <span className="text-[11px] font-mono text-[#6B7C70]">{log.date}</span>
+                      <span className="text-[11px] font-mono text-[#78716C]">{log.date}</span>
                     </div>
                   ))}
                 </div>
@@ -625,9 +625,9 @@ export const UserDetailsCRMModal: React.FC<UserDetailsCRMModalProps> = ({
 
             {/* Right 4 Columns: CRM Quick Actions Control Panel */}
             <div className="lg:col-span-4 flex flex-col gap-3">
-              <div className="p-4 bg-white border border-[#E4DCC9] rounded-2xl shadow-sm flex flex-col gap-3">
-                <h4 className="text-xs font-bold text-[#18281F] uppercase tracking-wider flex items-center gap-1.5">
-                  <ShieldCheck size={14} className="text-[#C4A066]" /> Quick CRM Command Actions
+              <div className="p-4 bg-white border border-[#E7DFD5] rounded-2xl shadow-sm flex flex-col gap-3">
+                <h4 className="text-xs font-bold text-[#211A19] uppercase tracking-wider flex items-center gap-1.5">
+                  <ShieldCheck size={14} className="text-[#C8A878]" /> Quick CRM Command Actions
                 </h4>
 
                 {/* Direct Navigation Quick Buttons */}
@@ -663,7 +663,7 @@ export const UserDetailsCRMModal: React.FC<UserDetailsCRMModalProps> = ({
                   </Button>
                 </div>
 
-                <div className="border-t border-[#E4DCC9] pt-3 flex flex-col gap-2">
+                <div className="border-t border-[#E7DFD5] pt-3 flex flex-col gap-2">
                   <Button
                     variant="outline"
                     size="sm"

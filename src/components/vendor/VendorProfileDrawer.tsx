@@ -78,7 +78,7 @@ export const VendorProfileDrawer: React.FC<VendorProfileDrawerProps> = ({
                     <button
                       type="button"
                       onClick={() => onSelectOwner?.(vendor.ownerName)}
-                      className="font-bold text-[#C4A066] hover:underline cursor-pointer transition-colors"
+                      className="font-bold text-[#C8A878] hover:underline cursor-pointer transition-colors"
                       title="Click to view Owner details"
                     >
                       {vendor.ownerName} ↗

@@ -117,16 +117,16 @@ export const VendorProfileDetailsModal: React.FC<VendorProfileDetailsModalProps>
       ) : (
         <div className="flex flex-col gap-4">
           {/* Header Card */}
-          <div className="p-4 bg-[#FAF9F6] border border-[#E4DCC9] rounded-2xl flex items-center justify-between">
+          <div className="p-4 bg-[#FAF8F5] border border-[#E7DFD5] rounded-2xl flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-2xl bg-[#18281F] text-[#C4A066] flex items-center justify-center font-bold text-lg">
+              <div className="w-12 h-12 rounded-2xl bg-[#211A19] text-[#C8A878] flex items-center justify-center font-bold text-lg">
                 <Store size={24} />
               </div>
               <div className="flex flex-col">
-                <span className="font-bold text-[#18281F] text-sm flex items-center gap-1.5 font-serif">
+                <span className="font-bold text-[#211A19] text-sm flex items-center gap-1.5 font-serif">
                   {vendor.storeName}
                 </span>
-                <span className="text-xs text-[#6B7C70]">{vendor.email}</span>
+                <span className="text-xs text-[#78716C]">{vendor.email}</span>
               </div>
             </div>
 
@@ -136,13 +136,13 @@ export const VendorProfileDetailsModal: React.FC<VendorProfileDetailsModalProps>
           </div>
 
           {/* Rating Threshold Block Warning Meter */}
-          <div className="p-4 bg-white border border-[#E4DCC9] rounded-2xl flex flex-col gap-2.5 shadow-sm">
+          <div className="p-4 bg-white border border-[#E7DFD5] rounded-2xl flex flex-col gap-2.5 shadow-sm">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-bold text-[#18281F] uppercase tracking-wider flex items-center gap-1.5">
+              <span className="text-xs font-bold text-[#211A19] uppercase tracking-wider flex items-center gap-1.5">
                 <Star size={14} className={isBlocked ? 'text-rose-500 fill-rose-500' : 'text-amber-500 fill-amber-500'} />
                 Store Performance &amp; Auto-Block Threshold
               </span>
-              <span className="text-xs font-bold font-mono text-[#18281F]">
+              <span className="text-xs font-bold font-mono text-[#211A19]">
                 {ratingVal.toFixed(1)} / 5.0 ⭐
               </span>
             </div>
@@ -156,7 +156,7 @@ export const VendorProfileDetailsModal: React.FC<VendorProfileDetailsModalProps>
               />
             </div>
 
-            <span className="text-[11px] text-[#6B7C70]">
+            <span className="text-[11px] text-[#78716C]">
               {isBlocked
                 ? 'CRITICAL: Rating fell below 2.0 ⭐ threshold. Store is automatically BLOCKED from receiving orders.'
                 : `Store rating is currently healthy (${ratingVal} ⭐). Auto-block triggers if rating drops below 2.0 ⭐.`}
@@ -165,42 +165,42 @@ export const VendorProfileDetailsModal: React.FC<VendorProfileDetailsModalProps>
 
           {/* Vendor Details Grid */}
           <div className="grid grid-cols-2 gap-3 text-xs">
-            <div className="p-3 bg-[#FAF9F6] border border-[#E4DCC9] rounded-xl flex items-center gap-2.5">
-              <User size={16} className="text-[#C4A066]" />
+            <div className="p-3 bg-[#FAF8F5] border border-[#E7DFD5] rounded-xl flex items-center gap-2.5">
+              <User size={16} className="text-[#C8A878]" />
               <div>
-                <span className="text-[#6B7C70] block text-[10px] uppercase font-bold">Store Owner</span>
-                <span className="font-bold text-[#18281F]">{vendor.ownerName}</span>
+                <span className="text-[#78716C] block text-[10px] uppercase font-bold">Store Owner</span>
+                <span className="font-bold text-[#211A19]">{vendor.ownerName}</span>
               </div>
             </div>
 
-            <div className="p-3 bg-[#FAF9F6] border border-[#E4DCC9] rounded-xl flex items-center gap-2.5">
-              <Phone size={16} className="text-[#C4A066]" />
+            <div className="p-3 bg-[#FAF8F5] border border-[#E7DFD5] rounded-xl flex items-center gap-2.5">
+              <Phone size={16} className="text-[#C8A878]" />
               <div>
-                <span className="text-[#6B7C70] block text-[10px] uppercase font-bold">Contact Phone</span>
-                <span className="font-bold text-[#18281F]">{vendor.phone || '+91 98765 43210'}</span>
+                <span className="text-[#78716C] block text-[10px] uppercase font-bold">Contact Phone</span>
+                <span className="font-bold text-[#211A19]">{vendor.phone || '+91 98765 43210'}</span>
               </div>
             </div>
 
-            <div className="p-3 bg-[#FAF9F6] border border-[#E4DCC9] rounded-xl flex items-center gap-2.5">
-              <Home size={16} className="text-[#C4A066]" />
+            <div className="p-3 bg-[#FAF8F5] border border-[#E7DFD5] rounded-xl flex items-center gap-2.5">
+              <Home size={16} className="text-[#C8A878]" />
               <div>
-                <span className="text-[#6B7C70] block text-[10px] uppercase font-bold">Associated Society</span>
-                <span className="font-bold text-[#18281F]">{vendor.societyName}</span>
+                <span className="text-[#78716C] block text-[10px] uppercase font-bold">Associated Society</span>
+                <span className="font-bold text-[#211A19]">{vendor.societyName}</span>
               </div>
             </div>
 
             {/* Interactive Store Complaints / Tickets Card */}
             <div
               onClick={() => setShowHistory((prev) => !prev)}
-              className="p-3 bg-[#FAF9F6] border border-[#E4DCC9] rounded-xl flex items-center justify-between cursor-pointer hover:bg-[#EFE8D8] hover:border-[#C4A066] transition-all shadow-xs"
+              className="p-3 bg-[#FAF8F5] border border-[#E7DFD5] rounded-xl flex items-center justify-between cursor-pointer hover:bg-[#EEE5DA] hover:border-[#C8A878] transition-all shadow-xs"
             >
               <div className="flex items-center gap-2.5">
-                <Headphones size={16} className="text-[#C4A066]" />
+                <Headphones size={16} className="text-[#C8A878]" />
                 <div>
-                  <span className="text-[#6B7C70] block text-[10px] uppercase font-bold flex items-center gap-1">
+                  <span className="text-[#78716C] block text-[10px] uppercase font-bold flex items-center gap-1">
                     Store Tickets <ChevronRight size={12} className={`transition-transform ${showHistory ? 'rotate-90' : ''}`} />
                   </span>
-                  <span className="font-bold text-[#18281F] underline">
+                  <span className="font-bold text-[#211A19] underline">
                     {vendorPastTickets.length} Support Complaints
                   </span>
                 </div>
@@ -211,13 +211,13 @@ export const VendorProfileDetailsModal: React.FC<VendorProfileDetailsModalProps>
 
           {/* Ticket History Expansion Section */}
           {showHistory && (
-            <div className="p-4 bg-white border border-[#E4DCC9] rounded-2xl shadow-sm flex flex-col gap-2.5 animate-fadeIn">
-              <span className="text-xs font-bold text-[#18281F] uppercase tracking-wider flex items-center gap-1.5">
-                <History size={14} className="text-[#C4A066]" /> Store Complaint History ({vendorPastTickets.length})
+            <div className="p-4 bg-white border border-[#E7DFD5] rounded-2xl shadow-sm flex flex-col gap-2.5 animate-fadeIn">
+              <span className="text-xs font-bold text-[#211A19] uppercase tracking-wider flex items-center gap-1.5">
+                <History size={14} className="text-[#C8A878]" /> Store Complaint History ({vendorPastTickets.length})
               </span>
 
               {vendorPastTickets.length === 0 ? (
-                <div className="p-3 bg-[#FAF9F6] border border-[#E4DCC9] rounded-xl text-center text-xs text-[#6B7C70]">
+                <div className="p-3 bg-[#FAF8F5] border border-[#E7DFD5] rounded-xl text-center text-xs text-[#78716C]">
                   No ticket records on file for {vendor.storeName}.
                 </div>
               ) : (
@@ -229,14 +229,14 @@ export const VendorProfileDetailsModal: React.FC<VendorProfileDetailsModalProps>
                         onClose();
                         if (onSelectTicket) onSelectTicket(pt.id);
                       }}
-                      className="p-2.5 bg-[#FAF9F6] border border-[#E4DCC9] rounded-xl flex items-center justify-between cursor-pointer hover:bg-[#EFE8D8] hover:border-[#C4A066] transition-all shadow-xs"
+                      className="p-2.5 bg-[#FAF8F5] border border-[#E7DFD5] rounded-xl flex items-center justify-between cursor-pointer hover:bg-[#EEE5DA] hover:border-[#C8A878] transition-all shadow-xs"
                     >
                       <div className="flex flex-col min-w-0 flex-1 pr-2">
                         <div className="flex items-center gap-1.5">
-                          <span className="font-mono font-bold text-[#C4A066]">#{pt.ticketNumber}</span>
-                          <span className="text-[10px] text-[#6B7C70]">• {formatDate(pt.createdAt)}</span>
+                          <span className="font-mono font-bold text-[#C8A878]">#{pt.ticketNumber}</span>
+                          <span className="text-[10px] text-[#78716C]">• {formatDate(pt.createdAt)}</span>
                         </div>
-                        <span className="text-[#18281F] font-semibold text-[11px] truncate">{pt.subject}</span>
+                        <span className="text-[#211A19] font-semibold text-[11px] truncate">{pt.subject}</span>
                       </div>
 
                       <SupportTicketStatusBadge status={pt.status} />
@@ -248,19 +248,19 @@ export const VendorProfileDetailsModal: React.FC<VendorProfileDetailsModalProps>
           )}
 
           {/* Unified Website Purchasing Privileges Card */}
-          <div className="p-3 bg-[#EFE8D8]/70 border border-[#C4A066]/40 rounded-xl flex items-center justify-between text-xs">
+          <div className="p-3 bg-[#EEE5DA]/70 border border-[#C8A878]/40 rounded-xl flex items-center justify-between text-xs">
             <div className="flex items-center gap-2.5">
-              <ShoppingBag size={16} className="text-[#C4A066] shrink-0" />
+              <ShoppingBag size={16} className="text-[#C8A878] shrink-0" />
               <div>
-                <span className="font-bold text-[#18281F] block">Unified Website Ordering Privilege</span>
-                <span className="text-[11px] text-[#6B7C70]">Can order from other partner stores directly using Vendor ID (No separate user login required)</span>
+                <span className="font-bold text-[#211A19] block">Unified Website Ordering Privilege</span>
+                <span className="text-[11px] text-[#78716C]">Can order from other partner stores directly using Vendor ID (No separate user login required)</span>
               </div>
             </div>
             <Badge variant="primary">SINGLE LOGIN</Badge>
           </div>
 
           {/* Action Buttons */}
-          <div className="flex items-center justify-between gap-3 pt-3 border-t border-[#E4DCC9]">
+          <div className="flex items-center justify-between gap-3 pt-3 border-t border-[#E7DFD5]">
             {isBlocked && (
               <Button
                 variant="outline"

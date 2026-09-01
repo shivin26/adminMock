@@ -21,7 +21,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileSidebar }) => {
   const displayName = user ? `${user.firstName} ${user.lastName}` : 'Alex Vance';
 
   return (
-    <header className="sticky top-0 z-20 flex h-16 w-full items-center justify-between border-b border-[#E4DCC9] bg-white px-4 sm:px-6 transition-all shadow-2xs">
+    <header className="sticky top-0 z-20 flex h-16 w-full items-center justify-between border-b border-[#E7DFD5] bg-white px-4 sm:px-6 transition-all shadow-2xs">
       {/* Mobile Menu & Breadcrumbs Navigation */}
       <div className="flex items-center gap-3">
         {onOpenMobileSidebar && (
@@ -29,7 +29,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileSidebar }) => {
             variant="ghost"
             size="icon"
             onClick={onOpenMobileSidebar}
-            className="lg:hidden text-[#6B7C70]"
+            className="lg:hidden text-[#78716C]"
             aria-label="Open mobile menu"
           >
             <Menu className="h-5 w-5" />
@@ -44,11 +44,11 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileSidebar }) => {
         <div className="relative hidden md:flex items-center">
           <button
             type="button"
-            className="flex items-center gap-3 h-10 px-3.5 rounded-[10px] border border-[#E4DCC9] bg-[#F8F5EE] text-[12px] text-[#6B7C70] hover:border-[#C4A066] transition cursor-pointer font-sans"
+            className="flex items-center gap-3 h-10 px-3.5 rounded-[10px] border border-[#E7DFD5] bg-[#FAF8F5] text-[12px] text-[#78716C] hover:border-[#C8A878] transition cursor-pointer font-sans"
           >
-            <Search className="h-3.5 w-3.5 text-[#C4A066]" />
+            <Search className="h-3.5 w-3.5 text-[#C8A878]" />
             <span>Search merchants, societies, transactions...</span>
-            <kbd className="font-mono text-[10px] bg-white px-1.5 py-0.5 rounded text-[#6B7C70] border border-[#E4DCC9]">
+            <kbd className="font-mono text-[10px] bg-white px-1.5 py-0.5 rounded text-[#78716C] border border-[#E7DFD5]">
               ⌘K
             </kbd>
           </button>
@@ -60,7 +60,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileSidebar }) => {
           size="icon"
           onClick={toggleTheme}
           aria-label="Toggle dark/light theme"
-          className="text-[#6B7C70] hover:text-[#18281F] hover:bg-[#EFE8D8]"
+          className="text-[#78716C] hover:text-[#211A19] hover:bg-[#FAF8F5]"
         >
           {isDark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
         </Button>
@@ -68,12 +68,12 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileSidebar }) => {
         {/* Notification Bell Dropdown */}
         <NotificationMenu />
 
-        <div className="h-4 w-px bg-[#E4DCC9] hidden sm:block mx-1" />
+        <div className="h-4 w-px bg-[#E7DFD5] hidden sm:block mx-1" />
 
         {/* Profile Avatar Controls */}
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-2.5">
-            <div className="h-9 w-9 rounded-full bg-[#18281F] p-0.5 ring-2 ring-[#C4A066]/40">
+            <div className="h-9 w-9 rounded-full bg-[#541D26] p-0.5 ring-2 ring-[#C8A878]/40">
               <img
                 src={user?.avatarUrl || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&q=80'}
                 alt={displayName}
@@ -81,10 +81,10 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileSidebar }) => {
               />
             </div>
             <div className="hidden lg:flex flex-col text-left">
-              <span className="font-serif text-[14px] font-bold text-[#18281F] leading-tight">
+              <span className="font-serif text-[14px] font-bold text-[#211A19] leading-tight">
                 {displayName}
               </span>
-              <span className="font-sans text-[12px] text-[#6B7C70] font-semibold">
+              <span className="font-sans text-[12px] text-[#78716C] font-semibold">
                 {user?.role || 'Super Admin'}
               </span>
             </div>
@@ -94,7 +94,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileSidebar }) => {
             variant="ghost"
             size="icon"
             onClick={logout}
-            className="text-[#6B7C70] hover:text-[#B91C1C] hover:bg-[#EFE8D8]"
+            className="text-[#78716C] hover:text-[#DC2626] hover:bg-[#FEF2F2]"
             aria-label="Logout"
           >
             <LogOut className="h-4 w-4" />

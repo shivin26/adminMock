@@ -23,12 +23,13 @@ export const PowerSectionCheckboxGrid: React.FC<PowerSectionCheckboxGridProps> =
   selectedPowers,
   onChange,
 }) => {
-  const { isSuperAdmin } = usePermission();
+  const { isSuperAdmin, userPowers } = usePermission();
 
   const togglePower = (powerId: PowerSection) => {
-    // Sub-admins cannot grant/delegate SUB_ADMINS power section
-    if (powerId === 'SUB_ADMINS' && !isSuperAdmin) {
-      return;
+    // Sub-admins cannot grant SUB_ADMINS power section or any power they do not possess
+    if (!isSuperAdmin) {
+      if (powerId === 'SUB_ADMINS') return;
+      if (!userPowers.includes(powerId)) return;
     }
 
     if (selectedPowers.includes(powerId)) {
@@ -40,14 +41,26 @@ export const PowerSectionCheckboxGrid: React.FC<PowerSectionCheckboxGridProps> =
 
   return (
     <div className="power-grid-container font-sans">
-      <label className="text-xs font-semibold text-[#6B7C70] uppercase tracking-wider block mb-2 font-mono">
-        Select Delegated Power Sections {!isSuperAdmin && '(Restricted Mode)'}
+      <label className="text-xs font-semibold text-[#78716C] uppercase tracking-wider block mb-2 font-mono">
+        Select Delegated Power Sections {!isSuperAdmin && '(Delegation Power Ceiling Active)'}
       </label>
 
       <div className="power-grid">
         {POWER_SECTIONS_LIST.map((item) => {
           const isSelected = selectedPowers.includes(item.id);
-          const isDisabled = item.id === 'SUB_ADMINS' && !isSuperAdmin;
+          const isSubAdminPower = item.id === 'SUB_ADMINS';
+          const isOwnedByAdmin = isSuperAdmin || userPowers.includes(item.id);
+
+          const isDisabled = !isSuperAdmin && (isSubAdminPower || !isOwnedByAdmin);
+
+          let disabledReason = '';
+          if (isDisabled) {
+            if (isSubAdminPower) {
+              disabledReason = 'SUPER ADMIN ONLY';
+            } else if (!isOwnedByAdmin) {
+              disabledReason = 'NOT IN YOUR POWERS';
+            }
+          }
 
           return (
             <div
@@ -59,7 +72,7 @@ export const PowerSectionCheckboxGrid: React.FC<PowerSectionCheckboxGridProps> =
                 <div className="power-icon-wrapper">{ICON_MAP[item.iconName]}</div>
                 {isDisabled ? (
                   <span className="px-1.5 py-0.5 text-[9px] font-bold bg-amber-100 text-amber-900 border border-amber-300 rounded font-mono flex items-center gap-1">
-                    <Lock size={10} /> SUPER ADMIN ONLY
+                    <Lock size={10} /> {disabledReason}
                   </span>
                 ) : (
                   <div className={`checkbox-indicator ${isSelected ? 'checked' : ''}`}>

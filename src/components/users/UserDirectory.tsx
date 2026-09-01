@@ -176,11 +176,11 @@ export const UserDirectory: React.FC<UserDirectoryProps> = ({ onOpenUserProfile 
 
   // Render Sort Indicator Icon
   const renderSortIcon = (field: SortField) => {
-    if (sortField !== field) return <ArrowUpDown size={12} className="text-[#6B7C70]/60 ml-1 inline" />;
+    if (sortField !== field) return <ArrowUpDown size={12} className="text-[#78716C]/60 ml-1 inline" />;
     return sortOrder === 'asc' ? (
-      <ArrowUp size={12} className="text-[#C4A066] ml-1 inline" />
+      <ArrowUp size={12} className="text-[#C8A878] ml-1 inline" />
     ) : (
-      <ArrowDown size={12} className="text-[#C4A066] ml-1 inline" />
+      <ArrowDown size={12} className="text-[#C8A878] ml-1 inline" />
     );
   };
 
@@ -321,13 +321,13 @@ export const UserDirectory: React.FC<UserDirectoryProps> = ({ onOpenUserProfile 
   return (
     <div className="flex flex-col gap-4 w-full">
       {/* Top Controls: Search, Filters & Export Toolbar */}
-      <div className="p-4 bg-white border border-[#E4DCC9] rounded-2xl shadow-sm flex flex-col gap-4">
+      <div className="p-4 bg-white border border-[#E7DFD5] rounded-2xl shadow-sm flex flex-col gap-4">
         <div className="flex flex-col lg:flex-row items-center justify-between gap-3">
           {/* 1. Search Bar */}
           <div className="w-full lg:w-80">
             <Input
               placeholder="Search ID, Name, Email, Phone, Society..."
-              leftIcon={<Search size={15} className="text-[#C4A066]" />}
+              leftIcon={<Search size={15} className="text-[#C8A878]" />}
               value={search}
               onChange={(e) => {
                 setSearch(e.target.value);
@@ -340,14 +340,14 @@ export const UserDirectory: React.FC<UserDirectoryProps> = ({ onOpenUserProfile 
           <div className="flex flex-wrap items-center gap-2.5 w-full lg:w-auto">
             {/* Status Filter */}
             <div className="flex items-center gap-1 text-xs">
-              <SlidersHorizontal size={13} className="text-[#C4A066]" />
+              <SlidersHorizontal size={13} className="text-[#C8A878]" />
               <select
                 value={statusFilter}
                 onChange={(e) => {
                   setStatusFilter(e.target.value);
                   setCurrentPage(1);
                 }}
-                className="p-2 bg-[#FAF9F6] border border-[#E4DCC9] rounded-xl text-xs font-semibold text-[#18281F] outline-none cursor-pointer"
+                className="p-2 bg-[#FAF8F5] border border-[#E7DFD5] rounded-xl text-xs font-semibold text-[#211A19] outline-none cursor-pointer"
               >
                 <option value="all">All Statuses</option>
                 <option value="active">Active Accounts</option>
@@ -363,7 +363,7 @@ export const UserDirectory: React.FC<UserDirectoryProps> = ({ onOpenUserProfile 
                 setSocietyFilter(e.target.value);
                 setCurrentPage(1);
               }}
-              className="p-2 bg-[#FAF9F6] border border-[#E4DCC9] rounded-xl text-xs font-semibold text-[#18281F] outline-none cursor-pointer"
+              className="p-2 bg-[#FAF8F5] border border-[#E7DFD5] rounded-xl text-xs font-semibold text-[#211A19] outline-none cursor-pointer"
             >
               <option value="all">All Societies</option>
               {societiesList.map((soc) => (
@@ -392,7 +392,7 @@ export const UserDirectory: React.FC<UserDirectoryProps> = ({ onOpenUserProfile 
           </div>
 
           {/* 3. Export Actions (CSV, Excel, PDF) */}
-          <div className="flex items-center gap-1.5 w-full lg:w-auto justify-end border-t lg:border-t-0 pt-2 lg:pt-0 border-[#E4DCC9]">
+          <div className="flex items-center gap-1.5 w-full lg:w-auto justify-end border-t lg:border-t-0 pt-2 lg:pt-0 border-[#E7DFD5]">
             <Button
               variant="outline"
               size="sm"
@@ -424,9 +424,9 @@ export const UserDirectory: React.FC<UserDirectoryProps> = ({ onOpenUserProfile 
         </div>
 
         {/* 4. Saved Filter Presets Chips */}
-        <div className="flex items-center gap-2 flex-wrap pt-2 border-t border-[#E4DCC9]/60 text-xs">
-          <span className="text-[#6B7C70] font-bold flex items-center gap-1 text-[11px]">
-            <Bookmark size={12} className="text-[#C4A066]" /> Saved Presets:
+        <div className="flex items-center gap-2 flex-wrap pt-2 border-t border-[#E7DFD5]/60 text-xs">
+          <span className="text-[#78716C] font-bold flex items-center gap-1 text-[11px]">
+            <Bookmark size={12} className="text-[#C8A878]" /> Saved Presets:
           </span>
 
           {savedPresets.map((preset) => (
@@ -434,7 +434,7 @@ export const UserDirectory: React.FC<UserDirectoryProps> = ({ onOpenUserProfile 
               key={preset.id}
               type="button"
               onClick={() => applyPreset(preset)}
-              className="px-2.5 py-1 bg-[#FAF9F6] border border-[#E4DCC9] rounded-lg text-[11px] font-bold text-[#18281F] hover:bg-[#EFE8D8] hover:border-[#C4A066] transition-all cursor-pointer shadow-2xs"
+              className="px-2.5 py-1 bg-[#FAF8F5] border border-[#E7DFD5] rounded-lg text-[11px] font-bold text-[#211A19] hover:bg-[#EEE5DA] hover:border-[#C8A878] transition-all cursor-pointer shadow-2xs"
             >
               {preset.name}
             </button>
@@ -447,7 +447,7 @@ export const UserDirectory: React.FC<UserDirectoryProps> = ({ onOpenUserProfile 
                 placeholder="Preset Name..."
                 value={newPresetName}
                 onChange={(e) => setNewPresetName(e.target.value)}
-                className="p-1 px-2 border border-[#E4DCC9] rounded-lg text-xs outline-none"
+                className="p-1 px-2 border border-[#E7DFD5] rounded-lg text-xs outline-none"
               />
               <Button size="sm" onClick={handleSavePreset}>
                 Save
@@ -460,7 +460,7 @@ export const UserDirectory: React.FC<UserDirectoryProps> = ({ onOpenUserProfile 
             <button
               type="button"
               onClick={() => setIsSavingPreset(true)}
-              className="text-[11px] font-bold text-[#C4A066] hover:underline ml-auto cursor-pointer"
+              className="text-[11px] font-bold text-[#C8A878] hover:underline ml-auto cursor-pointer"
             >
               + Save Current Filter Preset
             </button>
@@ -499,7 +499,7 @@ export const UserDirectory: React.FC<UserDirectoryProps> = ({ onOpenUserProfile 
 
       {/* Loading Skeleton State */}
       {isLoading && (
-        <div className="p-12 text-center bg-white border border-[#E4DCC9] rounded-2xl shadow-sm">
+        <div className="p-12 text-center bg-white border border-[#E7DFD5] rounded-2xl shadow-sm">
           <LoadingSpinner size="md" label="Loading User Directory enterprise table..." />
         </div>
       )}
@@ -517,11 +517,11 @@ export const UserDirectory: React.FC<UserDirectoryProps> = ({ onOpenUserProfile 
 
       {/* Empty State */}
       {!isLoading && !isError && filteredAndSortedUsers.length === 0 && (
-        <div className="p-12 text-center bg-white border border-[#E4DCC9] rounded-2xl shadow-sm flex flex-col items-center gap-3">
-          <User size={36} className="text-[#C4A066]/60" />
+        <div className="p-12 text-center bg-white border border-[#E7DFD5] rounded-2xl shadow-sm flex flex-col items-center gap-3">
+          <User size={36} className="text-[#C8A878]/60" />
           <div className="flex flex-col gap-0.5">
-            <span className="font-bold text-[#18281F] text-sm font-serif">No Users Found</span>
-            <span className="text-xs text-[#6B7C70]">No resident customer accounts matched your search or filter parameters.</span>
+            <span className="font-bold text-[#211A19] text-sm font-serif">No Users Found</span>
+            <span className="text-xs text-[#78716C]">No resident customer accounts matched your search or filter parameters.</span>
           </div>
           <Button
             variant="outline"
@@ -539,42 +539,42 @@ export const UserDirectory: React.FC<UserDirectoryProps> = ({ onOpenUserProfile 
 
       {/* Enterprise Data Table (Sticky Header & Optimized Virtual Rendering) */}
       {!isLoading && !isError && filteredAndSortedUsers.length > 0 && (
-        <div className="bg-white border border-[#E4DCC9] rounded-2xl shadow-sm overflow-hidden flex flex-col">
+        <div className="bg-white border border-[#E7DFD5] rounded-2xl shadow-sm overflow-hidden flex flex-col">
           <div className="overflow-x-auto max-h-[600px] overflow-y-auto relative">
             <table className="w-full text-left border-collapse">
               {/* Sticky Header */}
-              <thead className="bg-[#FAF9F6] sticky top-0 z-10 border-b border-[#E4DCC9] shadow-xs text-[11px] font-bold text-[#18281F] uppercase tracking-wider">
+              <thead className="bg-[#FAF8F5] sticky top-0 z-10 border-b border-[#E7DFD5] shadow-xs text-[11px] font-bold text-[#211A19] uppercase tracking-wider">
                 <tr>
                   <th className="p-3 w-10 text-center">
                     <div onClick={toggleSelectAll} className="cursor-pointer inline-block">
                       {selectedIds.size === paginatedUsers.length && paginatedUsers.length > 0 ? (
-                        <CheckSquare size={16} className="text-[#C4A066]" />
+                        <CheckSquare size={16} className="text-[#C8A878]" />
                       ) : (
-                        <Square size={16} className="text-[#6B7C70]" />
+                        <Square size={16} className="text-[#78716C]" />
                       )}
                     </div>
                   </th>
                   <th className="p-3">Profile</th>
-                  <th className="p-3 cursor-pointer hover:bg-[#EFE8D8] transition-colors" onClick={() => handleSort('id')}>
+                  <th className="p-3 cursor-pointer hover:bg-[#EEE5DA] transition-colors" onClick={() => handleSort('id')}>
                     User ID {renderSortIcon('id')}
                   </th>
-                  <th className="p-3 cursor-pointer hover:bg-[#EFE8D8] transition-colors" onClick={() => handleSort('name')}>
+                  <th className="p-3 cursor-pointer hover:bg-[#EEE5DA] transition-colors" onClick={() => handleSort('name')}>
                     Full Name {renderSortIcon('name')}
                   </th>
                   <th className="p-3">Email</th>
                   <th className="p-3">Phone</th>
                   <th className="p-3">Society</th>
                   <th className="p-3">Apartment</th>
-                  <th className="p-3 cursor-pointer hover:bg-[#EFE8D8] transition-colors" onClick={() => handleSort('totalOrders')}>
+                  <th className="p-3 cursor-pointer hover:bg-[#EEE5DA] transition-colors" onClick={() => handleSort('totalOrders')}>
                     Orders {renderSortIcon('totalOrders')}
                   </th>
-                  <th className="p-3 cursor-pointer hover:bg-[#EFE8D8] transition-colors" onClick={() => handleSort('totalSpend')}>
+                  <th className="p-3 cursor-pointer hover:bg-[#EEE5DA] transition-colors" onClick={() => handleSort('totalSpend')}>
                     Total Spend {renderSortIcon('totalSpend')}
                   </th>
-                  <th className="p-3 cursor-pointer hover:bg-[#EFE8D8] transition-colors" onClick={() => handleSort('status')}>
+                  <th className="p-3 cursor-pointer hover:bg-[#EEE5DA] transition-colors" onClick={() => handleSort('status')}>
                     Status {renderSortIcon('status')}
                   </th>
-                  <th className="p-3 cursor-pointer hover:bg-[#EFE8D8] transition-colors" onClick={() => handleSort('lastActive')}>
+                  <th className="p-3 cursor-pointer hover:bg-[#EEE5DA] transition-colors" onClick={() => handleSort('lastActive')}>
                     Last Active {renderSortIcon('lastActive')}
                   </th>
                   <th className="p-3 text-right">Actions</th>
@@ -582,14 +582,14 @@ export const UserDirectory: React.FC<UserDirectoryProps> = ({ onOpenUserProfile 
               </thead>
 
               {/* Table Rows Body */}
-              <tbody className="divide-y divide-[#E4DCC9]/60 text-xs">
+              <tbody className="divide-y divide-[#E7DFD5]/60 text-xs">
                 {paginatedUsers.map((u) => {
                   const isChecked = selectedIds.has(u.id);
                   return (
                     <tr
                       key={u.id}
                       onClick={() => onOpenUserProfile && onOpenUserProfile(u.name)}
-                      className={`hover:bg-[#FAF9F6] transition-colors cursor-pointer ${
+                      className={`hover:bg-[#FAF8F5] transition-colors cursor-pointer ${
                         isChecked ? 'bg-[#FEF3C7]/40' : ''
                       }`}
                     >
@@ -597,60 +597,60 @@ export const UserDirectory: React.FC<UserDirectoryProps> = ({ onOpenUserProfile 
                       <td className="p-3 text-center" onClick={(e) => e.stopPropagation()}>
                         <div onClick={() => toggleSelectRow(u.id)} className="cursor-pointer inline-block">
                           {isChecked ? (
-                            <CheckSquare size={16} className="text-[#C4A066]" />
+                            <CheckSquare size={16} className="text-[#C8A878]" />
                           ) : (
-                            <Square size={16} className="text-[#6B7C70]" />
+                            <Square size={16} className="text-[#78716C]" />
                           )}
                         </div>
                       </td>
 
                       {/* 1. Profile (Avatar) */}
                       <td className="p-3">
-                        <div className="w-8 h-8 rounded-full bg-[#18281F] text-white flex items-center justify-center font-bold text-xs shadow-xs">
+                        <div className="w-8 h-8 rounded-full bg-[#211A19] text-white flex items-center justify-center font-bold text-xs shadow-xs">
                           {u.name.charAt(0)}
                         </div>
                       </td>
 
                       {/* 2. User ID */}
-                      <td className="p-3 font-mono font-bold text-xs text-[#C4A066] whitespace-nowrap">
+                      <td className="p-3 font-mono font-bold text-xs text-[#C8A878] whitespace-nowrap">
                         {u.id}
                       </td>
 
                       {/* 3. Full Name */}
-                      <td className="p-3 font-bold text-[#18281F] whitespace-nowrap hover:text-[#C4A066] underline">
+                      <td className="p-3 font-bold text-[#211A19] whitespace-nowrap hover:text-[#C8A878] underline">
                         {u.name}
                       </td>
 
                       {/* 4. Email */}
-                      <td className="p-3 text-[#6B7C70] whitespace-nowrap">
+                      <td className="p-3 text-[#78716C] whitespace-nowrap">
                         <span className="flex items-center gap-1">
-                          <Mail size={12} className="text-[#C4A066]" /> {u.email}
+                          <Mail size={12} className="text-[#C8A878]" /> {u.email}
                         </span>
                       </td>
 
                       {/* 5. Phone */}
-                      <td className="p-3 text-[#18281F] whitespace-nowrap font-mono">
+                      <td className="p-3 text-[#211A19] whitespace-nowrap font-mono">
                         <span className="flex items-center gap-1">
-                          <Phone size={12} className="text-[#6B7C70]" /> {u.phone}
+                          <Phone size={12} className="text-[#78716C]" /> {u.phone}
                         </span>
                       </td>
 
                       {/* 6. Society */}
-                      <td className="p-3 text-[#18281F] font-semibold whitespace-nowrap">
+                      <td className="p-3 text-[#211A19] font-semibold whitespace-nowrap">
                         <span className="flex items-center gap-1">
-                          <Home size={12} className="text-[#C4A066]" /> {u.societyName}
+                          <Home size={12} className="text-[#C8A878]" /> {u.societyName}
                         </span>
                       </td>
 
                       {/* 7. Apartment */}
-                      <td className="p-3 text-[#18281F] font-mono font-bold whitespace-nowrap">
+                      <td className="p-3 text-[#211A19] font-mono font-bold whitespace-nowrap">
                         {u.flatNumber}
                       </td>
 
                       {/* 8. Orders */}
-                      <td className="p-3 font-bold text-[#18281F] whitespace-nowrap">
+                      <td className="p-3 font-bold text-[#211A19] whitespace-nowrap">
                         <span className="flex items-center gap-1">
-                          <ShoppingBag size={12} className="text-[#C4A066]" /> {u.totalOrders || 0}
+                          <ShoppingBag size={12} className="text-[#C8A878]" /> {u.totalOrders || 0}
                         </span>
                       </td>
 
@@ -669,9 +669,9 @@ export const UserDirectory: React.FC<UserDirectoryProps> = ({ onOpenUserProfile 
                       </td>
 
                       {/* 11. Last Active */}
-                      <td className="p-3 text-[#6B7C70] font-mono text-[11px] whitespace-nowrap">
+                      <td className="p-3 text-[#78716C] font-mono text-[11px] whitespace-nowrap">
                         <span className="flex items-center gap-1">
-                          <Clock size={11} className="text-[#6B7C70]" /> {formatDate(u.lastActive || u.createdAt)}
+                          <Clock size={11} className="text-[#78716C]" /> {formatDate(u.lastActive || u.createdAt)}
                         </span>
                       </td>
 
@@ -696,8 +696,8 @@ export const UserDirectory: React.FC<UserDirectoryProps> = ({ onOpenUserProfile 
           </div>
 
           {/* Pagination Footer */}
-          <div className="p-3 bg-[#FAF9F6] border-t border-[#E4DCC9] flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
-            <div className="flex items-center gap-2 text-[#6B7C70]">
+          <div className="p-3 bg-[#FAF8F5] border-t border-[#E7DFD5] flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
+            <div className="flex items-center gap-2 text-[#78716C]">
               <span>Rows per page:</span>
               <select
                 value={pageSize}
@@ -705,7 +705,7 @@ export const UserDirectory: React.FC<UserDirectoryProps> = ({ onOpenUserProfile 
                   setPageSize(Number(e.target.value));
                   setCurrentPage(1);
                 }}
-                className="p-1 bg-white border border-[#E4DCC9] rounded-lg text-xs font-bold outline-none cursor-pointer"
+                className="p-1 bg-white border border-[#E7DFD5] rounded-lg text-xs font-bold outline-none cursor-pointer"
               >
                 <option value={5}>5</option>
                 <option value={10}>10</option>
@@ -729,7 +729,7 @@ export const UserDirectory: React.FC<UserDirectoryProps> = ({ onOpenUserProfile 
               >
                 Previous
               </Button>
-              <span className="px-3 py-1 font-bold text-[#18281F]">
+              <span className="px-3 py-1 font-bold text-[#211A19]">
                 Page {currentPage} of {totalPages}
               </span>
               <Button

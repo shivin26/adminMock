@@ -43,6 +43,8 @@ export const useTicketMessages = (ticketId?: string | number) => {
   });
 };
 
+import { logBackendMutation } from '../services/audit.service';
+
 export const useSendTicketReply = () => {
   const queryClient = useQueryClient();
   const { addToast } = useToast();
@@ -58,6 +60,7 @@ export const useSendTicketReply = () => {
 
     onSuccess: (_data, variables) => {
       queryClient.invalidateQueries({ queryKey: CACHE_KEYS.support.all });
+      logBackendMutation('SUPPORT', 'REPLY', `Dispatched reply on support ticket #${variables.ticketId}`, variables.payload.text, String(variables.ticketId));
       addToast({
         type: 'success',
         title: 'Response Dispatched',
@@ -80,6 +83,7 @@ export const useSendTicketReply = () => {
 
 export const useUpdateTicketStatus = () => {
   const queryClient = useQueryClient();
+  const { addToast } = useToast();
 
   return useMutation({
     mutationFn: ({
@@ -94,8 +98,22 @@ export const useUpdateTicketStatus = () => {
       assignedTo?: string;
     }) => supportApi.updateTicketStatus(ticketId, status, priority, assignedTo),
 
-    onSuccess: () => {
+    onSuccess: (_data, variables) => {
       queryClient.invalidateQueries({ queryKey: CACHE_KEYS.support.all });
+      logBackendMutation('SUPPORT', 'STATUS_CHANGE', `Updated parameters for support ticket #${variables.ticketId}`, `Status: ${variables.status || 'unchanged'}, Priority: ${variables.priority || 'unchanged'}`, String(variables.ticketId));
+      addToast({
+        type: 'success',
+        title: 'Ticket Parameters Updated',
+        description: `Support Ticket parameters updated (Status: ${variables.status || 'unchanged'}).`,
+      });
+    },
+    onError: (error: unknown) => {
+      const appErr = ErrorHandler.handle(error);
+      addToast({
+        type: 'error',
+        title: 'Ticket Update Failed',
+        description: appErr.message,
+      });
     },
   });
 };
@@ -109,6 +127,7 @@ export const useCreateSupportTicket = () => {
 
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: CACHE_KEYS.support.all });
+      logBackendMutation('SUPPORT', 'CREATE', `Created support ticket #${data.ticketNumber}: "${data.subject}"`, `Category: ${data.category}, Priority: ${data.priority}`, String(data.id));
       addToast({
         type: 'success',
         title: 'Ticket Created',

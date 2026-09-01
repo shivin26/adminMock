@@ -59,9 +59,11 @@ export interface SubAdminUser {
   password?: string;
   role: 'super_admin' | 'sub_admin';
   powers: PowerSection[];
+  allowedDelegationPowers?: PowerSection[];
   status: 'active' | 'suspended';
   createdAt: string;
   createdBy?: string;
+  creatorId?: string;
   createdRole?: 'super_admin' | 'sub_admin';
 }
 
@@ -70,11 +72,14 @@ export interface CreateSubAdminRequest {
   email: string;
   password?: string;
   powers: PowerSection[];
+  allowedDelegationPowers?: PowerSection[];
   createdBy?: string;
+  creatorId?: string;
   createdRole?: 'super_admin' | 'sub_admin';
 }
 
 export interface UpdateSubAdminPowersRequest {
   powers: PowerSection[];
+  allowedDelegationPowers?: PowerSection[];
   status?: 'active' | 'suspended';
 }

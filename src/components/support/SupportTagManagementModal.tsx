@@ -35,8 +35,8 @@ const PRESET_SYSTEM_TAGS: SupportTag[] = [
   { id: '8', name: 'Orders', color: '#14B8A6', description: 'Order fulfillment status', usageCount: 164, isSystem: true },
   { id: '9', name: 'Delivery', color: '#84CC16', description: 'Gate delivery partner access', usageCount: 120, isSystem: true },
   { id: '10', name: 'Inventory', color: '#EAB308', description: 'Stock sync issues', usageCount: 45, isSystem: true },
-  { id: '11', name: 'Billing', color: '#C4A066', description: 'Tax invoices & GST', usageCount: 98, isSystem: true },
-  { id: '12', name: 'Technical', color: '#18281F', description: 'System API & server errors', usageCount: 210, isSystem: true },
+  { id: '11', name: 'Billing', color: '#C8A878', description: 'Tax invoices & GST', usageCount: 98, isSystem: true },
+  { id: '12', name: 'Technical', color: '#211A19', description: 'System API & server errors', usageCount: 210, isSystem: true },
   { id: '13', name: 'UI', color: '#64748B', description: 'Frontend layout glitches', usageCount: 32, isSystem: true },
   { id: '14', name: 'Backend', color: '#0284C7', description: 'Database & webhook issues', usageCount: 64, isSystem: true },
   { id: '15', name: 'Critical', color: '#DC2626', description: 'Severe platform outages', usageCount: 18, isSystem: true },
@@ -50,7 +50,7 @@ const PRESET_SYSTEM_TAGS: SupportTag[] = [
 
 const PRESET_COLORS = [
   '#EF4444', '#F59E0B', '#10B981', '#3B82F6', '#8B5CF6',
-  '#EC4899', '#C4A066', '#18281F', '#0284C7', '#059669',
+  '#EC4899', '#C8A878', '#211A19', '#0284C7', '#059669',
 ];
 
 export interface SupportTagManagementModalProps {
@@ -69,7 +69,7 @@ export const SupportTagManagementModal: React.FC<SupportTagManagementModalProps>
   const [isEditing, setIsEditing] = useState<string | null>(null);
   const [tagName, setTagName] = useState('');
   const [tagDescription, setTagDescription] = useState('');
-  const [tagColor, setTagColor] = useState('#C4A066');
+  const [tagColor, setTagColor] = useState('#C8A878');
 
   // Merge Tags state
   const [isMerging, setIsMerging] = useState(false);
@@ -111,7 +111,7 @@ export const SupportTagManagementModal: React.FC<SupportTagManagementModalProps>
 
     setTagName('');
     setTagDescription('');
-    setTagColor('#C4A066');
+    setTagColor('#C8A878');
   };
 
   const handleStartEdit = (t: SupportTag) => {
@@ -154,13 +154,13 @@ export const SupportTagManagementModal: React.FC<SupportTagManagementModalProps>
         {/* Top Controls: Search Bar & Merge Toggle */}
         <div className="flex items-center justify-between gap-3 flex-wrap">
           <div className="relative flex-1 min-w-[240px]">
-            <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#6B7C70]" />
+            <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#78716C]" />
             <input
               type="text"
               placeholder="Search tags by name or category..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-9 pr-3 py-2 bg-[#FAF9F6] border border-[#E4DCC9] rounded-xl text-xs text-[#18281F] outline-none focus:border-[#C4A066]"
+              className="w-full pl-9 pr-3 py-2 bg-[#FAF8F5] border border-[#E7DFD5] rounded-xl text-xs text-[#211A19] outline-none focus:border-[#C8A878]"
             />
           </div>
 
@@ -182,11 +182,11 @@ export const SupportTagManagementModal: React.FC<SupportTagManagementModalProps>
             </span>
             <div className="grid grid-cols-2 gap-3 text-xs">
               <div className="flex flex-col gap-1">
-                <label className="font-semibold text-[#18281F]">Source Tag (To Delete):</label>
+                <label className="font-semibold text-[#211A19]">Source Tag (To Delete):</label>
                 <select
                   value={sourceTagId}
                   onChange={(e) => setSourceTagId(e.target.value)}
-                  className="p-2 bg-white border border-[#E4DCC9] rounded-xl outline-none"
+                  className="p-2 bg-white border border-[#E7DFD5] rounded-xl outline-none"
                 >
                   <option value="">Select source tag...</option>
                   {tags.map((t) => (
@@ -198,11 +198,11 @@ export const SupportTagManagementModal: React.FC<SupportTagManagementModalProps>
               </div>
 
               <div className="flex flex-col gap-1">
-                <label className="font-semibold text-[#18281F]">Target Tag (To Keep):</label>
+                <label className="font-semibold text-[#211A19]">Target Tag (To Keep):</label>
                 <select
                   value={targetTagId}
                   onChange={(e) => setTargetTagId(e.target.value)}
-                  className="p-2 bg-white border border-[#E4DCC9] rounded-xl outline-none"
+                  className="p-2 bg-white border border-[#E7DFD5] rounded-xl outline-none"
                 >
                   <option value="">Select target tag...</option>
                   {tags.map((t) => (
@@ -227,8 +227,8 @@ export const SupportTagManagementModal: React.FC<SupportTagManagementModalProps>
         )}
 
         {/* Create / Edit Tag Form */}
-        <form onSubmit={handleSaveTag} className="p-4 bg-white border border-[#E4DCC9] rounded-2xl shadow-sm flex flex-col gap-3">
-          <span className="text-xs font-bold text-[#18281F] uppercase tracking-wider">
+        <form onSubmit={handleSaveTag} className="p-4 bg-white border border-[#E7DFD5] rounded-2xl shadow-sm flex flex-col gap-3">
+          <span className="text-xs font-bold text-[#211A19] uppercase tracking-wider">
             {isEditing ? 'Edit Existing Tag' : 'Create New System Tag'}
           </span>
 
@@ -252,8 +252,8 @@ export const SupportTagManagementModal: React.FC<SupportTagManagementModalProps>
 
           {/* Color Picker Palette */}
           <div className="flex flex-col gap-1.5">
-            <label className="text-xs font-bold text-[#18281F] flex items-center gap-1.5">
-              <Palette size={13} className="text-[#C4A066]" /> Color Coding Accent
+            <label className="text-xs font-bold text-[#211A19] flex items-center gap-1.5">
+              <Palette size={13} className="text-[#C8A878]" /> Color Coding Accent
             </label>
             <div className="flex items-center gap-2 flex-wrap">
               {PRESET_COLORS.map((c) => (
@@ -261,7 +261,7 @@ export const SupportTagManagementModal: React.FC<SupportTagManagementModalProps>
                   key={c}
                   type="button"
                   className="w-7 h-7 rounded-full flex items-center justify-center border transition-all"
-                  style={{ backgroundColor: c, borderColor: tagColor === c ? '#18281F' : 'transparent' }}
+                  style={{ backgroundColor: c, borderColor: tagColor === c ? '#211A19' : 'transparent' }}
                   onClick={() => setTagColor(c)}
                 >
                   {tagColor === c && <Check size={14} className="text-white" />}
@@ -271,13 +271,13 @@ export const SupportTagManagementModal: React.FC<SupportTagManagementModalProps>
                 type="color"
                 value={tagColor}
                 onChange={(e) => setTagColor(e.target.value)}
-                className="w-8 h-8 rounded-full border border-[#E4DCC9] cursor-pointer"
+                className="w-8 h-8 rounded-full border border-[#E7DFD5] cursor-pointer"
                 title="Custom Color"
               />
             </div>
           </div>
 
-          <div className="flex items-center justify-end gap-2 pt-2 border-t border-[#E4DCC9]">
+          <div className="flex items-center justify-end gap-2 pt-2 border-t border-[#E7DFD5]">
             {isEditing && (
               <Button
                 type="button"
@@ -299,8 +299,8 @@ export const SupportTagManagementModal: React.FC<SupportTagManagementModalProps>
 
         {/* Tag Analytics Grid */}
         <div className="flex flex-col gap-2">
-          <span className="text-xs font-bold text-[#6B7C70] uppercase tracking-wider flex items-center gap-1.5">
-            <BarChart2 size={13} className="text-[#C4A066]" /> Active Taxonomy ({filteredTags.length} Tags)
+          <span className="text-xs font-bold text-[#78716C] uppercase tracking-wider flex items-center gap-1.5">
+            <BarChart2 size={13} className="text-[#C8A878]" /> Active Taxonomy ({filteredTags.length} Tags)
           </span>
 
           <div className="tag-management-grid">
@@ -309,27 +309,27 @@ export const SupportTagManagementModal: React.FC<SupportTagManagementModalProps>
                 <div className="flex items-center gap-2.5 min-w-0">
                   <span className="color-picker-dot" style={{ backgroundColor: t.color }} />
                   <div className="flex flex-col min-w-0">
-                    <span className="font-bold text-[#18281F] text-xs truncate flex items-center gap-1.5">
+                    <span className="font-bold text-[#211A19] text-xs truncate flex items-center gap-1.5">
                       #{t.name}
                       {t.isSystem && (
-                        <span className="text-[9px] bg-[#EFE8D8] text-[#18281F] px-1 rounded font-semibold uppercase">
+                        <span className="text-[9px] bg-[#EEE5DA] text-[#211A19] px-1 rounded font-semibold uppercase">
                           SYSTEM
                         </span>
                       )}
                     </span>
-                    <span className="text-[11px] text-[#6B7C70] truncate">{t.description}</span>
+                    <span className="text-[11px] text-[#78716C] truncate">{t.description}</span>
                   </div>
                 </div>
 
                 <div className="flex items-center gap-2">
-                  <span className="text-[11px] font-bold text-[#C4A066] bg-[#FAF9F6] border border-[#E4DCC9] px-2 py-0.5 rounded-lg whitespace-nowrap">
+                  <span className="text-[11px] font-bold text-[#C8A878] bg-[#FAF8F5] border border-[#E7DFD5] px-2 py-0.5 rounded-lg whitespace-nowrap">
                     {t.usageCount} uses
                   </span>
 
                   <button
                     type="button"
                     onClick={() => handleStartEdit(t)}
-                    className="p-1 text-[#6B7C70] hover:text-[#18281F]"
+                    className="p-1 text-[#78716C] hover:text-[#211A19]"
                     title="Edit Tag"
                   >
                     <Edit2 size={13} />
@@ -338,7 +338,7 @@ export const SupportTagManagementModal: React.FC<SupportTagManagementModalProps>
                   <button
                     type="button"
                     onClick={() => handleDeleteTag(t.id)}
-                    className="p-1 text-[#6B7C70] hover:text-rose-600"
+                    className="p-1 text-[#78716C] hover:text-rose-600"
                     title="Delete Tag"
                   >
                     <Trash2 size={13} />

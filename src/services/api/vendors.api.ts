@@ -385,4 +385,82 @@ export const vendorsApi = {
       };
     }
   },
+
+  /**
+   * PUT /api/vendors/:vendorId (Update all editable vendor parameters)
+   */
+  updateVendorDetails: async (
+    vendorId: string | number,
+    updatedFields: Partial<Vendor> & Record<string, any>
+  ): Promise<Vendor> => {
+    const sId = String(vendorId);
+
+    const allVendors = getLocalVendors();
+    let updatedDomainObj!: Vendor;
+
+    const updatedList = allVendors.map((v) => {
+      if (v.id === sId) {
+        updatedDomainObj = {
+          ...v,
+          ...updatedFields,
+          // Guarantee created_at timestamp is immutable
+          createdAt: v.createdAt,
+          createdAtReadable: v.createdAtReadable,
+          createdAtTime: v.createdAtTime,
+          submissionTimestamp: v.submissionTimestamp,
+          updatedAt: new Date().toISOString(),
+        };
+        return updatedDomainObj;
+      }
+      return v;
+    });
+    saveLocalVendors(updatedList);
+
+    const pending = getLocalPendingVendors();
+    if (pending.some((v) => v.id === sId)) {
+      const updatedPending = pending.map((v) => (v.id === sId ? { ...v, ...updatedFields, createdAt: v.createdAt } : v));
+      saveLocalPendingVendors(updatedPending);
+    }
+
+    const apiPayload = {
+      vendor_id: vendorId,
+      id: vendorId,
+      vendor_name: updatedFields.ownerName || updatedFields.vendor_name,
+      owner_name: updatedFields.ownerName,
+      shop_name: updatedFields.storeName || updatedFields.shop_name,
+      store_name: updatedFields.storeName,
+      email: updatedFields.email,
+      phone_number: updatedFields.phone || updatedFields.phone_number,
+      phone: updatedFields.phone,
+      gstin: updatedFields.gstin,
+      pan_number: updatedFields.panNumber || updatedFields.pan_number,
+      category: updatedFields.category,
+      vendor_type: updatedFields.vendorType || updatedFields.vendor_type,
+      shop_number: updatedFields.shopNumber || updatedFields.shop_number,
+      area: updatedFields.area || updatedFields.locationArea,
+      city: updatedFields.city,
+      state: updatedFields.state,
+      pincode: updatedFields.pincode,
+      shop_image: updatedFields.avatarUrl || updatedFields.shop_image,
+      description: updatedFields.description,
+      status: updatedFields.status ? String(updatedFields.status).toUpperCase() : undefined,
+      hold_reason: updatedFields.holdReason,
+      hold_email_subject: updatedFields.holdEmailSubject,
+      has_resubmitted: updatedFields.hasResubmitted,
+      resubmitted_at_readable: updatedFields.resubmittedAtReadable,
+    };
+
+    try {
+      let response: any;
+      try {
+        response = await axiosInstance.put<any>(`/vendors/${vendorId}`, apiPayload);
+      } catch {
+        response = await axiosInstance.put<any>(`/admin/vendors/${vendorId}`, apiPayload);
+      }
+      const resData = response.data?.data || response.data?.vendor || response.data;
+      return mapVendorDTOToDomain(resData);
+    } catch {
+      return updatedDomainObj || mapVendorDTOToDomain({ ...updatedFields, vendor_id: vendorId });
+    }
+  },
 };

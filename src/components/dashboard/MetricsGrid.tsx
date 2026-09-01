@@ -16,7 +16,7 @@ export const MetricsGrid: React.FC<MetricsGridProps> = ({ metrics }) => {
       title: 'Total Platform Revenue',
       value: formatCurrency(metrics?.totalRevenue || 184950),
       trend: `+${metrics?.revenueChangePercent || 14.2}%`,
-      icon: <DollarSign className="h-5 w-5 text-[#C4A066]" />,
+      icon: <DollarSign className="h-5 w-5 text-[#C8A878]" />,
       badgeVariant: 'gold' as const,
       darkCard: true,
     },
@@ -49,18 +49,18 @@ export const MetricsGrid: React.FC<MetricsGridProps> = ({ metrics }) => {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
       {kpis.map((kpi, idx) => (
-        <Card key={idx} interactive dark={kpi.darkCard} className={kpi.darkCard ? 'bg-[#243A2D] text-[#F8F5EE] border-[#243A2D]' : 'bg-white border-[#E4DCC9]'}>
+        <Card key={idx} interactive dark={kpi.darkCard} className={kpi.darkCard ? 'bg-[#6B2732] text-[#FAF8F5] border-[#6B2732]' : 'bg-white border-[#E7DFD5]'}>
           <div className="flex items-center justify-between pb-3">
-            <span className={`font-sans text-[12px] font-semibold ${kpi.darkCard ? 'text-[#C4A066]' : 'text-[#6B7C70]'}`}>
+            <span className={`font-sans text-[12px] font-semibold ${kpi.darkCard ? 'text-[#C8A878]' : 'text-[#78716C]'}`}>
               {kpi.title}
             </span>
-            <div className={`h-10 w-10 rounded-[10px] flex items-center justify-center shrink-0 ${kpi.darkCard ? 'bg-[#18281F] border border-[#C4A066]/30' : 'bg-[#EFE8D8] border border-[#E4DCC9]'}`}>
+            <div className={`h-10 w-10 rounded-[10px] flex items-center justify-center shrink-0 ${kpi.darkCard ? 'bg-[#211A19] border border-[#C8A878]/30' : 'bg-[#EEE5DA] border border-[#E7DFD5]'}`}>
               {kpi.icon}
             </div>
           </div>
 
           <div className="flex items-baseline justify-between pt-1">
-            <h2 className={`font-serif text-[24px] font-bold tracking-tight ${kpi.darkCard ? 'text-[#F8F5EE]' : 'text-[#18281F]'}`}>
+            <h2 className={`font-serif text-[24px] font-bold tracking-tight ${kpi.darkCard ? 'text-[#FAF8F5]' : 'text-[#211A19]'}`}>
               {kpi.value}
             </h2>
             <Badge variant={kpi.badgeVariant} showDot>

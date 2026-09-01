@@ -88,11 +88,11 @@ export const PeoplePage: React.FC = () => {
       <PeopleAnalyticsHeader />
 
       {/* Control Bar: Search & Advanced Filters */}
-      <div className="p-4 bg-white border border-[#E4DCC9] rounded-2xl shadow-sm flex flex-col md:flex-row items-center justify-between gap-3">
+      <div className="p-4 bg-white border border-[#E7DFD5] rounded-2xl shadow-sm flex flex-col md:flex-row items-center justify-between gap-3">
         <div className="w-full md:w-96">
           <Input
             placeholder="Search by name, email, phone, store or society..."
-            leftIcon={<Search size={15} className="text-[#C4A066]" />}
+            leftIcon={<Search size={15} className="text-[#C8A878]" />}
             value={filters.search || ''}
             onChange={handleSearchChange}
           />
@@ -106,20 +106,20 @@ export const PeoplePage: React.FC = () => {
           >
             Filter Directory
             {(filters.personType !== 'all' || filters.status !== 'all' || (filters.minFlags && filters.minFlags > 0)) && (
-              <span className="ml-1 px-1.5 py-0.5 bg-[#C4A066] text-white rounded-full text-[10px] font-bold">
+              <span className="ml-1 px-1.5 py-0.5 bg-[#C8A878] text-white rounded-full text-[10px] font-bold">
                 Active
               </span>
             )}
           </Button>
 
-          <span className="text-xs text-[#6B7C70] font-semibold flex items-center gap-1 border-l border-[#E4DCC9] pl-3 ml-1">
-            <Users size={14} className="text-[#C4A066]" /> Showing <strong>{peopleList.length}</strong> Profiles
+          <span className="text-xs text-[#78716C] font-semibold flex items-center gap-1 border-l border-[#E7DFD5] pl-3 ml-1">
+            <Users size={14} className="text-[#C8A878]" /> Showing <strong>{peopleList.length}</strong> Profiles
           </span>
         </div>
       </div>
 
       {/* Enterprise Data Table */}
-      <div className="bg-white border border-[#E4DCC9] rounded-2xl shadow-sm overflow-hidden p-1">
+      <div className="bg-white border border-[#E7DFD5] rounded-2xl shadow-sm overflow-hidden p-1">
         <PeopleEnterpriseDataTable
           data={peopleList}
           isLoading={isLoading}

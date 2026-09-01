@@ -9,8 +9,8 @@
   align-items: flex-start;
   gap: 0.75rem;
   padding: 0.75rem 1rem;
-  background-color: #FAF9F6;
-  border: 1px solid #E4DCC9;
+  background-color: #FAF8F5;
+  border: 1px solid #E7DFD5;
   border-radius: var(--radius-lg, 1rem);
 }
 
@@ -20,15 +20,15 @@
   border-radius: var(--radius-xl, 0.875rem);
   font-size: var(--font-size-xs);
   font-weight: 700;
-  border: 1px solid #E4DCC9;
-  background-color: #FAF9F6;
-  color: #6B7C70;
+  border: 1px solid #E7DFD5;
+  background-color: #FAF8F5;
+  color: #78716C;
   transition: all var(--transition-fast);
 }
 
 .assignment-mode-btn.active {
-  background-color: #18281F;
+  background-color: #211A19;
   color: #FFFFFF;
-  border-color: #18281F;
+  border-color: #211A19;
   box-shadow: 0 2px 6px rgba(24, 40, 31, 0.12);
 }

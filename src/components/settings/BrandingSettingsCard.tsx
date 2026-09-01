@@ -50,14 +50,14 @@ export const BrandingSettingsCard: React.FC<BrandingSettingsCardProps> = ({
   const currentName = watch('platform_name');
 
   return (
-    <div className="p-6 bg-white border border-[#E4DCC9] rounded-2xl shadow-sm flex flex-col gap-6">
-      <div className="flex items-center gap-3 pb-4 border-b border-[#E4DCC9]">
-        <div className="w-10 h-10 rounded-xl bg-[#18281F] text-[#E6C35C] flex items-center justify-center shrink-0">
+    <div className="p-6 bg-white border border-[#E7DFD5] rounded-2xl shadow-sm flex flex-col gap-6">
+      <div className="flex items-center gap-3 pb-4 border-b border-[#E7DFD5]">
+        <div className="w-10 h-10 rounded-xl bg-[#211A19] text-[#A88B58] flex items-center justify-center shrink-0">
           <Palette size={20} />
         </div>
         <div>
-          <h3 className="text-lg font-bold text-[#18281F] font-serif">Branding & Platform Identity</h3>
-          <p className="text-xs text-[#6B7C70]">Configure platform title and official header logo URL.</p>
+          <h3 className="text-lg font-bold text-[#211A19] font-serif">Branding & Platform Identity</h3>
+          <p className="text-xs text-[#78716C]">Configure platform title and official header logo URL.</p>
         </div>
       </div>
 
@@ -84,7 +84,7 @@ export const BrandingSettingsCard: React.FC<BrandingSettingsCardProps> = ({
           onUrlChange={(newUrl) => setValue('platform_logo', newUrl, { shouldValidate: true })}
         />
 
-        <div className="flex justify-end pt-2 border-t border-[#E4DCC9]">
+        <div className="flex justify-end pt-2 border-t border-[#E7DFD5]">
           <Button type="submit" variant="primary" leftIcon={<Save size={16} />} isLoading={isLoading}>
             Save Branding Configuration
           </Button>

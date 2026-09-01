@@ -44,21 +44,21 @@ export const SocietyBlockConfirmModal: React.FC<SocietyBlockConfirmModalProps> =
       size="md"
     >
       <div className="flex flex-col gap-4">
-        <div className="flex items-center gap-3 p-3.5 bg-[#FAF9F6] border border-[#E4DCC9] rounded-xl">
+        <div className="flex items-center gap-3 p-3.5 bg-[#FAF8F5] border border-[#E7DFD5] rounded-xl">
           <div
             className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 ${
               isCurrentlyBlocked
-                ? 'bg-[#EFE8D8] text-[#18281F] border border-[#E4DCC9]'
+                ? 'bg-[#EEE5DA] text-[#211A19] border border-[#E7DFD5]'
                 : 'bg-[#FFE4E6] text-[#E11D48]'
             }`}
           >
             {isCurrentlyBlocked ? <CheckCircle2 size={22} /> : <ShieldAlert size={22} />}
           </div>
 
-          <p className="text-xs text-[#18281F] leading-relaxed">
+          <p className="text-xs text-[#211A19] leading-relaxed">
             {isCurrentlyBlocked ? (
               <>
-                Unblocking <strong className="text-[#18281F]">{society.name}</strong> will reactivate society enclave operations and allow local vendor services.
+                Unblocking <strong className="text-[#211A19]">{society.name}</strong> will reactivate society enclave operations and allow local vendor services.
               </>
             ) : (
               <>
@@ -71,23 +71,23 @@ export const SocietyBlockConfirmModal: React.FC<SocietyBlockConfirmModalProps> =
         {/* Custom Block Message to Society Management */}
         {!isCurrentlyBlocked && (
           <div className="flex flex-col gap-1.5">
-            <label className="text-xs font-bold text-[#18281F] uppercase tracking-wider flex items-center gap-1.5">
-              <MessageSquare size={14} className="text-[#C4A066]" /> Custom Block Reason Message (Sent to Society)
+            <label className="text-xs font-bold text-[#211A19] uppercase tracking-wider flex items-center gap-1.5">
+              <MessageSquare size={14} className="text-[#C8A878]" /> Custom Block Reason Message (Sent to Society)
             </label>
             <textarea
-              className="w-full p-3 bg-[#FAF9F6] border border-[#E4DCC9] rounded-xl text-xs text-[#18281F] outline-none focus:border-[#C4A066] focus:bg-white resize-none"
+              className="w-full p-3 bg-[#FAF8F5] border border-[#E7DFD5] rounded-xl text-xs text-[#211A19] outline-none focus:border-[#C8A878] focus:bg-white resize-none"
               rows={3}
               placeholder="Specify custom suspension reason (e.g. Administrative security update, society board audit, verification pending...)"
               value={customMessage}
               onChange={(e) => setCustomMessage(e.target.value)}
             />
-            <span className="text-[11px] text-[#6B7C70]">
+            <span className="text-[11px] text-[#78716C]">
               This official notification will be sent to the society administrator.
             </span>
           </div>
         )}
 
-        <div className="flex justify-end gap-3 w-full mt-2 pt-4 border-t border-[#E4DCC9]">
+        <div className="flex justify-end gap-3 w-full mt-2 pt-4 border-t border-[#E7DFD5]">
           <Button variant="secondary" onClick={onClose}>
             Cancel
           </Button>

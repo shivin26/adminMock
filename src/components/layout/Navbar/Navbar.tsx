@@ -14,11 +14,14 @@ import {
   ShieldAlert,
   ArrowRight,
   ExternalLink,
+  Activity,
 } from 'lucide-react';
 import './Navbar.css';
 import { useAuth } from '../../../hooks/useAuth';
+import { usePermission } from '../../../hooks/usePermission';
 import { useSocieties } from '../../../hooks/useSocieties';
 import { useVendors } from '../../../hooks/useVendors';
+import { AuditLogDrawer } from '../../common/AuditLogDrawer';
 
 export interface NavbarProps {
   onToggleSidebar?: () => void;
@@ -103,11 +106,13 @@ const INITIAL_NOTIFICATIONS: NotificationItem[] = [
 
 export const Navbar: React.FC<NavbarProps> = () => {
   const { user, logout } = useAuth();
+  const { isSuperAdmin } = usePermission();
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
+  const [isAuditDrawerOpen, setIsAuditDrawerOpen] = useState(false);
   const [notifFilter, setNotifFilter] = useState<'all' | 'unread'>('all');
   const [notifications, setNotifications] = useState<NotificationItem[]>(INITIAL_NOTIFICATIONS);
   const [notifVisibleCount, setNotifVisibleCount] = useState(3);
@@ -273,6 +278,17 @@ export const Navbar: React.FC<NavbarProps> = () => {
       </div>
 
       <div className="navbar-right">
+        {/* Super Admin Audit & Backend Mutation Logs Button */}
+        {isSuperAdmin && (
+          <button
+            className="nav-icon-btn text-[#A88B58] hover:text-white hover:bg-[#6B2732] transition-all flex items-center justify-center border border-[#E7DFD5]/20 rounded-xl"
+            onClick={() => setIsAuditDrawerOpen(true)}
+            title="Super Admin Audit & Backend Mutation Logs"
+          >
+            <Activity size={18} />
+          </button>
+        )}
+
         {/* Notifications Button & Popover */}
         <div className="notif-dropdown-wrapper" ref={notifRef}>
           <button
@@ -360,7 +376,7 @@ export const Navbar: React.FC<NavbarProps> = () => {
                     ))}
 
                     {hasMoreNotifs && (
-                      <div className="p-2 text-center text-[11px] font-semibold text-[#C4A066] flex items-center justify-center gap-1.5">
+                      <div className="p-2 text-center text-[11px] font-semibold text-[#C8A878] flex items-center justify-center gap-1.5">
                         <span>Scroll to auto-load more notifications...</span>
                       </div>
                     )}
@@ -413,6 +429,11 @@ export const Navbar: React.FC<NavbarProps> = () => {
           )}
         </div>
       </div>
+
+      <AuditLogDrawer
+        isOpen={isAuditDrawerOpen}
+        onClose={() => setIsAuditDrawerOpen(false)}
+      />
     </header>
   );
 };

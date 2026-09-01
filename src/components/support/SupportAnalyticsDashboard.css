@@ -50,7 +50,7 @@
 .support-chart-card {
   padding: 1.5rem;
   background: #FFFFFF;
-  border: 1px solid #E4DCC9;
+  border: 1px solid #E7DFD5;
   border-radius: var(--radius-lg, 1.25rem);
   box-shadow: 0 4px 20px rgba(24, 40, 31, 0.04);
   display: flex;
@@ -67,12 +67,12 @@
 .support-chart-title {
   font-size: var(--font-size-base);
   font-weight: 700;
-  color: #18281F;
+  color: #211A19;
 }
 
 .support-chart-subtitle {
   font-size: var(--font-size-xs);
-  color: #6B7C70;
+  color: #78716C;
 }
 
 .support-widgets-row {
@@ -90,7 +90,7 @@
 .support-widget-card {
   padding: 1.5rem;
   background: #FFFFFF;
-  border: 1px solid #E4DCC9;
+  border: 1px solid #E7DFD5;
   border-radius: var(--radius-lg, 1.25rem);
   box-shadow: 0 4px 20px rgba(24, 40, 31, 0.04);
   display: flex;
@@ -109,12 +109,12 @@
   align-items: flex-start;
   gap: 0.875rem;
   padding: 0.875rem;
-  background-color: #FAF9F6;
+  background-color: #FAF8F5;
   border-radius: var(--radius-md, 0.875rem);
-  border: 1px solid #E4DCC9/80;
+  border: 1px solid #E7DFD5/80;
   transition: border-color var(--transition-fast);
 }
 
 .support-widget-item:hover {
-  border-color: #C4A066;
+  border-color: #C8A878;
 }

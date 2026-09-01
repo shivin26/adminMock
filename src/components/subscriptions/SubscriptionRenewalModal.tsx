@@ -35,14 +35,14 @@ export const SubscriptionRenewalModal: React.FC<SubscriptionRenewalModalProps> =
     >
       <div className="flex flex-col gap-5">
         {/* Vendor Summary Bento Card */}
-        <div className="p-4 bg-[#FAF9F6] border border-[#E4DCC9] rounded-2xl flex justify-between items-center">
+        <div className="p-4 bg-[#FAF8F5] border border-[#E7DFD5] rounded-2xl flex justify-between items-center">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-[#18281F] text-[#E6C35C] flex items-center justify-center shrink-0">
+            <div className="w-10 h-10 rounded-xl bg-[#211A19] text-[#A88B58] flex items-center justify-center shrink-0">
               <Store size={20} />
             </div>
             <div>
-              <h4 className="text-base font-bold text-[#18281F] font-serif">{subscription.storeName}</h4>
-              <p className="text-xs text-[#6B7C70]">Enclave: {subscription.societyName}</p>
+              <h4 className="text-base font-bold text-[#211A19] font-serif">{subscription.storeName}</h4>
+              <p className="text-xs text-[#78716C]">Enclave: {subscription.societyName}</p>
             </div>
           </div>
           <Badge variant={subscription.tier === 'enterprise' ? 'primary' : 'success'}>
@@ -52,15 +52,15 @@ export const SubscriptionRenewalModal: React.FC<SubscriptionRenewalModalProps> =
 
         {/* Expiry Date & Renewal Duration Section */}
         <div className="flex flex-col gap-2.5">
-          <label className="text-xs font-bold text-[#18281F] uppercase tracking-wider">
+          <label className="text-xs font-bold text-[#211A19] uppercase tracking-wider">
             Current Expiry & Extension Duration
           </label>
 
-          <div className="p-3.5 bg-[#EFE8D8] border border-[#E4DCC9] rounded-xl flex items-center justify-between text-sm">
-            <span className="text-[#18281F] font-semibold flex items-center gap-2">
-              <Calendar size={18} className="text-[#C4A066]" /> Current Renewal Expiry:
+          <div className="p-3.5 bg-[#EEE5DA] border border-[#E7DFD5] rounded-xl flex items-center justify-between text-sm">
+            <span className="text-[#211A19] font-semibold flex items-center gap-2">
+              <Calendar size={18} className="text-[#C8A878]" /> Current Renewal Expiry:
             </span>
-            <span className="font-extrabold text-[#18281F]">
+            <span className="font-extrabold text-[#211A19]">
               {formatDate(subscription.renewalDate)}
             </span>
           </div>
@@ -78,8 +78,8 @@ export const SubscriptionRenewalModal: React.FC<SubscriptionRenewalModalProps> =
                   type="button"
                   className={`p-3.5 rounded-xl border text-xs font-bold transition-all ${
                     isSelected
-                      ? 'bg-[#18281F] border-[#C4A066] text-[#E6C35C] shadow-sm'
-                      : 'bg-[#FAF9F6] border-[#E4DCC9] text-[#18281F] hover:bg-[#EFE8D8]'
+                      ? 'bg-[#211A19] border-[#C8A878] text-[#A88B58] shadow-sm'
+                      : 'bg-[#FAF8F5] border-[#E7DFD5] text-[#211A19] hover:bg-[#EEE5DA]'
                   }`}
                   onClick={() => setDurationMonths(option.value)}
                 >
@@ -91,7 +91,7 @@ export const SubscriptionRenewalModal: React.FC<SubscriptionRenewalModalProps> =
         </div>
 
         {/* Action Buttons */}
-        <div className="flex justify-end gap-3 pt-4 border-t border-[#E4DCC9]">
+        <div className="flex justify-end gap-3 pt-4 border-t border-[#E7DFD5]">
           <Button variant="secondary" onClick={onClose}>
             Cancel
           </Button>

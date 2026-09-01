@@ -113,8 +113,8 @@ export const SupportEnterpriseFilterModal: React.FC<SupportEnterpriseFilterModal
       <div className="flex flex-col gap-5 max-h-[72vh] overflow-y-auto pr-1">
         {/* Quick Presets Bar */}
         <div className="flex flex-col gap-2">
-          <span className="text-xs font-bold text-[#18281F] uppercase tracking-wider flex items-center gap-1.5">
-            <Clock size={13} className="text-[#C4A066]" /> Quick Time Range Presets
+          <span className="text-xs font-bold text-[#211A19] uppercase tracking-wider flex items-center gap-1.5">
+            <Clock size={13} className="text-[#C8A878]" /> Quick Time Range Presets
           </span>
           <div className="flex items-center gap-1.5 flex-wrap">
             {[
@@ -129,8 +129,8 @@ export const SupportEnterpriseFilterModal: React.FC<SupportEnterpriseFilterModal
                 type="button"
                 className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
                   draftFilters.quickDateRange === preset.id
-                    ? 'bg-[#18281F] text-white shadow-sm'
-                    : 'bg-[#FAF9F6] border border-[#E4DCC9] text-[#6B7C70] hover:bg-[#EFE8D8]'
+                    ? 'bg-[#211A19] text-white shadow-sm'
+                    : 'bg-[#FAF8F5] border border-[#E7DFD5] text-[#78716C] hover:bg-[#EEE5DA]'
                 }`}
                 onClick={() => setDraftFilters({ ...draftFilters, quickDateRange: preset.id as any })}
               >
@@ -147,7 +147,7 @@ export const SupportEnterpriseFilterModal: React.FC<SupportEnterpriseFilterModal
             className={`p-2.5 rounded-xl border text-xs font-bold flex items-center justify-center gap-1.5 transition-all ${
               draftFilters.escalatedOnly
                 ? 'bg-rose-50 border-rose-500 text-rose-700'
-                : 'bg-white border-[#E4DCC9] text-[#6B7C70]'
+                : 'bg-white border-[#E7DFD5] text-[#78716C]'
             }`}
             onClick={() => setDraftFilters({ ...draftFilters, escalatedOnly: !draftFilters.escalatedOnly })}
           >
@@ -159,7 +159,7 @@ export const SupportEnterpriseFilterModal: React.FC<SupportEnterpriseFilterModal
             className={`p-2.5 rounded-xl border text-xs font-bold flex items-center justify-center gap-1.5 transition-all ${
               draftFilters.hasAttachmentsOnly
                 ? 'bg-blue-50 border-blue-500 text-blue-700'
-                : 'bg-white border-[#E4DCC9] text-[#6B7C70]'
+                : 'bg-white border-[#E7DFD5] text-[#78716C]'
             }`}
             onClick={() =>
               setDraftFilters({ ...draftFilters, hasAttachmentsOnly: !draftFilters.hasAttachmentsOnly })
@@ -173,7 +173,7 @@ export const SupportEnterpriseFilterModal: React.FC<SupportEnterpriseFilterModal
             className={`p-2.5 rounded-xl border text-xs font-bold flex items-center justify-center gap-1.5 transition-all ${
               draftFilters.unreadOnly
                 ? 'bg-amber-50 border-amber-500 text-amber-700'
-                : 'bg-white border-[#E4DCC9] text-[#6B7C70]'
+                : 'bg-white border-[#E7DFD5] text-[#78716C]'
             }`}
             onClick={() => setDraftFilters({ ...draftFilters, unreadOnly: !draftFilters.unreadOnly })}
           >
@@ -185,7 +185,7 @@ export const SupportEnterpriseFilterModal: React.FC<SupportEnterpriseFilterModal
             className={`p-2.5 rounded-xl border text-xs font-bold flex items-center justify-center gap-1.5 transition-all ${
               draftFilters.favoritesOnly
                 ? 'bg-emerald-50 border-emerald-500 text-emerald-700'
-                : 'bg-white border-[#E4DCC9] text-[#6B7C70]'
+                : 'bg-white border-[#E7DFD5] text-[#78716C]'
             }`}
             onClick={() => setDraftFilters({ ...draftFilters, favoritesOnly: !draftFilters.favoritesOnly })}
           >
@@ -194,18 +194,18 @@ export const SupportEnterpriseFilterModal: React.FC<SupportEnterpriseFilterModal
         </div>
 
         {/* Multi-Select Filters Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 border-t border-[#E4DCC9]/60 pt-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 border-t border-[#E7DFD5]/60 pt-4">
           {/* Status Multi-Select */}
           <div className="flex flex-col gap-2">
-            <span className="text-xs font-bold text-[#18281F]">Status:</span>
+            <span className="text-xs font-bold text-[#211A19]">Status:</span>
             <div className="flex items-center gap-1.5 flex-wrap">
               {['open', 'in_progress', 'resolved', 'closed'].map((st) => (
                 <label
                   key={st}
                   className={`px-3 py-1.5 rounded-xl text-xs font-bold cursor-pointer border transition-all ${
                     draftFilters.status.includes(st)
-                      ? 'bg-[#18281F] text-white border-[#18281F]'
-                      : 'bg-[#FAF9F6] border-[#E4DCC9] text-[#6B7C70]'
+                      ? 'bg-[#211A19] text-white border-[#211A19]'
+                      : 'bg-[#FAF8F5] border-[#E7DFD5] text-[#78716C]'
                   }`}
                 >
                   <input
@@ -222,15 +222,15 @@ export const SupportEnterpriseFilterModal: React.FC<SupportEnterpriseFilterModal
 
           {/* Priority Multi-Select */}
           <div className="flex flex-col gap-2">
-            <span className="text-xs font-bold text-[#18281F]">Priority Level:</span>
+            <span className="text-xs font-bold text-[#211A19]">Priority Level:</span>
             <div className="flex items-center gap-1.5 flex-wrap">
               {['urgent', 'high', 'medium', 'low'].map((pr) => (
                 <label
                   key={pr}
                   className={`px-3 py-1.5 rounded-xl text-xs font-bold cursor-pointer border transition-all ${
                     draftFilters.priority.includes(pr)
-                      ? 'bg-[#18281F] text-white border-[#18281F]'
-                      : 'bg-[#FAF9F6] border-[#E4DCC9] text-[#6B7C70]'
+                      ? 'bg-[#211A19] text-white border-[#211A19]'
+                      : 'bg-[#FAF8F5] border-[#E7DFD5] text-[#78716C]'
                   }`}
                 >
                   <input
@@ -247,15 +247,15 @@ export const SupportEnterpriseFilterModal: React.FC<SupportEnterpriseFilterModal
 
           {/* Category Multi-Select */}
           <div className="flex flex-col gap-2">
-            <span className="text-xs font-bold text-[#18281F]">Category:</span>
+            <span className="text-xs font-bold text-[#211A19]">Category:</span>
             <div className="flex items-center gap-1.5 flex-wrap">
               {['technical', 'billing', 'onboarding', 'general'].map((cat) => (
                 <label
                   key={cat}
                   className={`px-3 py-1.5 rounded-xl text-xs font-bold cursor-pointer border transition-all ${
                     draftFilters.category.includes(cat)
-                      ? 'bg-[#18281F] text-white border-[#18281F]'
-                      : 'bg-[#FAF9F6] border-[#E4DCC9] text-[#6B7C70]'
+                      ? 'bg-[#211A19] text-white border-[#211A19]'
+                      : 'bg-[#FAF8F5] border-[#E7DFD5] text-[#78716C]'
                   }`}
                 >
                   <input
@@ -272,15 +272,15 @@ export const SupportEnterpriseFilterModal: React.FC<SupportEnterpriseFilterModal
 
           {/* Ticket Type Multi-Select */}
           <div className="flex flex-col gap-2">
-            <span className="text-xs font-bold text-[#18281F]">Reporter Type:</span>
+            <span className="text-xs font-bold text-[#211A19]">Reporter Type:</span>
             <div className="flex items-center gap-1.5 flex-wrap">
               {['user', 'vendor', 'user_vendor'].map((typ) => (
                 <label
                   key={typ}
                   className={`px-3 py-1.5 rounded-xl text-xs font-bold cursor-pointer border transition-all ${
                     draftFilters.userType.includes(typ)
-                      ? 'bg-[#18281F] text-white border-[#18281F]'
-                      : 'bg-[#FAF9F6] border-[#E4DCC9] text-[#6B7C70]'
+                      ? 'bg-[#211A19] text-white border-[#211A19]'
+                      : 'bg-[#FAF8F5] border-[#E7DFD5] text-[#78716C]'
                   }`}
                 >
                   <input
@@ -297,9 +297,9 @@ export const SupportEnterpriseFilterModal: React.FC<SupportEnterpriseFilterModal
         </div>
 
         {/* Dropdowns Row: Assigned To, Source, SLA Status */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 border-t border-[#E4DCC9]/60 pt-4 text-xs">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 border-t border-[#E7DFD5]/60 pt-4 text-xs">
           <div className="flex flex-col gap-1">
-            <label className="font-bold text-[#18281F]">Assigned Agent:</label>
+            <label className="font-bold text-[#211A19]">Assigned Agent:</label>
             <select
               value={draftFilters.assignedTo[0] || 'all'}
               onChange={(e) =>
@@ -308,7 +308,7 @@ export const SupportEnterpriseFilterModal: React.FC<SupportEnterpriseFilterModal
                   assignedTo: e.target.value === 'all' ? [] : [e.target.value],
                 })
               }
-              className="p-2.5 bg-[#FAF9F6] border border-[#E4DCC9] rounded-xl text-xs font-medium text-[#18281F] outline-none"
+              className="p-2.5 bg-[#FAF8F5] border border-[#E7DFD5] rounded-xl text-xs font-medium text-[#211A19] outline-none"
             >
               <option value="all">All Agents</option>
               <option value="Super Admin">Super Admin</option>
@@ -318,11 +318,11 @@ export const SupportEnterpriseFilterModal: React.FC<SupportEnterpriseFilterModal
           </div>
 
           <div className="flex flex-col gap-1">
-            <label className="font-bold text-[#18281F]">Inquiry Source:</label>
+            <label className="font-bold text-[#211A19]">Inquiry Source:</label>
             <select
               value={draftFilters.source}
               onChange={(e) => setDraftFilters({ ...draftFilters, source: e.target.value })}
-              className="p-2.5 bg-[#FAF9F6] border border-[#E4DCC9] rounded-xl text-xs font-medium text-[#18281F] outline-none"
+              className="p-2.5 bg-[#FAF8F5] border border-[#E7DFD5] rounded-xl text-xs font-medium text-[#211A19] outline-none"
             >
               <option value="all">All Sources</option>
               <option value="portal">Vendor Portal</option>
@@ -332,11 +332,11 @@ export const SupportEnterpriseFilterModal: React.FC<SupportEnterpriseFilterModal
           </div>
 
           <div className="flex flex-col gap-1">
-            <label className="font-bold text-[#18281F]">SLA Status:</label>
+            <label className="font-bold text-[#211A19]">SLA Status:</label>
             <select
               value={draftFilters.slaStatus}
               onChange={(e) => setDraftFilters({ ...draftFilters, slaStatus: e.target.value })}
-              className="p-2.5 bg-[#FAF9F6] border border-[#E4DCC9] rounded-xl text-xs font-medium text-[#18281F] outline-none"
+              className="p-2.5 bg-[#FAF8F5] border border-[#E7DFD5] rounded-xl text-xs font-medium text-[#211A19] outline-none"
             >
               <option value="all">All SLA States</option>
               <option value="compliant">SLA Compliant</option>
@@ -347,9 +347,9 @@ export const SupportEnterpriseFilterModal: React.FC<SupportEnterpriseFilterModal
         </div>
 
         {/* Saved Filter Presets Section */}
-        <div className="border-t border-[#E4DCC9]/60 pt-4 flex flex-col gap-2">
-          <span className="text-xs font-bold text-[#18281F] flex items-center gap-1.5">
-            <Bookmark size={13} className="text-[#C4A066]" /> Saved Filter Presets
+        <div className="border-t border-[#E7DFD5]/60 pt-4 flex flex-col gap-2">
+          <span className="text-xs font-bold text-[#211A19] flex items-center gap-1.5">
+            <Bookmark size={13} className="text-[#C8A878]" /> Saved Filter Presets
           </span>
 
           <div className="flex items-center gap-2 flex-wrap">
@@ -357,10 +357,10 @@ export const SupportEnterpriseFilterModal: React.FC<SupportEnterpriseFilterModal
               <button
                 key={idx}
                 type="button"
-                className="px-3 py-1.5 bg-[#FAF9F6] border border-[#E4DCC9] hover:border-[#C4A066] rounded-xl text-xs font-bold text-[#18281F] flex items-center gap-1"
+                className="px-3 py-1.5 bg-[#FAF8F5] border border-[#E7DFD5] hover:border-[#C8A878] rounded-xl text-xs font-bold text-[#211A19] flex items-center gap-1"
                 onClick={() => setDraftFilters(p.state)}
               >
-                <Bookmark size={11} className="text-[#C4A066]" /> {p.name}
+                <Bookmark size={11} className="text-[#C8A878]" /> {p.name}
               </button>
             ))}
           </div>
@@ -371,7 +371,7 @@ export const SupportEnterpriseFilterModal: React.FC<SupportEnterpriseFilterModal
               placeholder="Save active filters as preset name..."
               value={savedFilterName}
               onChange={(e) => setSavedFilterName(e.target.value)}
-              className="flex-1 p-2 bg-[#FAF9F6] border border-[#E4DCC9] rounded-xl text-xs outline-none"
+              className="flex-1 p-2 bg-[#FAF8F5] border border-[#E7DFD5] rounded-xl text-xs outline-none"
             />
             <Button
               type="button"
@@ -388,7 +388,7 @@ export const SupportEnterpriseFilterModal: React.FC<SupportEnterpriseFilterModal
       </div>
 
       {/* Footer Controls */}
-      <div className="flex items-center justify-between pt-4 border-t border-[#E4DCC9] mt-2">
+      <div className="flex items-center justify-between pt-4 border-t border-[#E7DFD5] mt-2">
         <Button
           type="button"
           variant="ghost"

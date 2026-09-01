@@ -115,44 +115,44 @@ export const UsersPage: React.FC = () => {
       />
 
       {/* Sub-Category Pill Tabs & Search Control Bar */}
-      <div className="p-4 bg-white border border-[#E4DCC9] rounded-2xl shadow-sm flex flex-col md:flex-row items-center justify-between gap-3">
+      <div className="p-4 bg-white border border-[#E7DFD5] rounded-2xl shadow-xs flex flex-col md:flex-row items-center justify-between gap-3">
         {/* Category Pill Tabs */}
         <div className="flex items-center gap-2 flex-wrap">
           <button
-            className={`px-4 py-2 rounded-full text-xs font-semibold transition-all ${
+            className={`px-4 py-2 rounded-full text-xs font-semibold transition-all cursor-pointer ${
               activeCategory === 'all'
-                ? 'bg-[#18281F] text-[#F7F4EE] font-bold shadow-sm'
-                : 'bg-[#FAF9F6] text-[#18281F] border border-[#E4DCC9] hover:bg-[#EFE8D8]'
+                ? 'bg-[#541D26] text-white font-bold shadow-xs border border-[#C8A878]/30'
+                : 'bg-[#FAF8F5] text-[#211A19] border border-[#E7DFD5] hover:bg-[#EEE5DA]'
             }`}
             onClick={() => setActiveCategory('all')}
           >
             All Directory Users ({totalCount})
           </button>
           <button
-            className={`px-4 py-2 rounded-full text-xs font-semibold transition-all ${
+            className={`px-4 py-2 rounded-full text-xs font-semibold transition-all cursor-pointer ${
               activeCategory === 'user'
-                ? 'bg-[#18281F] text-[#F7F4EE] font-bold shadow-sm'
-                : 'bg-[#FAF9F6] text-[#18281F] border border-[#E4DCC9] hover:bg-[#EFE8D8]'
+                ? 'bg-[#541D26] text-white font-bold shadow-xs border border-[#C8A878]/30'
+                : 'bg-[#FAF8F5] text-[#211A19] border border-[#E7DFD5] hover:bg-[#EEE5DA]'
             }`}
             onClick={() => setActiveCategory('user')}
           >
             Resident Customers ({residentCount})
           </button>
           <button
-            className={`px-4 py-2 rounded-full text-xs font-semibold transition-all ${
+            className={`px-4 py-2 rounded-full text-xs font-semibold transition-all cursor-pointer ${
               activeCategory === 'user_vendor'
-                ? 'bg-[#18281F] text-[#F7F4EE] font-bold shadow-sm'
-                : 'bg-[#FAF9F6] text-[#18281F] border border-[#E4DCC9] hover:bg-[#EFE8D8]'
+                ? 'bg-[#541D26] text-white font-bold shadow-xs border border-[#C8A878]/30'
+                : 'bg-[#FAF8F5] text-[#211A19] border border-[#E7DFD5] hover:bg-[#EEE5DA]'
             }`}
             onClick={() => setActiveCategory('user_vendor')}
           >
             User & Vendor ({dualRoleCount})
           </button>
           <button
-            className={`px-4 py-2 rounded-full text-xs font-semibold transition-all flex items-center gap-2 ${
+            className={`px-4 py-2 rounded-full text-xs font-semibold transition-all flex items-center gap-2 cursor-pointer ${
               activeCategory === 'flagged'
-                ? 'bg-[#18281F] text-[#F7F4EE] font-bold shadow-sm'
-                : 'bg-[#FAF9F6] text-[#18281F] border border-[#E4DCC9] hover:bg-[#EFE8D8]'
+                ? 'bg-[#541D26] text-white font-bold shadow-xs border border-[#C8A878]/30'
+                : 'bg-[#FAF8F5] text-[#211A19] border border-[#E7DFD5] hover:bg-[#EEE5DA]'
             }`}
             onClick={() => setActiveCategory('flagged')}
           >
@@ -166,7 +166,7 @@ export const UsersPage: React.FC = () => {
           <div className="w-full md:w-72">
             <Input
               placeholder="Search directory..."
-              leftIcon={<Search size={15} className="text-[#C4A066]" />}
+              leftIcon={<Search size={15} className="text-[#C8A878]" />}
               value={filters.search || ''}
               onChange={handleSearchChange}
             />
@@ -179,20 +179,20 @@ export const UsersPage: React.FC = () => {
           >
             Filters
             {(filters.personType !== 'all' || filters.status !== 'all' || (filters.minFlags && filters.minFlags > 0)) && (
-              <span className="ml-1 px-1.5 py-0.5 bg-[#C4A066] text-white rounded-full text-[10px] font-bold">
+              <span className="ml-1 px-1.5 py-0.5 bg-[#C8A878] text-white rounded-full text-[10px] font-bold">
                 Active
               </span>
             )}
           </Button>
 
-          <span className="text-xs text-[#6B7C70] font-semibold flex items-center gap-1 border-l border-[#E4DCC9] pl-3 ml-1 whitespace-nowrap">
-            <Users size={14} className="text-[#C4A066]" /> <strong>{displayedPeople.length}</strong> Entries
+          <span className="text-xs text-[#78716C] font-semibold flex items-center gap-1 border-l border-[#E7DFD5] pl-3 ml-1 whitespace-nowrap">
+            <Users size={14} className="text-[#C8A878]" /> <strong>{displayedPeople.length}</strong> Entries
           </span>
         </div>
       </div>
 
       {/* Enterprise Data Table */}
-      <div className="bg-white border border-[#E4DCC9] rounded-2xl shadow-sm overflow-hidden p-1">
+      <div className="bg-white border border-[#E7DFD5] rounded-2xl shadow-sm overflow-hidden p-1">
         <PeopleEnterpriseDataTable
           data={displayedPeople}
           isLoading={isLoading}

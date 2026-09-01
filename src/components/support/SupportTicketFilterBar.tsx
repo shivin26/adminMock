@@ -29,15 +29,15 @@ export const SupportTicketFilterBar: React.FC<SupportTicketFilterBarProps> = ({
   onOpenAdvancedFilters,
 }) => {
   return (
-    <div className="flex flex-col md:flex-row items-center justify-between gap-4 p-4 bg-white border border-[#E4DCC9] rounded-2xl shadow-sm">
+    <div className="flex flex-col md:flex-row items-center justify-between gap-4 p-4 bg-white border border-[#E7DFD5] rounded-2xl shadow-sm">
       {/* Status Filter Tabs */}
       <div className="flex items-center gap-1.5 overflow-x-auto w-full md:w-auto pb-1 md:pb-0">
         <button
           type="button"
           className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap ${
             activeTab === 'all'
-              ? 'bg-[#18281F] text-[#FFFFFF] shadow-sm'
-              : 'bg-[#FAF9F6] text-[#6B7C70] hover:bg-[#EFE8D8]'
+              ? 'bg-[#211A19] text-[#FFFFFF] shadow-sm'
+              : 'bg-[#FAF8F5] text-[#78716C] hover:bg-[#EEE5DA]'
           }`}
           onClick={() => onTabChange('all')}
         >
@@ -48,8 +48,8 @@ export const SupportTicketFilterBar: React.FC<SupportTicketFilterBarProps> = ({
           type="button"
           className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap ${
             activeTab === 'open'
-              ? 'bg-[#18281F] text-[#FFFFFF] shadow-sm'
-              : 'bg-[#FAF9F6] text-[#6B7C70] hover:bg-[#EFE8D8]'
+              ? 'bg-[#211A19] text-[#FFFFFF] shadow-sm'
+              : 'bg-[#FAF8F5] text-[#78716C] hover:bg-[#EEE5DA]'
           }`}
           onClick={() => onTabChange('open')}
         >
@@ -60,8 +60,8 @@ export const SupportTicketFilterBar: React.FC<SupportTicketFilterBarProps> = ({
           type="button"
           className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap ${
             activeTab === 'in_progress'
-              ? 'bg-[#18281F] text-[#FFFFFF] shadow-sm'
-              : 'bg-[#FAF9F6] text-[#6B7C70] hover:bg-[#EFE8D8]'
+              ? 'bg-[#211A19] text-[#FFFFFF] shadow-sm'
+              : 'bg-[#FAF8F5] text-[#78716C] hover:bg-[#EEE5DA]'
           }`}
           onClick={() => onTabChange('in_progress')}
         >
@@ -72,8 +72,8 @@ export const SupportTicketFilterBar: React.FC<SupportTicketFilterBarProps> = ({
           type="button"
           className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap ${
             activeTab === 'resolved'
-              ? 'bg-[#18281F] text-[#FFFFFF] shadow-sm'
-              : 'bg-[#FAF9F6] text-[#6B7C70] hover:bg-[#EFE8D8]'
+              ? 'bg-[#211A19] text-[#FFFFFF] shadow-sm'
+              : 'bg-[#FAF8F5] text-[#78716C] hover:bg-[#EEE5DA]'
           }`}
           onClick={() => onTabChange('resolved')}
         >
@@ -86,7 +86,7 @@ export const SupportTicketFilterBar: React.FC<SupportTicketFilterBarProps> = ({
         <select
           value={categoryFilter}
           onChange={(e) => onCategoryChange(e.target.value)}
-          className="px-3 py-2 bg-[#FAF9F6] border border-[#E4DCC9] rounded-xl text-xs font-semibold text-[#18281F] outline-none focus:border-[#C4A066]"
+          className="px-3 py-2 bg-[#FAF8F5] border border-[#E7DFD5] rounded-xl text-xs font-semibold text-[#211A19] outline-none focus:border-[#C8A878]"
         >
           <option value="all">All Categories & Complaints</option>
           <option value="vendor_vs_user">Vendor → Resident Customer Complaint</option>
@@ -110,13 +110,13 @@ export const SupportTicketFilterBar: React.FC<SupportTicketFilterBarProps> = ({
         )}
 
         <div className="relative flex-1 md:w-64">
-          <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#6B7C70]" />
+          <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#78716C]" />
           <input
             type="text"
             placeholder="Search tickets, subject, reporter..."
             value={searchTerm}
             onChange={(e) => onSearchChange(e.target.value)}
-            className="w-full pl-9 pr-3 py-2 bg-[#FAF9F6] border border-[#E4DCC9] rounded-xl text-xs font-semibold text-[#18281F] outline-none focus:border-[#C4A066]"
+            className="w-full pl-9 pr-3 py-2 bg-[#FAF8F5] border border-[#E7DFD5] rounded-xl text-xs font-semibold text-[#211A19] outline-none focus:border-[#C8A878]"
           />
         </div>
       </div>

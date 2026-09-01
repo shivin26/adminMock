@@ -116,37 +116,37 @@ export const SupportSLAManagementModal: React.FC<SupportSLAManagementModalProps>
         {/* SLA Compliance KPI Metrics Summary */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
           <div className="sla-stat-box">
-            <span className="text-[11px] font-semibold text-[#6B7C70] block">SLA Compliance Rate</span>
+            <span className="text-[11px] font-semibold text-[#78716C] block">SLA Compliance Rate</span>
             <span className="text-lg font-bold text-[#10B981] font-mono">96.8%</span>
           </div>
 
           <div className="sla-stat-box">
-            <span className="text-[11px] font-semibold text-[#6B7C70] block">Avg Response Time</span>
-            <span className="text-lg font-bold text-[#18281F] font-mono">14 mins</span>
+            <span className="text-[11px] font-semibold text-[#78716C] block">Avg Response Time</span>
+            <span className="text-lg font-bold text-[#211A19] font-mono">14 mins</span>
           </div>
 
           <div className="sla-stat-box">
-            <span className="text-[11px] font-semibold text-[#6B7C70] block">Avg Resolution Time</span>
-            <span className="text-lg font-bold text-[#18281F] font-mono">2.4 hrs</span>
+            <span className="text-[11px] font-semibold text-[#78716C] block">Avg Resolution Time</span>
+            <span className="text-lg font-bold text-[#211A19] font-mono">2.4 hrs</span>
           </div>
 
           <div className="sla-stat-box">
-            <span className="text-[11px] font-semibold text-[#6B7C70] block">Total SLA Breaches</span>
+            <span className="text-[11px] font-semibold text-[#78716C] block">Total SLA Breaches</span>
             <span className="text-lg font-bold text-rose-600 font-mono">4</span>
           </div>
         </div>
 
         {/* Priority SLA Target Configuration Grid */}
         <div className="flex flex-col gap-2">
-          <span className="text-xs font-bold text-[#18281F] uppercase tracking-wider flex items-center gap-1.5">
-            <Clock size={13} className="text-[#C4A066]" /> SLA Targets by Priority
+          <span className="text-xs font-bold text-[#211A19] uppercase tracking-wider flex items-center gap-1.5">
+            <Clock size={13} className="text-[#C8A878]" /> SLA Targets by Priority
           </span>
 
           <div className="sla-policy-grid">
             {policies.map((p) => (
               <div key={p.id} className="sla-card-item">
                 <div className="flex items-center justify-between">
-                  <span className="font-bold text-[#18281F] text-xs font-serif">{p.name}</span>
+                  <span className="font-bold text-[#211A19] text-xs font-serif">{p.name}</span>
                   <Badge variant={p.priority === 'critical' ? 'danger' : p.priority === 'high' ? 'warning' : 'neutral'}>
                     {p.priority.toUpperCase()}
                   </Badge>
@@ -154,40 +154,40 @@ export const SupportSLAManagementModal: React.FC<SupportSLAManagementModalProps>
 
                 <div className="grid grid-cols-2 gap-2 text-xs">
                   <div className="flex flex-col gap-1">
-                    <label className="text-[#6B7C70] font-medium">1st Response (Mins):</label>
+                    <label className="text-[#78716C] font-medium">1st Response (Mins):</label>
                     <input
                       type="number"
                       value={p.responseTargetMinutes}
                       onChange={(e) => handleUpdatePolicy(p.id, 'responseTargetMinutes', Number(e.target.value))}
-                      className="p-2 bg-[#FAF9F6] border border-[#E4DCC9] rounded-xl text-xs font-mono font-bold text-[#18281F] outline-none"
+                      className="p-2 bg-[#FAF8F5] border border-[#E7DFD5] rounded-xl text-xs font-mono font-bold text-[#211A19] outline-none"
                     />
                   </div>
 
                   <div className="flex flex-col gap-1">
-                    <label className="text-[#6B7C70] font-medium">Resolution (Hours):</label>
+                    <label className="text-[#78716C] font-medium">Resolution (Hours):</label>
                     <input
                       type="number"
                       value={p.resolutionTargetHours}
                       onChange={(e) => handleUpdatePolicy(p.id, 'resolutionTargetHours', Number(e.target.value))}
-                      className="p-2 bg-[#FAF9F6] border border-[#E4DCC9] rounded-xl text-xs font-mono font-bold text-[#18281F] outline-none"
+                      className="p-2 bg-[#FAF8F5] border border-[#E7DFD5] rounded-xl text-xs font-mono font-bold text-[#211A19] outline-none"
                     />
                   </div>
                 </div>
 
                 {/* Multi-Level Escalation Thresholds */}
-                <div className="flex flex-col gap-1.5 border-t border-[#E4DCC9]/60 pt-2 text-[11px]">
-                  <span className="font-bold text-[#18281F]">Escalation Triggers:</span>
-                  <div className="flex items-center justify-between text-[#6B7C70]">
+                <div className="flex flex-col gap-1.5 border-t border-[#E7DFD5]/60 pt-2 text-[11px]">
+                  <span className="font-bold text-[#211A19]">Escalation Triggers:</span>
+                  <div className="flex items-center justify-between text-[#78716C]">
                     <span>Level 1 Staff Alert: <strong>{p.level1WarningPct}% SLA</strong></span>
                     <span>Level 2 Lead Alert: <strong>{p.level2EscalatePct}% SLA</strong></span>
                   </div>
 
-                  <label className="flex items-center gap-1.5 font-semibold text-[#18281F] cursor-pointer mt-1">
+                  <label className="flex items-center gap-1.5 font-semibold text-[#211A19] cursor-pointer mt-1">
                     <input
                       type="checkbox"
                       checked={p.autoReassignOnBreach}
                       onChange={(e) => handleUpdatePolicy(p.id, 'autoReassignOnBreach', e.target.checked)}
-                      className="rounded border-[#E4DCC9]"
+                      className="rounded border-[#E7DFD5]"
                     />
                     Auto-reassign to Super Admin on SLA breach
                   </label>
@@ -199,31 +199,31 @@ export const SupportSLAManagementModal: React.FC<SupportSLAManagementModalProps>
 
         {/* Recent Escalation History Log */}
         <div className="flex flex-col gap-2">
-          <span className="text-xs font-bold text-[#6B7C70] uppercase tracking-wider flex items-center gap-1.5">
-            <History size={13} className="text-[#C4A066]" /> SLA Escalation Audit Trail
+          <span className="text-xs font-bold text-[#78716C] uppercase tracking-wider flex items-center gap-1.5">
+            <History size={13} className="text-[#C8A878]" /> SLA Escalation Audit Trail
           </span>
 
-          <div className="p-3 bg-white border border-[#E4DCC9] rounded-xl flex flex-col gap-2 text-xs">
-            <div className="flex items-center justify-between border-b border-[#E4DCC9]/60 pb-2">
+          <div className="p-3 bg-white border border-[#E7DFD5] rounded-xl flex flex-col gap-2 text-xs">
+            <div className="flex items-center justify-between border-b border-[#E7DFD5]/60 pb-2">
               <div>
-                <span className="font-mono font-bold text-[#C4A066]">TICK-9082</span>
-                <span className="text-[#18281F] font-semibold ml-2">Level 2 Escalation Warning Triggered</span>
+                <span className="font-mono font-bold text-[#C8A878]">TICK-9082</span>
+                <span className="text-[#211A19] font-semibold ml-2">Level 2 Escalation Warning Triggered</span>
               </div>
-              <span className="text-[11px] text-[#6B7C70]">15 mins ago</span>
+              <span className="text-[11px] text-[#78716C]">15 mins ago</span>
             </div>
 
             <div className="flex items-center justify-between">
               <div>
-                <span className="font-mono font-bold text-[#C4A066]">TICK-9081</span>
-                <span className="text-[#18281F] font-semibold ml-2">First Response Target Met (8m)</span>
+                <span className="font-mono font-bold text-[#C8A878]">TICK-9081</span>
+                <span className="text-[#211A19] font-semibold ml-2">First Response Target Met (8m)</span>
               </div>
-              <span className="text-[11px] text-[#6B7C70]">2 hours ago</span>
+              <span className="text-[11px] text-[#78716C]">2 hours ago</span>
             </div>
           </div>
         </div>
 
         {/* Action Controls */}
-        <div className="flex items-center justify-end gap-2 pt-2 border-t border-[#E4DCC9]">
+        <div className="flex items-center justify-end gap-2 pt-2 border-t border-[#E7DFD5]">
           <Button type="button" variant="ghost" onClick={onClose}>
             Cancel
           </Button>

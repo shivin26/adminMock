@@ -135,7 +135,7 @@ class SubscriptionService extends BaseApiService {
       mrrGrowthPercentage: 18.5,
       tierDistribution: [
         { name: 'Enterprise Tier', count: enterpriseCount, mrr: enterpriseCount * 9999, color: '#224636' },
-        { name: 'Pro Merchant', count: proCount, mrr: proCount * 2999, color: '#C4A066' },
+        { name: 'Pro Merchant', count: proCount, mrr: proCount * 2999, color: '#C8A878' },
         { name: 'Free Starter', count: freeCount, mrr: 0, color: '#827973' },
       ],
     } as any;

@@ -30,7 +30,7 @@ export const ImagePreviewModal: React.FC<ImagePreviewModalProps> = ({
     >
       <div className="flex flex-col items-center gap-4 font-sans">
         {/* Full Image Container */}
-        <div className="relative w-full max-h-[70vh] flex items-center justify-center bg-[#18281F] rounded-2xl overflow-hidden p-3 border border-[#E4DCC9] shadow-inner group">
+        <div className="relative w-full max-h-[70vh] flex items-center justify-center bg-[#211A19] rounded-2xl overflow-hidden p-3 border border-[#E7DFD5] shadow-inner group">
           <img
             src={imageUrl}
             alt={title}
@@ -39,9 +39,9 @@ export const ImagePreviewModal: React.FC<ImagePreviewModalProps> = ({
         </div>
 
         {/* Footer Actions */}
-        <div className="flex flex-wrap items-center justify-between w-full pt-3 border-t border-[#E4DCC9] text-xs">
-          <div className="flex items-center gap-2 text-[#6B7C70] font-mono">
-            <ImageIcon size={15} className="text-[#C4A066]" />
+        <div className="flex flex-wrap items-center justify-between w-full pt-3 border-t border-[#E7DFD5] text-xs">
+          <div className="flex items-center gap-2 text-[#78716C] font-mono">
+            <ImageIcon size={15} className="text-[#C8A878]" />
             <span>Uploaded Vendor Profile Photo</span>
           </div>
 
@@ -50,9 +50,9 @@ export const ImagePreviewModal: React.FC<ImagePreviewModalProps> = ({
               href={imageUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-bold text-[#18281F] bg-[#EFE8D8] hover:bg-[#E4DCC9] border border-[#E4DCC9] rounded-xl transition-all shadow-xs"
+              className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-bold text-[#211A19] bg-[#EEE5DA] hover:bg-[#E7DFD5] border border-[#E7DFD5] rounded-xl transition-all shadow-xs"
             >
-              <ExternalLink size={14} className="text-[#C4A066]" /> Open in New Tab
+              <ExternalLink size={14} className="text-[#C8A878]" /> Open in New Tab
             </a>
             <Button variant="secondary" size="sm" onClick={onClose}>
               Close Preview

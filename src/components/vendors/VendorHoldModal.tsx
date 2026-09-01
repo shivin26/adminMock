@@ -82,26 +82,26 @@ export const VendorHoldModal: React.FC<VendorHoldModalProps> = ({
         </div>
 
         {/* Vendor Quick Info */}
-        <div className="p-3 bg-[#FAF9F6] border border-[#E4DCC9] rounded-xl flex justify-between items-center text-xs">
+        <div className="p-3 bg-[#FAF8F5] border border-[#E7DFD5] rounded-xl flex justify-between items-center text-xs">
           <div>
-            <span className="text-[#6B7C70] block">Vendor / Store</span>
-            <span className="font-bold text-[#18281F] text-sm">{vendor.storeName}</span>
+            <span className="text-[#78716C] block font-semibold">Vendor / Store</span>
+            <span className="font-bold text-[#211A19] text-sm font-serif">{vendor.storeName}</span>
           </div>
           <div className="text-right">
-            <span className="text-[#6B7C70] block">Submitted At</span>
-            <span className="font-mono text-[#18281F] font-semibold">{vendor.submissionTimestamp || vendor.createdAt}</span>
+            <span className="text-[#78716C] block font-semibold">Submitted At</span>
+            <span className="font-mono text-[#211A19] font-semibold">{vendor.submissionTimestamp || vendor.createdAt}</span>
           </div>
         </div>
 
         {/* SMTP Email Subject Line */}
         <div>
-          <label className="block text-xs font-bold text-[#18281F] uppercase tracking-wider mb-1">
+          <label className="block text-xs font-bold text-[#211A19] uppercase tracking-wider mb-1">
             Email Subject Line <span className="text-red-500">*</span>
           </label>
           <input
             type="text"
             required
-            className="w-full p-2.5 text-xs bg-white border border-[#E4DCC9] rounded-xl text-[#18281F] focus:outline-none focus:border-[#C4A066] font-sans font-medium"
+            className="w-full p-2.5 text-xs bg-white border border-[#E7DFD5] rounded-xl text-[#211A19] focus:outline-none focus:border-[#541D26] focus:ring-2 focus:ring-[#541D26]/10 font-sans font-medium"
             placeholder="Subject line sent via SMTP email..."
             value={subject}
             onChange={(e) => setSubject(e.target.value)}
@@ -110,13 +110,13 @@ export const VendorHoldModal: React.FC<VendorHoldModalProps> = ({
 
         {/* SMTP Email Content Body */}
         <div>
-          <label className="block text-xs font-bold text-[#18281F] uppercase tracking-wider mb-1">
+          <label className="block text-xs font-bold text-[#211A19] uppercase tracking-wider mb-1">
             Email Message Content (Instructions for Vendor) <span className="text-red-500">*</span>
           </label>
           <textarea
             required
             rows={3}
-            className="w-full p-3 text-xs bg-white border border-[#E4DCC9] rounded-xl text-[#18281F] focus:outline-none focus:border-[#C4A066] font-sans"
+            className="w-full p-3 text-xs bg-white border border-[#E7DFD5] rounded-xl text-[#211A19] focus:outline-none focus:border-[#541D26] focus:ring-2 focus:ring-[#541D26]/10 font-sans"
             placeholder="Detailed instructions explaining what the vendor needs to update in settings..."
             value={emailContent}
             onChange={(e) => setEmailContent(e.target.value)}
@@ -125,7 +125,7 @@ export const VendorHoldModal: React.FC<VendorHoldModalProps> = ({
 
         {/* Preset Quick Select Reasons */}
         <div className="flex flex-col gap-1.5">
-          <span className="text-[11px] font-bold text-[#6B7C70] uppercase tracking-wider flex items-center gap-1">
+          <span className="text-[11px] font-bold text-[#78716C] uppercase tracking-wider flex items-center gap-1">
             <FileText size={12} /> Preset Revision Templates (Click to insert):
           </span>
           <div className="flex flex-col gap-1">
@@ -137,16 +137,16 @@ export const VendorHoldModal: React.FC<VendorHoldModalProps> = ({
                   setSubject(preset.subject);
                   setEmailContent(preset.content);
                 }}
-                className="text-left text-xs p-2 bg-[#F8F5EE] hover:bg-[#EFE8D8] border border-[#E4DCC9] rounded-lg text-[#18281F] transition-all"
+                className="text-left text-xs p-2 bg-[#FAF8F5] hover:bg-[#EEE5DA] border border-[#E7DFD5] rounded-lg text-[#211A19] transition-all cursor-pointer"
               >
-                • <strong className="text-[#18281F]">{preset.subject}:</strong> {preset.content}
+                • <strong className="text-[#211A19]">{preset.subject}:</strong> {preset.content}
               </button>
             ))}
           </div>
         </div>
 
         {/* Action Buttons */}
-        <div className="flex justify-end gap-3 mt-2 pt-3 border-t border-[#E4DCC9]">
+        <div className="flex justify-end gap-3 mt-2 pt-3 border-t border-[#E7DFD5]">
           <Button type="button" variant="secondary" onClick={onClose}>
             Cancel
           </Button>

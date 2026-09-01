@@ -54,12 +54,12 @@ export const PeopleFilterModal: React.FC<PeopleFilterModalProps> = ({
     >
       <form onSubmit={handleApply} className="flex flex-col gap-4">
         <div className="grid grid-cols-2 gap-3">
-          <div className="flex flex-col gap-1.5 text-xs font-bold text-[#18281F]">
+          <div className="flex flex-col gap-1.5 text-xs font-bold text-[#211A19]">
             <label className="uppercase tracking-wider">Account Role / Type</label>
             <select
               value={personType}
               onChange={(e) => setPersonType(e.target.value)}
-              className="w-full p-2.5 bg-[#FAF9F6] border border-[#E4DCC9] rounded-xl text-xs font-medium text-[#18281F] outline-none cursor-pointer"
+              className="w-full p-2.5 bg-[#FAF8F5] border border-[#E7DFD5] rounded-xl text-xs font-medium text-[#211A19] outline-none cursor-pointer"
             >
               <option value="all">All Users (Resident &amp; Dual Role)</option>
               <option value="user">Resident Customers Only</option>
@@ -67,12 +67,12 @@ export const PeopleFilterModal: React.FC<PeopleFilterModalProps> = ({
             </select>
           </div>
 
-          <div className="flex flex-col gap-1.5 text-xs font-bold text-[#18281F]">
+          <div className="flex flex-col gap-1.5 text-xs font-bold text-[#211A19]">
             <label className="uppercase tracking-wider">Account Status</label>
             <select
               value={status}
               onChange={(e) => setStatus(e.target.value)}
-              className="w-full p-2.5 bg-[#FAF9F6] border border-[#E4DCC9] rounded-xl text-xs font-medium text-[#18281F] outline-none cursor-pointer"
+              className="w-full p-2.5 bg-[#FAF8F5] border border-[#E7DFD5] rounded-xl text-xs font-medium text-[#211A19] outline-none cursor-pointer"
             >
               <option value="all">All Statuses</option>
               <option value="active">Active Accounts</option>
@@ -83,12 +83,12 @@ export const PeopleFilterModal: React.FC<PeopleFilterModalProps> = ({
         </div>
 
         <div className="grid grid-cols-2 gap-3">
-          <div className="flex flex-col gap-1.5 text-xs font-bold text-[#18281F]">
+          <div className="flex flex-col gap-1.5 text-xs font-bold text-[#211A19]">
             <label className="uppercase tracking-wider">Residential Society</label>
             <select
               value={societyName}
               onChange={(e) => setSocietyName(e.target.value)}
-              className="w-full p-2.5 bg-[#FAF9F6] border border-[#E4DCC9] rounded-xl text-xs font-medium text-[#18281F] outline-none cursor-pointer"
+              className="w-full p-2.5 bg-[#FAF8F5] border border-[#E7DFD5] rounded-xl text-xs font-medium text-[#211A19] outline-none cursor-pointer"
             >
               <option value="all">All Societies</option>
               <option value="Anupam Society">Anupam Society</option>
@@ -97,12 +97,12 @@ export const PeopleFilterModal: React.FC<PeopleFilterModalProps> = ({
             </select>
           </div>
 
-          <div className="flex flex-col gap-1.5 text-xs font-bold text-[#18281F]">
+          <div className="flex flex-col gap-1.5 text-xs font-bold text-[#211A19]">
             <label className="uppercase tracking-wider">Minimum Strike Flags</label>
             <select
               value={minFlags}
               onChange={(e) => setMinFlags(Number(e.target.value))}
-              className="w-full p-2.5 bg-[#FAF9F6] border border-[#E4DCC9] rounded-xl text-xs font-medium text-[#18281F] outline-none cursor-pointer"
+              className="w-full p-2.5 bg-[#FAF8F5] border border-[#E7DFD5] rounded-xl text-xs font-medium text-[#211A19] outline-none cursor-pointer"
             >
               <option value={0}>Any Flags (0+)</option>
               <option value={1}>At least 1 Strike Flag</option>
@@ -112,7 +112,7 @@ export const PeopleFilterModal: React.FC<PeopleFilterModalProps> = ({
           </div>
         </div>
 
-        <div className="flex items-center justify-between pt-3 border-t border-[#E4DCC9]">
+        <div className="flex items-center justify-between pt-3 border-t border-[#E7DFD5]">
           <Button
             type="button"
             variant="ghost"

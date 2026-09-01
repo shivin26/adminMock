@@ -223,21 +223,21 @@ export const PeopleDetailsDrawer: React.FC<PeopleDetailsDrawerProps> = ({
       ) : (
         <div className="flex flex-col gap-5">
           {/* Header Identity Card */}
-          <div className="p-4 bg-[#FAF9F6] border border-[#E4DCC9] rounded-2xl flex items-center justify-between shadow-sm">
+          <div className="p-4 bg-[#FAF8F5] border border-[#E7DFD5] rounded-2xl flex items-center justify-between shadow-sm">
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-2xl bg-[#18281F] text-white flex items-center justify-center font-bold text-lg">
+              <div className="w-12 h-12 rounded-2xl bg-[#211A19] text-white flex items-center justify-center font-bold text-lg">
                 {person.name.charAt(0)}
               </div>
               <div className="flex flex-col">
-                <span className="font-bold text-[#18281F] text-base font-serif flex items-center gap-2">
+                <span className="font-bold text-[#211A19] text-base font-serif flex items-center gap-2">
                   {person.name}
                   {person.storeName && (
-                    <span className="text-xs font-sans text-[#C4A066] font-bold">
+                    <span className="text-xs font-sans text-[#C8A878] font-bold">
                       ({person.storeName})
                     </span>
                   )}
                 </span>
-                <span className="text-xs text-[#6B7C70]">{person.email}</span>
+                <span className="text-xs text-[#78716C]">{person.email}</span>
               </div>
             </div>
 
@@ -247,14 +247,14 @@ export const PeopleDetailsDrawer: React.FC<PeopleDetailsDrawerProps> = ({
           </div>
 
           {/* Navigation Tabs */}
-          <div className="flex items-center gap-2 border-b border-[#E4DCC9] pb-2 text-xs">
+          <div className="flex items-center gap-2 border-b border-[#E7DFD5] pb-2 text-xs">
             <button
               type="button"
               onClick={() => setActiveTab('overview')}
               className={`px-3.5 py-1.5 rounded-xl font-bold transition-all ${
                 activeTab === 'overview'
-                  ? 'bg-[#18281F] text-white shadow-sm'
-                  : 'bg-[#FAF9F6] text-[#6B7C70] hover:bg-[#EFE8D8]'
+                  ? 'bg-[#211A19] text-white shadow-sm'
+                  : 'bg-[#FAF8F5] text-[#78716C] hover:bg-[#EEE5DA]'
               }`}
             >
               Account Overview
@@ -264,8 +264,8 @@ export const PeopleDetailsDrawer: React.FC<PeopleDetailsDrawerProps> = ({
               onClick={() => setActiveTab('activity')}
               className={`px-3.5 py-1.5 rounded-xl font-bold transition-all flex items-center gap-1.5 ${
                 activeTab === 'activity'
-                  ? 'bg-[#18281F] text-white shadow-sm'
-                  : 'bg-[#FAF9F6] text-[#6B7C70] hover:bg-[#EFE8D8]'
+                  ? 'bg-[#211A19] text-white shadow-sm'
+                  : 'bg-[#FAF8F5] text-[#78716C] hover:bg-[#EEE5DA]'
               }`}
             >
               <History size={13} /> Activity &amp; Orders ({person.totalOrdersCount || orderHistory.length})
@@ -275,8 +275,8 @@ export const PeopleDetailsDrawer: React.FC<PeopleDetailsDrawerProps> = ({
               onClick={() => setActiveTab('tickets')}
               className={`px-3.5 py-1.5 rounded-xl font-bold transition-all flex items-center gap-1.5 ${
                 activeTab === 'tickets'
-                  ? 'bg-[#18281F] text-white shadow-sm'
-                  : 'bg-[#FAF9F6] text-[#6B7C70] hover:bg-[#EFE8D8]'
+                  ? 'bg-[#211A19] text-white shadow-sm'
+                  : 'bg-[#FAF8F5] text-[#78716C] hover:bg-[#EEE5DA]'
               }`}
             >
               <Headphones size={13} /> Support Tickets ({userTickets.length})
@@ -287,12 +287,12 @@ export const PeopleDetailsDrawer: React.FC<PeopleDetailsDrawerProps> = ({
           {activeTab === 'overview' && (
             <div className="flex flex-col gap-4 animate-fadeIn">
               {/* Strike Meter Card */}
-              <div className="p-4 bg-white border border-[#E4DCC9] rounded-2xl flex flex-col gap-2 shadow-sm">
+              <div className="p-4 bg-white border border-[#E7DFD5] rounded-2xl flex flex-col gap-2 shadow-sm">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-bold text-[#18281F] uppercase tracking-wider flex items-center gap-1.5">
+                  <span className="text-xs font-bold text-[#211A19] uppercase tracking-wider flex items-center gap-1.5">
                     <Flag size={14} className="text-[#D97706]" /> Dispute Flags &amp; Strike Meter
                   </span>
-                  <span className="text-xs font-mono font-bold text-[#18281F]">
+                  <span className="text-xs font-mono font-bold text-[#211A19]">
                     {person.flagsCount} / 3 Strikes
                   </span>
                 </div>
@@ -303,7 +303,7 @@ export const PeopleDetailsDrawer: React.FC<PeopleDetailsDrawerProps> = ({
                   <div className={`h-2.5 rounded-full ${person.flagsCount >= 3 ? 'bg-rose-600 animate-pulse' : 'bg-gray-200'}`} />
                 </div>
 
-                <span className="text-[11px] text-[#6B7C70]">
+                <span className="text-[11px] text-[#78716C]">
                   {person.flagsCount >= 3
                     ? 'CRITICAL: Account reached 3 strikes limit and is automatically BANNED from platform access.'
                     : `Account has ${person.flagsCount} flag(s). If 3 flags are reached, the system auto-bans this account.`}
@@ -312,45 +312,45 @@ export const PeopleDetailsDrawer: React.FC<PeopleDetailsDrawerProps> = ({
 
               {/* Information Grid */}
               <div className="grid grid-cols-2 gap-3 text-xs">
-                <div className="p-3 bg-[#FAF9F6] border border-[#E4DCC9] rounded-xl flex items-center gap-2.5">
-                  <Mail size={16} className="text-[#C4A066]" />
+                <div className="p-3 bg-[#FAF8F5] border border-[#E7DFD5] rounded-xl flex items-center gap-2.5">
+                  <Mail size={16} className="text-[#C8A878]" />
                   <div>
-                    <span className="text-[#6B7C70] block text-[10px] uppercase font-bold">Email Address</span>
-                    <span className="font-bold text-[#18281F]">{person.email}</span>
+                    <span className="text-[#78716C] block text-[10px] uppercase font-bold">Email Address</span>
+                    <span className="font-bold text-[#211A19]">{person.email}</span>
                   </div>
                 </div>
 
-                <div className="p-3 bg-[#FAF9F6] border border-[#E4DCC9] rounded-xl flex items-center gap-2.5">
-                  <Phone size={16} className="text-[#C4A066]" />
+                <div className="p-3 bg-[#FAF8F5] border border-[#E7DFD5] rounded-xl flex items-center gap-2.5">
+                  <Phone size={16} className="text-[#C8A878]" />
                   <div>
-                    <span className="text-[#6B7C70] block text-[10px] uppercase font-bold">Phone Number</span>
-                    <span className="font-bold text-[#18281F]">{person.phone}</span>
+                    <span className="text-[#78716C] block text-[10px] uppercase font-bold">Phone Number</span>
+                    <span className="font-bold text-[#211A19]">{person.phone}</span>
                   </div>
                 </div>
 
-                <div className="p-3 bg-[#FAF9F6] border border-[#E4DCC9] rounded-xl flex items-center gap-2.5">
-                  <Home size={16} className="text-[#C4A066]" />
+                <div className="p-3 bg-[#FAF8F5] border border-[#E7DFD5] rounded-xl flex items-center gap-2.5">
+                  <Home size={16} className="text-[#C8A878]" />
                   <div>
-                    <span className="text-[#6B7C70] block text-[10px] uppercase font-bold">Society / Residence</span>
-                    <span className="font-bold text-[#18281F]">
+                    <span className="text-[#78716C] block text-[10px] uppercase font-bold">Society / Residence</span>
+                    <span className="font-bold text-[#211A19]">
                       {person.flatNumber ? `${person.flatNumber}, ` : ''}{person.societyName}
                     </span>
                   </div>
                 </div>
 
-                <div className="p-3 bg-[#FAF9F6] border border-[#E4DCC9] rounded-xl flex items-center gap-2.5">
-                  {person.personType === 'vendor' || person.personType === 'user_vendor' ? <Store size={16} className="text-[#C4A066]" /> : <User size={16} className="text-[#C4A066]" />}
+                <div className="p-3 bg-[#FAF8F5] border border-[#E7DFD5] rounded-xl flex items-center gap-2.5">
+                  {person.personType === 'vendor' || person.personType === 'user_vendor' ? <Store size={16} className="text-[#C8A878]" /> : <User size={16} className="text-[#C8A878]" />}
                   <div>
-                    <span className="text-[#6B7C70] block text-[10px] uppercase font-bold">Account Role</span>
-                    <span className="font-bold text-[#18281F] uppercase">{person.personType === 'user_vendor' ? 'USER & VENDOR DUAL ROLE' : person.personType.replace('_', ' ')}</span>
+                    <span className="text-[#78716C] block text-[10px] uppercase font-bold">Account Role</span>
+                    <span className="font-bold text-[#211A19] uppercase">{person.personType === 'user_vendor' ? 'USER & VENDOR DUAL ROLE' : person.personType.replace('_', ' ')}</span>
                   </div>
                 </div>
 
-                <div className="p-3 bg-[#FAF9F6] border border-[#E4DCC9] rounded-xl flex items-center gap-2.5 col-span-2">
-                  <Clock size={16} className="text-[#C4A066]" />
+                <div className="p-3 bg-[#FAF8F5] border border-[#E7DFD5] rounded-xl flex items-center gap-2.5 col-span-2">
+                  <Clock size={16} className="text-[#C8A878]" />
                   <div>
-                    <span className="text-[#6B7C70] block text-[10px] uppercase font-bold">Registration Timestamp (Account Created)</span>
-                    <span className="font-bold text-[#18281F] font-mono">
+                    <span className="text-[#78716C] block text-[10px] uppercase font-bold">Registration Timestamp (Account Created)</span>
+                    <span className="font-bold text-[#211A19] font-mono">
                       {formatDateTime(person.createdAt)}
                     </span>
                   </div>
@@ -359,32 +359,32 @@ export const PeopleDetailsDrawer: React.FC<PeopleDetailsDrawerProps> = ({
 
               {/* Dual Role Vendor Store Section */}
               {(person.personType === 'user_vendor' || person.storeName || linkedVendor) && (
-                <div className="p-4 bg-[#EFE8D8] border border-[#C4A066]/50 rounded-2xl flex flex-col gap-3 shadow-xs text-xs">
+                <div className="p-4 bg-[#EEE5DA] border border-[#C8A878]/50 rounded-2xl flex flex-col gap-3 shadow-xs text-xs">
                   <div className="flex items-center justify-between flex-wrap gap-2">
                     <div>
-                      <span className="text-[10px] font-bold text-[#6B7C70] uppercase tracking-wider block">
+                      <span className="text-[10px] font-bold text-[#78716C] uppercase tracking-wider block">
                         Linked Merchant Account (Dual Role)
                       </span>
-                      <span className="font-bold text-[#18281F] flex items-center gap-1.5 font-serif text-base mt-0.5">
-                        <Store size={18} className="text-[#C4A066]" /> {linkedVendor?.storeName || person.storeName || 'Partner Merchant Store'}
+                      <span className="font-bold text-[#211A19] flex items-center gap-1.5 font-serif text-base mt-0.5">
+                        <Store size={18} className="text-[#C8A878]" /> {linkedVendor?.storeName || person.storeName || 'Partner Merchant Store'}
                       </span>
                     </div>
                     <Badge variant="warning">USER &amp; VENDOR DUAL ROLE</Badge>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-2 text-xs text-[#6B7C70] pt-2 border-t border-[#C4A066]/30">
+                  <div className="grid grid-cols-2 gap-2 text-xs text-[#78716C] pt-2 border-t border-[#C8A878]/30">
                     <div>
-                      <span className="block font-bold text-[#18281F]">Merchant Category:</span>
+                      <span className="block font-bold text-[#211A19]">Merchant Category:</span>
                       <span>{linkedVendor?.category || person.category || 'Local Merchant'}</span>
                     </div>
                     <div>
-                      <span className="block font-bold text-[#18281F]">Merchant Account Status:</span>
-                      <span className="font-bold text-[#18281F] uppercase">{linkedVendor?.status || 'Active'}</span>
+                      <span className="block font-bold text-[#211A19]">Merchant Account Status:</span>
+                      <span className="font-bold text-[#211A19] uppercase">{linkedVendor?.status || 'Active'}</span>
                     </div>
                   </div>
 
                   <div className="flex items-center justify-between pt-1">
-                    <span className="text-[11px] text-[#6B7C70] italic">
+                    <span className="text-[11px] text-[#78716C] italic">
                       This user account is linked to a registered vendor store.
                     </span>
                     <Button
@@ -420,7 +420,7 @@ export const PeopleDetailsDrawer: React.FC<PeopleDetailsDrawerProps> = ({
               )}
 
               {/* Action Buttons */}
-              <div className="flex items-center justify-between gap-3 pt-3 border-t border-[#E4DCC9]">
+              <div className="flex items-center justify-between gap-3 pt-3 border-t border-[#E7DFD5]">
                 <Button
                   variant="outline"
                   size="sm"
@@ -448,9 +448,9 @@ export const PeopleDetailsDrawer: React.FC<PeopleDetailsDrawerProps> = ({
           {/* TAB 2: ITEMIZED ACTIVITY & ORDERS HISTORY */}
           {activeTab === 'activity' && (
             <div className="flex flex-col gap-3 text-xs animate-fadeIn">
-              <div className="p-3 bg-[#FAF9F6] border border-[#E4DCC9] rounded-xl flex items-center justify-between">
-                <span className="font-bold text-[#18281F] flex items-center gap-1.5">
-                  <ShoppingBag size={15} className="text-[#C4A066]" /> Personal Purchases &amp; Orders Log
+              <div className="p-3 bg-[#FAF8F5] border border-[#E7DFD5] rounded-xl flex items-center justify-between">
+                <span className="font-bold text-[#211A19] flex items-center gap-1.5">
+                  <ShoppingBag size={15} className="text-[#C8A878]" /> Personal Purchases &amp; Orders Log
                 </span>
                 <span className="text-[11px] font-bold px-2 py-0.5 bg-[#FEF3C7] text-[#D97706] border border-[#F59E0B]/40 rounded-lg">
                   🛒 PURCHASES AT OTHER STORES
@@ -460,23 +460,23 @@ export const PeopleDetailsDrawer: React.FC<PeopleDetailsDrawerProps> = ({
               {orderHistory.map((ord) => (
                 <div
                   key={ord.id}
-                  className="p-3.5 bg-white border border-[#E4DCC9] rounded-2xl flex flex-col gap-2 shadow-xs hover:border-[#C4A066] transition-all"
+                  className="p-3.5 bg-white border border-[#E7DFD5] rounded-2xl flex flex-col gap-2 shadow-xs hover:border-[#C8A878] transition-all"
                 >
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                      <span className="font-mono font-bold text-[#C4A066] bg-[#FAF9F6] px-2 py-0.5 border border-[#E4DCC9] rounded-lg">
+                      <span className="font-mono font-bold text-[#C8A878] bg-[#FAF8F5] px-2 py-0.5 border border-[#E7DFD5] rounded-lg">
                         {ord.id}
                       </span>
-                      <span className="font-bold text-[#18281F]">{ord.storeName}</span>
+                      <span className="font-bold text-[#211A19]">{ord.storeName}</span>
                     </div>
                     <Badge variant="success">{ord.status}</Badge>
                   </div>
 
-                  <span className="text-[11px] text-[#6B7C70] font-medium flex items-center gap-1">
-                    <Package size={13} className="text-[#C4A066]" /> {ord.items}
+                  <span className="text-[11px] text-[#78716C] font-medium flex items-center gap-1">
+                    <Package size={13} className="text-[#C8A878]" /> {ord.items}
                   </span>
 
-                  <div className="flex items-center justify-between text-[11px] pt-2 border-t border-[#E4DCC9]/60 text-[#6B7C70]">
+                  <div className="flex items-center justify-between text-[11px] pt-2 border-t border-[#E7DFD5]/60 text-[#78716C]">
                     <span>{ord.paymentMethod}</span>
                     <div className="flex items-center gap-3">
                       <span className="text-[10px]">{formatDate(ord.date)}</span>
@@ -491,26 +491,26 @@ export const PeopleDetailsDrawer: React.FC<PeopleDetailsDrawerProps> = ({
           {/* TAB 3: ITEMIZED SUPPORT TICKET LOGS */}
           {activeTab === 'tickets' && (
             <div className="flex flex-col gap-3 text-xs animate-fadeIn">
-              <div className="p-3 bg-[#FAF9F6] border border-[#E4DCC9] rounded-xl flex items-center justify-between">
-                <span className="font-bold text-[#18281F] flex items-center gap-1.5">
-                  <ShieldAlert size={15} className="text-[#C4A066]" /> Support Ticket Inquiries ({userTickets.length})
+              <div className="p-3 bg-[#FAF8F5] border border-[#E7DFD5] rounded-xl flex items-center justify-between">
+                <span className="font-bold text-[#211A19] flex items-center gap-1.5">
+                  <ShieldAlert size={15} className="text-[#C8A878]" /> Support Ticket Inquiries ({userTickets.length})
                 </span>
-                <span className="text-[#6B7C70]">Intake: Website &amp; App</span>
+                <span className="text-[#78716C]">Intake: Website &amp; App</span>
               </div>
 
               {userTickets.map((t: any) => (
                 <div
                   key={t.id}
-                  className="p-3.5 bg-white border border-[#E4DCC9] rounded-2xl flex flex-col gap-2 shadow-xs hover:border-[#C4A066] transition-all"
+                  className="p-3.5 bg-white border border-[#E7DFD5] rounded-2xl flex flex-col gap-2 shadow-xs hover:border-[#C8A878] transition-all"
                 >
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                      <span className="font-mono font-bold text-[#C4A066] bg-[#FAF9F6] px-2 py-0.5 border border-[#E4DCC9] rounded-lg">
+                      <span className="font-mono font-bold text-[#C8A878] bg-[#FAF8F5] px-2 py-0.5 border border-[#E7DFD5] rounded-lg">
                         #{t.ticketNumber || t.id}
                       </span>
                       <Badge variant="primary">{t.category?.toUpperCase() || 'GENERAL'}</Badge>
                       {t.reporterType && (
-                        <span className="text-[10px] font-bold px-1.5 py-0.5 bg-[#FAF9F6] border border-[#E4DCC9] rounded text-[#6B7C70]">
+                        <span className="text-[10px] font-bold px-1.5 py-0.5 bg-[#FAF8F5] border border-[#E7DFD5] rounded text-[#78716C]">
                           {t.reporterType} INTAKE
                         </span>
                       )}
@@ -518,9 +518,9 @@ export const PeopleDetailsDrawer: React.FC<PeopleDetailsDrawerProps> = ({
                     <SupportTicketStatusBadge status={t.status || 'OPEN'} />
                   </div>
 
-                  <span className="font-bold text-[#18281F] text-xs">{t.subject}</span>
+                  <span className="font-bold text-[#211A19] text-xs">{t.subject}</span>
 
-                  <div className="flex items-center justify-between text-[10px] text-[#6B7C70] pt-1.5 border-t border-[#E4DCC9]/60">
+                  <div className="flex items-center justify-between text-[10px] text-[#78716C] pt-1.5 border-t border-[#E7DFD5]/60">
                     <span>Reporter: {t.reporterName || person.name}</span>
                     <span>{formatDate(t.createdAt)}</span>
                   </div>

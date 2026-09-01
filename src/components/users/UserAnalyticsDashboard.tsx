@@ -76,11 +76,11 @@ const MAU_DATA = [
 
 // Top Societies Distribution Data
 const TOP_SOCIETIES_DATA = [
-  { society: 'Anupam Society', users: 840, orders: 3420, fill: '#18281F' },
-  { society: 'Greenwood Heights', users: 650, orders: 2890, fill: '#C4A066' },
+  { society: 'Anupam Society', users: 840, orders: 3420, fill: '#211A19' },
+  { society: 'Greenwood Heights', users: 650, orders: 2890, fill: '#C8A878' },
   { society: 'Prestige Heights', users: 510, orders: 2150, fill: '#D97706' },
   { society: 'Sunrise Apartments', users: 430, orders: 1780, fill: '#059669' },
-  { society: 'Others', users: 490, orders: 1940, fill: '#6B7C70' },
+  { society: 'Others', users: 490, orders: 1940, fill: '#78716C' },
 ];
 
 // Top Customers Leaderboard
@@ -95,7 +95,7 @@ const TOP_CUSTOMERS_DATA = [
 // Retention & Engagement Pie
 const RETENTION_PIE_DATA = [
   { name: 'Retained Users (Repeat Buyers)', value: 88.5, color: '#059669' },
-  { name: 'New Users (1st Month)', value: 8.2, color: '#C4A066' },
+  { name: 'New Users (1st Month)', value: 8.2, color: '#C8A878' },
   { name: 'Churn Risk Users', value: 3.3, color: '#E11D48' },
 ];
 
@@ -167,25 +167,25 @@ export const UserAnalyticsDashboard: React.FC = () => {
   return (
     <div className="flex flex-col gap-6 w-full max-w-7xl mx-auto">
       {/* Analytics Toolbar Header */}
-      <div className="p-4 bg-white border border-[#E4DCC9] rounded-2xl shadow-sm flex flex-col md:flex-row items-center justify-between gap-3">
+      <div className="p-4 bg-white border border-[#E7DFD5] rounded-2xl shadow-sm flex flex-col md:flex-row items-center justify-between gap-3">
         <div className="flex items-center gap-2">
-          <Activity size={20} className="text-[#C4A066]" />
+          <Activity size={20} className="text-[#C8A878]" />
           <div>
-            <h2 className="font-bold text-[#18281F] text-base font-serif">Enterprise User Analytics Dashboard</h2>
-            <p className="text-xs text-[#6B7C70]">Live telemetry on growth, active user retention, spending patterns &amp; complaint ratios.</p>
+            <h2 className="font-bold text-[#211A19] text-base font-serif">Enterprise User Analytics Dashboard</h2>
+            <p className="text-xs text-[#78716C]">Live telemetry on growth, active user retention, spending patterns &amp; complaint ratios.</p>
           </div>
         </div>
 
         <div className="flex items-center gap-2">
           {/* Time Range Selector */}
-          <div className="flex items-center gap-1 p-1 bg-[#FAF9F6] border border-[#E4DCC9] rounded-xl text-xs">
+          <div className="flex items-center gap-1 p-1 bg-[#FAF8F5] border border-[#E7DFD5] rounded-xl text-xs">
             {(['7d', '30d', '90d', '1y'] as const).map((range) => (
               <button
                 key={range}
                 type="button"
                 onClick={() => setTimeRange(range)}
                 className={`px-2.5 py-1 rounded-lg font-bold transition-all ${
-                  timeRange === range ? 'bg-[#18281F] text-white shadow-2xs' : 'text-[#6B7C70] hover:text-[#18281F]'
+                  timeRange === range ? 'bg-[#211A19] text-white shadow-2xs' : 'text-[#78716C] hover:text-[#211A19]'
                 }`}
               >
                 {range.toUpperCase()}
@@ -221,7 +221,7 @@ export const UserAnalyticsDashboard: React.FC = () => {
           title="Average Orders / User"
           value="4.2"
           subtitle="Orders placed per month"
-          icon={<ShoppingBag size={20} className="text-[#C4A066]" />}
+          icon={<ShoppingBag size={20} className="text-[#C8A878]" />}
           change="+8.6%"
           isPositive={true}
         />
@@ -257,11 +257,11 @@ export const UserAnalyticsDashboard: React.FC = () => {
       {/* Row 1: Registration Growth & Daily Active Users (DAU) */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Chart 1: Registration Growth */}
-        <div className="p-5 bg-white border border-[#E4DCC9] rounded-2xl shadow-sm flex flex-col gap-4">
+        <div className="p-5 bg-white border border-[#E7DFD5] rounded-2xl shadow-sm flex flex-col gap-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <TrendingUp size={18} className="text-[#C4A066]" />
-              <h3 className="font-bold text-[#18281F] text-sm">Registration Growth Curve</h3>
+              <TrendingUp size={18} className="text-[#C8A878]" />
+              <h3 className="font-bold text-[#211A19] text-sm">Registration Growth Curve</h3>
             </div>
             <Badge variant="primary">MONTHLY TREND</Badge>
           </div>
@@ -271,28 +271,28 @@ export const UserAnalyticsDashboard: React.FC = () => {
               <AreaChart data={REGISTRATION_GROWTH_DATA} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                 <defs>
                   <linearGradient id="userGrad" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#C4A066" stopOpacity={0.4} />
-                    <stop offset="95%" stopColor="#C4A066" stopOpacity={0} />
+                    <stop offset="5%" stopColor="#C8A878" stopOpacity={0.4} />
+                    <stop offset="95%" stopColor="#C8A878" stopOpacity={0} />
                   </linearGradient>
                 </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="#E4DCC9" opacity={0.6} />
-                <XAxis dataKey="month" tick={{ fontSize: 11, fill: '#6B7C70' }} />
-                <YAxis tick={{ fontSize: 11, fill: '#6B7C70' }} />
+                <CartesianGrid strokeDasharray="3 3" stroke="#E7DFD5" opacity={0.6} />
+                <XAxis dataKey="month" tick={{ fontSize: 11, fill: '#78716C' }} />
+                <YAxis tick={{ fontSize: 11, fill: '#78716C' }} />
                 <Tooltip
-                  contentStyle={{ backgroundColor: '#18281F', borderRadius: '12px', color: '#fff', fontSize: '12px' }}
+                  contentStyle={{ backgroundColor: '#211A19', borderRadius: '12px', color: '#fff', fontSize: '12px' }}
                 />
-                <Area type="monotone" dataKey="totalUsers" stroke="#C4A066" strokeWidth={2.5} fillOpacity={1} fill="url(#userGrad)" name="Total Users" />
+                <Area type="monotone" dataKey="totalUsers" stroke="#C8A878" strokeWidth={2.5} fillOpacity={1} fill="url(#userGrad)" name="Total Users" />
               </AreaChart>
             </ResponsiveContainer>
           </div>
         </div>
 
         {/* Chart 2: Daily Active Users (DAU) */}
-        <div className="p-5 bg-white border border-[#E4DCC9] rounded-2xl shadow-sm flex flex-col gap-4">
+        <div className="p-5 bg-white border border-[#E7DFD5] rounded-2xl shadow-sm flex flex-col gap-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Activity size={18} className="text-[#D97706]" />
-              <h3 className="font-bold text-[#18281F] text-sm">Daily Active Users (DAU - 14 Days)</h3>
+              <h3 className="font-bold text-[#211A19] text-sm">Daily Active Users (DAU - 14 Days)</h3>
             </div>
             <Badge variant="success">1,020 PEAK DAU</Badge>
           </div>
@@ -300,13 +300,13 @@ export const UserAnalyticsDashboard: React.FC = () => {
           <div className="h-64 w-full">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={DAU_DATA} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#E4DCC9" opacity={0.6} />
-                <XAxis dataKey="day" tick={{ fontSize: 10, fill: '#6B7C70' }} />
-                <YAxis tick={{ fontSize: 11, fill: '#6B7C70' }} />
+                <CartesianGrid strokeDasharray="3 3" stroke="#E7DFD5" opacity={0.6} />
+                <XAxis dataKey="day" tick={{ fontSize: 10, fill: '#78716C' }} />
+                <YAxis tick={{ fontSize: 11, fill: '#78716C' }} />
                 <Tooltip
-                  contentStyle={{ backgroundColor: '#18281F', borderRadius: '12px', color: '#fff', fontSize: '12px' }}
+                  contentStyle={{ backgroundColor: '#211A19', borderRadius: '12px', color: '#fff', fontSize: '12px' }}
                 />
-                <Bar dataKey="dau" fill="#18281F" radius={[6, 6, 0, 0]} name="Active Users" />
+                <Bar dataKey="dau" fill="#211A19" radius={[6, 6, 0, 0]} name="Active Users" />
               </BarChart>
             </ResponsiveContainer>
           </div>
@@ -316,23 +316,23 @@ export const UserAnalyticsDashboard: React.FC = () => {
       {/* Row 2: Monthly Active Users (MAU) & Top Societies Distribution */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Chart 3: Monthly Active Users (MAU) - 7 Cols */}
-        <div className="lg:col-span-7 p-5 bg-white border border-[#E4DCC9] rounded-2xl shadow-sm flex flex-col gap-4">
+        <div className="lg:col-span-7 p-5 bg-white border border-[#E7DFD5] rounded-2xl shadow-sm flex flex-col gap-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Users size={18} className="text-emerald-700" />
-              <h3 className="font-bold text-[#18281F] text-sm">Monthly Active Users (MAU Trend)</h3>
+              <h3 className="font-bold text-[#211A19] text-sm">Monthly Active Users (MAU Trend)</h3>
             </div>
-            <span className="text-xs text-[#6B7C70] font-semibold">91% Monthly Active Engagement</span>
+            <span className="text-xs text-[#78716C] font-semibold">91% Monthly Active Engagement</span>
           </div>
 
           <div className="h-64 w-full">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={MAU_DATA} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#E4DCC9" opacity={0.6} />
-                <XAxis dataKey="month" tick={{ fontSize: 11, fill: '#6B7C70' }} />
-                <YAxis tick={{ fontSize: 11, fill: '#6B7C70' }} />
+                <CartesianGrid strokeDasharray="3 3" stroke="#E7DFD5" opacity={0.6} />
+                <XAxis dataKey="month" tick={{ fontSize: 11, fill: '#78716C' }} />
+                <YAxis tick={{ fontSize: 11, fill: '#78716C' }} />
                 <Tooltip
-                  contentStyle={{ backgroundColor: '#18281F', borderRadius: '12px', color: '#fff', fontSize: '12px' }}
+                  contentStyle={{ backgroundColor: '#211A19', borderRadius: '12px', color: '#fff', fontSize: '12px' }}
                 />
                 <Bar dataKey="mau" fill="#059669" radius={[6, 6, 0, 0]} name="MAU Count" />
               </BarChart>
@@ -341,22 +341,22 @@ export const UserAnalyticsDashboard: React.FC = () => {
         </div>
 
         {/* Chart 4: Top Societies Breakdown - 5 Cols */}
-        <div className="lg:col-span-5 p-5 bg-white border border-[#E4DCC9] rounded-2xl shadow-sm flex flex-col gap-4">
+        <div className="lg:col-span-5 p-5 bg-white border border-[#E7DFD5] rounded-2xl shadow-sm flex flex-col gap-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <Building2 size={18} className="text-[#C4A066]" />
-              <h3 className="font-bold text-[#18281F] text-sm">Top Societies by User Volume</h3>
+              <Building2 size={18} className="text-[#C8A878]" />
+              <h3 className="font-bold text-[#211A19] text-sm">Top Societies by User Volume</h3>
             </div>
           </div>
 
           <div className="flex flex-col gap-3 text-xs">
             {TOP_SOCIETIES_DATA.map((soc) => (
               <div key={soc.society} className="flex flex-col gap-1">
-                <div className="flex items-center justify-between font-semibold text-[#18281F]">
+                <div className="flex items-center justify-between font-semibold text-[#211A19]">
                   <span>{soc.society}</span>
                   <span>{soc.users} users ({soc.orders} orders)</span>
                 </div>
-                <div className="w-full bg-[#FAF9F6] h-2.5 rounded-full overflow-hidden border border-[#E4DCC9]">
+                <div className="w-full bg-[#FAF8F5] h-2.5 rounded-full overflow-hidden border border-[#E7DFD5]">
                   <div
                     className="h-full rounded-full transition-all"
                     style={{
@@ -374,18 +374,18 @@ export const UserAnalyticsDashboard: React.FC = () => {
       {/* Row 3: Top Customers Leaderboard & User Retention Cohort Pie */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Table/Leaderboard: Top Customers - 7 Cols */}
-        <div className="lg:col-span-7 p-5 bg-white border border-[#E4DCC9] rounded-2xl shadow-sm flex flex-col gap-4">
+        <div className="lg:col-span-7 p-5 bg-white border border-[#E7DFD5] rounded-2xl shadow-sm flex flex-col gap-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Award size={18} className="text-amber-500" />
-              <h3 className="font-bold text-[#18281F] text-sm">Top Customer Leaderboard (Highest GMV)</h3>
+              <h3 className="font-bold text-[#211A19] text-sm">Top Customer Leaderboard (Highest GMV)</h3>
             </div>
             <Badge variant="warning">VIP RESIDENTS</Badge>
           </div>
 
           <div className="overflow-x-auto text-xs">
             <table className="w-full text-left border-collapse">
-              <thead className="bg-[#FAF9F6] border-b border-[#E4DCC9] text-[#6B7C70] uppercase font-bold text-[10px]">
+              <thead className="bg-[#FAF8F5] border-b border-[#E7DFD5] text-[#78716C] uppercase font-bold text-[10px]">
                 <tr>
                   <th className="p-2.5 w-8">Rank</th>
                   <th className="p-2.5">Resident Customer</th>
@@ -394,18 +394,18 @@ export const UserAnalyticsDashboard: React.FC = () => {
                   <th className="p-2.5 text-right">Total Spend</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#E4DCC9]/60">
+              <tbody className="divide-y divide-[#E7DFD5]/60">
                 {TOP_CUSTOMERS_DATA.map((cust) => (
-                  <tr key={cust.rank} className="hover:bg-[#FAF9F6]">
-                    <td className="p-2.5 font-bold font-mono text-[#C4A066]">#{cust.rank}</td>
-                    <td className="p-2.5 font-bold text-[#18281F]">
+                  <tr key={cust.rank} className="hover:bg-[#FAF8F5]">
+                    <td className="p-2.5 font-bold font-mono text-[#C8A878]">#{cust.rank}</td>
+                    <td className="p-2.5 font-bold text-[#211A19]">
                       <div className="flex flex-col">
                         <span>{cust.name}</span>
-                        <span className="text-[10px] text-[#6B7C70] font-normal">{cust.email}</span>
+                        <span className="text-[10px] text-[#78716C] font-normal">{cust.email}</span>
                       </div>
                     </td>
-                    <td className="p-2.5 text-[#6B7C70] font-medium">{cust.society}</td>
-                    <td className="p-2.5 text-center font-bold text-[#18281F]">{cust.orders}</td>
+                    <td className="p-2.5 text-[#78716C] font-medium">{cust.society}</td>
+                    <td className="p-2.5 text-center font-bold text-[#211A19]">{cust.orders}</td>
                     <td className="p-2.5 text-right font-mono font-bold text-emerald-700">
                       ₹{cust.totalSpend.toLocaleString('en-IN')}
                     </td>
@@ -417,11 +417,11 @@ export const UserAnalyticsDashboard: React.FC = () => {
         </div>
 
         {/* Chart 5: User Retention Cohorts - 5 Cols */}
-        <div className="lg:col-span-5 p-5 bg-white border border-[#E4DCC9] rounded-2xl shadow-sm flex flex-col gap-4">
+        <div className="lg:col-span-5 p-5 bg-white border border-[#E7DFD5] rounded-2xl shadow-sm flex flex-col gap-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <RotateCcw size={18} className="text-indigo-600" />
-              <h3 className="font-bold text-[#18281F] text-sm">User Retention &amp; Cohorts</h3>
+              <h3 className="font-bold text-[#211A19] text-sm">User Retention &amp; Cohorts</h3>
             </div>
             <span className="text-xs font-bold text-emerald-700 font-mono">88.5% Retained</span>
           </div>
@@ -443,7 +443,7 @@ export const UserAnalyticsDashboard: React.FC = () => {
                   ))}
                 </Pie>
                 <Tooltip
-                  contentStyle={{ backgroundColor: '#18281F', borderRadius: '12px', color: '#fff', fontSize: '12px' }}
+                  contentStyle={{ backgroundColor: '#211A19', borderRadius: '12px', color: '#fff', fontSize: '12px' }}
                   formatter={(val: any) => `${val}%`}
                 />
                 <Legend wrapperStyle={{ fontSize: '11px', paddingTop: '10px' }} />

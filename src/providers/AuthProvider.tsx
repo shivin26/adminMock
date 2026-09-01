@@ -104,6 +104,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         lastName,
         role: userRole,
         powers: assignedPowers,
+        allowedDelegationPowers: subAdminMatch?.allowedDelegationPowers,
         permissions: ['*'],
         createdAt: subAdminMatch?.createdAt || new Date().toISOString(),
         updatedAt: new Date().toISOString(),

@@ -54,35 +54,35 @@ export const SupportAddFollowersModal: React.FC<SupportAddFollowersModalProps> =
                 onClick={() => !isAlreadyFollowing && setSelectedStaff(staff.name)}
                 className={`p-3 rounded-xl border flex items-center justify-between transition-all ${
                   isAlreadyFollowing
-                    ? 'bg-[#FAF9F6] border-[#E4DCC9] opacity-60 cursor-not-allowed'
+                    ? 'bg-[#FAF8F5] border-[#E7DFD5] opacity-60 cursor-not-allowed'
                     : isSelected
-                    ? 'bg-[#18281F] text-white border-[#18281F] cursor-pointer'
-                    : 'bg-[#FAF9F6] text-[#18281F] border-[#E4DCC9] hover:bg-[#EFE8D8] cursor-pointer'
+                    ? 'bg-[#211A19] text-white border-[#211A19] cursor-pointer'
+                    : 'bg-[#FAF8F5] text-[#211A19] border-[#E7DFD5] hover:bg-[#EEE5DA] cursor-pointer'
                 }`}
               >
                 <div className="flex items-center gap-2.5">
-                  <div className="p-1.5 rounded-lg bg-[#EFE8D8] text-[#18281F]">
+                  <div className="p-1.5 rounded-lg bg-[#EEE5DA] text-[#211A19]">
                     <User size={14} />
                   </div>
                   <div className="flex flex-col text-xs">
                     <span className="font-bold">{staff.name}</span>
-                    <span className={isSelected ? 'text-[#C4A066]' : 'text-[#6B7C70]'}>{staff.role}</span>
+                    <span className={isSelected ? 'text-[#C8A878]' : 'text-[#78716C]'}>{staff.role}</span>
                   </div>
                 </div>
 
                 {isAlreadyFollowing ? (
-                  <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-[#E4DCC9] text-[#6B7C70]">
+                  <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-[#E7DFD5] text-[#78716C]">
                     FOLLOWING
                   </span>
                 ) : isSelected ? (
-                  <Check size={16} className="text-[#C4A066]" />
+                  <Check size={16} className="text-[#C8A878]" />
                 ) : null}
               </div>
             );
           })}
         </div>
 
-        <div className="flex items-center justify-end gap-2 pt-3 border-t border-[#E4DCC9]">
+        <div className="flex items-center justify-end gap-2 pt-3 border-t border-[#E7DFD5]">
           <Button variant="ghost" size="sm" onClick={onClose}>
             Cancel
           </Button>

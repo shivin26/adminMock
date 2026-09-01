@@ -32,7 +32,7 @@ export const RevenueChart: React.FC<RevenueChartProps> = ({ data = [] }) => {
         ];
 
   return (
-    <Card className="h-full border-[#E4DCC9]">
+    <Card className="h-full border-[#E7DFD5]">
       <CardHeader>
         <div className="flex items-center justify-between">
           <div>
@@ -41,12 +41,12 @@ export const RevenueChart: React.FC<RevenueChartProps> = ({ data = [] }) => {
           </div>
           <div className="flex items-center gap-4 text-[12px] font-sans">
             <div className="flex items-center gap-1.5">
-              <span className="h-2.5 w-2.5 rounded-full bg-[#18281F]" />
-              <span className="text-[#6B7C70] font-semibold">Gross Revenue</span>
+              <span className="h-2.5 w-2.5 rounded-full bg-[#211A19]" />
+              <span className="text-[#78716C] font-semibold">Gross Revenue</span>
             </div>
             <div className="flex items-center gap-1.5">
-              <span className="h-2.5 w-2.5 rounded-full bg-[#C4A066]" />
-              <span className="text-[#6B7C70] font-semibold">Net Profit</span>
+              <span className="h-2.5 w-2.5 rounded-full bg-[#C8A878]" />
+              <span className="text-[#78716C] font-semibold">Net Profit</span>
             </div>
           </div>
         </div>
@@ -56,18 +56,18 @@ export const RevenueChart: React.FC<RevenueChartProps> = ({ data = [] }) => {
           <AreaChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
             <defs>
               <linearGradient id="gradientRevenue" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#18281F" stopOpacity={0.3} />
-                <stop offset="95%" stopColor="#18281F" stopOpacity={0.0} />
+                <stop offset="5%" stopColor="#211A19" stopOpacity={0.3} />
+                <stop offset="95%" stopColor="#211A19" stopOpacity={0.0} />
               </linearGradient>
               <linearGradient id="gradientProfit" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#C4A066" stopOpacity={0.35} />
-                <stop offset="95%" stopColor="#C4A066" stopOpacity={0.0} />
+                <stop offset="5%" stopColor="#C8A878" stopOpacity={0.35} />
+                <stop offset="95%" stopColor="#C8A878" stopOpacity={0.0} />
               </linearGradient>
             </defs>
-            <CartesianGrid strokeDasharray="3 3" stroke="#EFE8D8" vertical={false} />
-            <XAxis dataKey="month" stroke="#6B7C70" fontSize={12} tickLine={false} axisLine={false} />
+            <CartesianGrid strokeDasharray="3 3" stroke="#EEE5DA" vertical={false} />
+            <XAxis dataKey="month" stroke="#78716C" fontSize={12} tickLine={false} axisLine={false} />
             <YAxis
-              stroke="#6B7C70"
+              stroke="#78716C"
               fontSize={12}
               tickLine={false}
               axisLine={false}
@@ -77,9 +77,9 @@ export const RevenueChart: React.FC<RevenueChartProps> = ({ data = [] }) => {
               content={({ active, payload }) => {
                 if (active && payload && payload.length) {
                   return (
-                    <div className="rounded-[10px] border border-[#E4DCC9] bg-white p-3 shadow-md font-sans text-[12px] space-y-1">
-                      <p className="font-bold text-[#18281F]">{payload[0].payload.month}</p>
-                      <p className="text-[#18281F] font-semibold">Revenue: {formatCurrency(payload[0].value as number)}</p>
+                    <div className="rounded-[10px] border border-[#E7DFD5] bg-white p-3 shadow-md font-sans text-[12px] space-y-1">
+                      <p className="font-bold text-[#211A19]">{payload[0].payload.month}</p>
+                      <p className="text-[#211A19] font-semibold">Revenue: {formatCurrency(payload[0].value as number)}</p>
                       <p className="text-[#8C6B38] font-semibold">Profit: {formatCurrency(payload[1].value as number)}</p>
                     </div>
                   );
@@ -90,7 +90,7 @@ export const RevenueChart: React.FC<RevenueChartProps> = ({ data = [] }) => {
             <Area
               type="monotone"
               dataKey="revenue"
-              stroke="#18281F"
+              stroke="#211A19"
               strokeWidth={2.5}
               fillOpacity={1}
               fill="url(#gradientRevenue)"
@@ -98,7 +98,7 @@ export const RevenueChart: React.FC<RevenueChartProps> = ({ data = [] }) => {
             <Area
               type="monotone"
               dataKey="profit"
-              stroke="#C4A066"
+              stroke="#C8A878"
               strokeWidth={2}
               fillOpacity={1}
               fill="url(#gradientProfit)"

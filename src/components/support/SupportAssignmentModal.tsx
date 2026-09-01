@@ -98,7 +98,7 @@ export const SupportAssignmentModal: React.FC<SupportAssignmentModalProps> = ({
     >
       <form onSubmit={handleExecuteAssignment} className="flex flex-col gap-5 max-h-[74vh] overflow-y-auto pr-1">
         {/* Assignment Mode Selector Tabs */}
-        <div className="flex items-center gap-1.5 p-1 bg-[#FAF9F6] border border-[#E4DCC9] rounded-2xl">
+        <div className="flex items-center gap-1.5 p-1 bg-[#FAF8F5] border border-[#E7DFD5] rounded-2xl">
           <button
             type="button"
             className={`assignment-mode-btn ${assignMode === 'agent' ? 'active' : ''}`}
@@ -132,11 +132,11 @@ export const SupportAssignmentModal: React.FC<SupportAssignmentModalProps> = ({
         {/* Dynamic Assignment Inputs */}
         {assignMode === 'agent' && (
           <div className="flex flex-col gap-1.5 text-xs">
-            <label className="font-bold text-[#18281F]">Select Destination Agent:</label>
+            <label className="font-bold text-[#211A19]">Select Destination Agent:</label>
             <select
               value={selectedAgent}
               onChange={(e) => setSelectedAgent(e.target.value)}
-              className="p-2.5 bg-[#FAF9F6] border border-[#E4DCC9] rounded-xl text-xs font-semibold text-[#18281F] outline-none"
+              className="p-2.5 bg-[#FAF8F5] border border-[#E7DFD5] rounded-xl text-xs font-semibold text-[#211A19] outline-none"
             >
               <option value="Super Admin">Super Admin (Lead)</option>
               <option value="Vikram Mehta">Vikram Mehta (Tier 2 Lead)</option>
@@ -148,11 +148,11 @@ export const SupportAssignmentModal: React.FC<SupportAssignmentModalProps> = ({
 
         {assignMode === 'team' && (
           <div className="flex flex-col gap-1.5 text-xs">
-            <label className="font-bold text-[#18281F]">Select Target Support Team Queue:</label>
+            <label className="font-bold text-[#211A19]">Select Target Support Team Queue:</label>
             <select
               value={selectedTeam}
               onChange={(e) => setSelectedTeam(e.target.value)}
-              className="p-2.5 bg-[#FAF9F6] border border-[#E4DCC9] rounded-xl text-xs font-semibold text-[#18281F] outline-none"
+              className="p-2.5 bg-[#FAF8F5] border border-[#E7DFD5] rounded-xl text-xs font-semibold text-[#211A19] outline-none"
             >
               <option value="Tier 2 Escalations Team">Tier 2 Escalations Team</option>
               <option value="Vendor Verification Team">Vendor Verification Team</option>
@@ -164,11 +164,11 @@ export const SupportAssignmentModal: React.FC<SupportAssignmentModalProps> = ({
 
         {assignMode === 'department' && (
           <div className="flex flex-col gap-1.5 text-xs">
-            <label className="font-bold text-[#18281F]">Select Department Queue:</label>
+            <label className="font-bold text-[#211A19]">Select Department Queue:</label>
             <select
               value={selectedDepartment}
               onChange={(e) => setSelectedDepartment(e.target.value)}
-              className="p-2.5 bg-[#FAF9F6] border border-[#E4DCC9] rounded-xl text-xs font-semibold text-[#18281F] outline-none"
+              className="p-2.5 bg-[#FAF8F5] border border-[#E7DFD5] rounded-xl text-xs font-semibold text-[#211A19] outline-none"
             >
               <option value="Payment & Financial Operations">Payment & Financial Operations</option>
               <option value="Engineering & Infrastructure">Engineering & Infrastructure</option>
@@ -188,36 +188,36 @@ export const SupportAssignmentModal: React.FC<SupportAssignmentModalProps> = ({
 
         {/* Handover Note & @Mentions */}
         <div className="flex flex-col gap-1.5 text-xs">
-          <label className="font-bold text-[#18281F] flex items-center justify-between">
+          <label className="font-bold text-[#211A19] flex items-center justify-between">
             <span>Handover Note &amp; Staff Mentions:</span>
-            <span className="text-[11px] text-[#C4A066] font-semibold">Use @name to notify staff</span>
+            <span className="text-[11px] text-[#C8A878] font-semibold">Use @name to notify staff</span>
           </label>
           <textarea
             rows={3}
             placeholder="e.g. @vikram please verify Razorpay batch TXN9871 settlement details with finance..."
             value={handoverNote}
             onChange={(e) => setHandoverNote(e.target.value)}
-            className="w-full p-3 bg-[#FAF9F6] border border-[#E4DCC9] rounded-xl text-xs text-[#18281F] outline-none focus:border-[#C4A066] resize-none"
+            className="w-full p-3 bg-[#FAF8F5] border border-[#E7DFD5] rounded-xl text-xs text-[#211A19] outline-none focus:border-[#C8A878] resize-none"
           />
         </div>
 
         {/* Watchers & Followers Box */}
-        <div className="p-4 bg-white border border-[#E4DCC9] rounded-2xl flex flex-col gap-2">
-          <span className="text-xs font-bold text-[#18281F] uppercase tracking-wider flex items-center gap-1.5">
-            <Eye size={14} className="text-[#C4A066]" /> Ticket Watchers &amp; Followers ({followers.length})
+        <div className="p-4 bg-white border border-[#E7DFD5] rounded-2xl flex flex-col gap-2">
+          <span className="text-xs font-bold text-[#211A19] uppercase tracking-wider flex items-center gap-1.5">
+            <Eye size={14} className="text-[#C8A878]" /> Ticket Watchers &amp; Followers ({followers.length})
           </span>
 
           <div className="flex items-center gap-1.5 flex-wrap">
             {followers.map((f) => (
               <span
                 key={f}
-                className="text-xs font-semibold text-[#18281F] bg-[#FAF9F6] border border-[#E4DCC9] px-2.5 py-1 rounded-lg flex items-center gap-1.5"
+                className="text-xs font-semibold text-[#211A19] bg-[#FAF8F5] border border-[#E7DFD5] px-2.5 py-1 rounded-lg flex items-center gap-1.5"
               >
-                <BellRing size={11} className="text-[#C4A066]" /> {f}
+                <BellRing size={11} className="text-[#C8A878]" /> {f}
                 <button
                   type="button"
                   onClick={() => handleRemoveFollower(f)}
-                  className="text-[#6B7C70] hover:text-rose-600"
+                  className="text-[#78716C] hover:text-rose-600"
                 >
                   ×
                 </button>
@@ -231,26 +231,26 @@ export const SupportAssignmentModal: React.FC<SupportAssignmentModalProps> = ({
             value={newFollowerInput}
             onChange={(e) => setNewFollowerInput(e.target.value)}
             onKeyDown={handleAddFollower}
-            className="w-full p-2 bg-[#FAF9F6] border border-[#E4DCC9] rounded-xl text-xs text-[#18281F] outline-none"
+            className="w-full p-2 bg-[#FAF8F5] border border-[#E7DFD5] rounded-xl text-xs text-[#211A19] outline-none"
           />
         </div>
 
         {/* Reassignment Audit History Timeline */}
         <div className="flex flex-col gap-2">
-          <span className="text-xs font-bold text-[#6B7C70] uppercase tracking-wider flex items-center gap-1.5">
-            <History size={14} className="text-[#C4A066]" /> Reassignment Audit History
+          <span className="text-xs font-bold text-[#78716C] uppercase tracking-wider flex items-center gap-1.5">
+            <History size={14} className="text-[#C8A878]" /> Reassignment Audit History
           </span>
 
           <div className="assignment-timeline-list">
             {history.map((item) => (
               <div key={item.id} className="assignment-timeline-item">
-                <UserCheck size={14} className="text-[#C4A066] mt-0.5" />
+                <UserCheck size={14} className="text-[#C8A878] mt-0.5" />
                 <div className="flex-1 min-w-0 text-xs">
                   <div className="flex items-center justify-between">
-                    <span className="font-bold text-[#18281F]">{item.assignee}</span>
-                    <span className="text-[10px] text-[#6B7C70]">{item.timestamp}</span>
+                    <span className="font-bold text-[#211A19]">{item.assignee}</span>
+                    <span className="text-[10px] text-[#78716C]">{item.timestamp}</span>
                   </div>
-                  <p className="text-[11px] text-[#6B7C70] mt-0.5">
+                  <p className="text-[11px] text-[#78716C] mt-0.5">
                     Assigned by <strong>{item.assignedBy}</strong> • {item.reason}
                   </p>
                 </div>
@@ -260,7 +260,7 @@ export const SupportAssignmentModal: React.FC<SupportAssignmentModalProps> = ({
         </div>
 
         {/* Action Controls */}
-        <div className="flex items-center justify-end gap-2 pt-2 border-t border-[#E4DCC9]">
+        <div className="flex items-center justify-end gap-2 pt-2 border-t border-[#E7DFD5]">
           <Button type="button" variant="ghost" onClick={onClose}>
             Cancel
           </Button>

@@ -404,7 +404,7 @@ export const SupportTicketDetailsDrawer: React.FC<SupportTicketDetailsDrawerProp
           <button
             type="button"
             onClick={handleSaveAndClose}
-            className="px-3 py-1.5 bg-[#C4A066] text-white text-xs font-bold rounded-lg shadow hover:bg-[#B38F55] cursor-pointer flex items-center gap-1"
+            className="px-3 py-1.5 bg-[#C8A878] text-white text-xs font-bold rounded-lg shadow hover:bg-[#B38F55] cursor-pointer flex items-center gap-1"
           >
             Save &amp; Close Changes
           </button>
@@ -420,7 +420,7 @@ export const SupportTicketDetailsDrawer: React.FC<SupportTicketDetailsDrawerProp
           {/* ================= LEFT SIDE: Ticket Info & Workspace ================= */}
           <div className="lg:col-span-7 flex flex-col gap-5">
             {/* Ticket Information Card */}
-            <div className="p-4 bg-white border border-[#E4DCC9] rounded-2xl shadow-sm flex flex-col gap-3">
+            <div className="p-4 bg-white border border-[#E7DFD5] rounded-2xl shadow-sm flex flex-col gap-3">
               <div className="flex items-center justify-between flex-wrap gap-2">
                 <div className="flex items-center gap-2 flex-wrap">
                   <SupportTicketStatusBadge status={ticket.status} />
@@ -450,55 +450,55 @@ export const SupportTicketDetailsDrawer: React.FC<SupportTicketDetailsDrawerProp
                   </span>
                 </div>
 
-                <span className="text-xs text-[#6B7C70] font-semibold">
-                  Category: <strong className="text-[#18281F] uppercase">{ticket.category}</strong>
+                <span className="text-xs text-[#78716C] font-semibold">
+                  Category: <strong className="text-[#211A19] uppercase">{ticket.category}</strong>
                 </span>
               </div>
 
-              <h2 className="text-base font-bold text-[#18281F] font-serif mt-1 leading-snug">
+              <h2 className="text-base font-bold text-[#211A19] font-serif mt-1 leading-snug">
                 {ticket.subject}
               </h2>
 
-              <p className="text-xs text-[#18281F] bg-[#FAF9F6] p-3.5 rounded-xl border border-[#E4DCC9] leading-relaxed">
+              <p className="text-xs text-[#211A19] bg-[#FAF8F5] p-3.5 rounded-xl border border-[#E7DFD5] leading-relaxed">
                 {ticket.description}
               </p>
 
               {/* Vendor / User Details Grid */}
-              <div className="grid grid-cols-2 gap-3 text-xs border-t border-[#E4DCC9]/60 pt-3 mt-1">
+              <div className="grid grid-cols-2 gap-3 text-xs border-t border-[#E7DFD5]/60 pt-3 mt-1">
                 <div>
-                  <span className="text-[#6B7C70] block font-medium">Reporter Name:</span>
+                  <span className="text-[#78716C] block font-medium">Reporter Name:</span>
                   <button
                     type="button"
                     onClick={() => onOpenUserProfile && onOpenUserProfile(ticket.reporterName)}
-                    className="font-bold text-[#18281F] hover:text-[#C4A066] underline text-left flex items-center gap-1 mt-0.5 cursor-pointer transition-colors"
+                    className="font-bold text-[#211A19] hover:text-[#C8A878] underline text-left flex items-center gap-1 mt-0.5 cursor-pointer transition-colors"
                   >
-                    <User size={13} className="text-[#C4A066]" /> {ticket.reporterName}
+                    <User size={13} className="text-[#C8A878]" /> {ticket.reporterName}
                   </button>
                 </div>
 
                 <div>
-                  <span className="text-[#6B7C70] block font-medium">Email Address:</span>
-                  <span className="font-bold text-[#18281F] flex items-center gap-1 mt-0.5">
-                    <Mail size={13} className="text-[#C4A066]" /> {ticket.reporterEmail}
+                  <span className="text-[#78716C] block font-medium">Email Address:</span>
+                  <span className="font-bold text-[#211A19] flex items-center gap-1 mt-0.5">
+                    <Mail size={13} className="text-[#C8A878]" /> {ticket.reporterEmail}
                   </span>
                 </div>
 
                 <div>
-                  <span className="text-[#6B7C70] block font-medium">Phone Number:</span>
-                  <span className="font-bold text-[#18281F] flex items-center gap-1 mt-0.5">
-                    <Phone size={13} className="text-[#C4A066]" /> +91 98765 43210
+                  <span className="text-[#78716C] block font-medium">Phone Number:</span>
+                  <span className="font-bold text-[#211A19] flex items-center gap-1 mt-0.5">
+                    <Phone size={13} className="text-[#C8A878]" /> +91 98765 43210
                   </span>
                 </div>
 
                 {(ticket.userType === 'vendor' || ticket.userType === 'user_vendor') && (
                   <div>
-                    <span className="text-[#6B7C70] block font-medium">Store Entity Account:</span>
+                    <span className="text-[#78716C] block font-medium">Store Entity Account:</span>
                     <button
                       type="button"
                       onClick={() => onOpenVendorProfile && onOpenVendorProfile(ticket.entityName || '')}
-                      className="font-bold text-[#18281F] hover:text-[#C4A066] underline text-left flex items-center gap-1 mt-0.5 cursor-pointer transition-colors"
+                      className="font-bold text-[#211A19] hover:text-[#C8A878] underline text-left flex items-center gap-1 mt-0.5 cursor-pointer transition-colors"
                     >
-                      <Store size={13} className="text-[#C4A066]" /> {ticket.entityName || 'Vendor Store'}
+                      <Store size={13} className="text-[#C8A878]" /> {ticket.entityName || 'Vendor Store'}
                     </button>
                   </div>
                 )}
@@ -512,7 +512,7 @@ export const SupportTicketDetailsDrawer: React.FC<SupportTicketDetailsDrawerProp
                       <Badge variant="warning">VENDOR &amp; RESIDENT</Badge>
                     </div>
                     <p className="mt-0.5">
-                      Complainant <strong>{ticket.reporterName}</strong> (Store: {ticket.entityName}) filed a complaint against Resident Customer <strong className="text-[#18281F]">{ticket.reportedPartyName || 'Resident Customer'}</strong>.
+                      Complainant <strong>{ticket.reporterName}</strong> (Store: {ticket.entityName}) filed a complaint against Resident Customer <strong className="text-[#211A19]">{ticket.reportedPartyName || 'Resident Customer'}</strong>.
                     </p>
                     {ticket.orderId && (
                       <span className="font-mono text-[11px] text-amber-800">Associated Order ID: {ticket.orderId} ({formatCurrency(ticket.orderAmount || 0)})</span>
@@ -527,7 +527,7 @@ export const SupportTicketDetailsDrawer: React.FC<SupportTicketDetailsDrawerProp
                       <Badge variant="primary">VENDOR &amp; RESIDENT</Badge>
                     </div>
                     <p className="mt-0.5">
-                      Vendor <strong>{ticket.reporterName}</strong> (buying in resident role) filed a complaint against Vendor Store <strong className="text-[#18281F]">{ticket.reportedPartyName || ticket.targetVendor}</strong>.
+                      Vendor <strong>{ticket.reporterName}</strong> (buying in resident role) filed a complaint against Vendor Store <strong className="text-[#211A19]">{ticket.reportedPartyName || ticket.targetVendor}</strong>.
                     </p>
                     {ticket.orderId && (
                       <span className="font-mono text-[11px] text-emerald-800">Associated Order ID: {ticket.orderId} ({formatCurrency(ticket.orderAmount || 0)})</span>
@@ -542,16 +542,16 @@ export const SupportTicketDetailsDrawer: React.FC<SupportTicketDetailsDrawerProp
                       <Badge variant="danger">RESIDENT COMPLAINT</Badge>
                     </div>
                     <p className="mt-0.5">
-                      Resident <strong>{ticket.reporterName}</strong> filed a complaint against Vendor Store <strong className="text-[#18281F]">{ticket.reportedPartyName || ticket.targetVendor}</strong>.
+                      Resident <strong>{ticket.reporterName}</strong> filed a complaint against Vendor Store <strong className="text-[#211A19]">{ticket.reportedPartyName || ticket.targetVendor}</strong>.
                     </p>
                     {ticket.orderId && (
                       <span className="font-mono text-[11px] text-rose-800">Associated Order ID: {ticket.orderId} ({formatCurrency(ticket.orderAmount || 0)})</span>
                     )}
                   </div>
                 ) : ticket.userType === 'user_vendor' ? (
-                  <div className="col-span-2 bg-[#EFE8D8]/90 p-2.5 rounded-xl border border-[#C4A066] flex items-center justify-between text-xs text-[#18281F]">
+                  <div className="col-span-2 bg-[#EEE5DA]/90 p-2.5 rounded-xl border border-[#C8A878] flex items-center justify-between text-xs text-[#211A19]">
                     <div className="flex items-center gap-2">
-                      <Store size={14} className="text-[#C4A066] shrink-0" />
+                      <Store size={14} className="text-[#C8A878] shrink-0" />
                       <span>
                         <strong>Dual-Role Account:</strong> Registered as a <strong>Vendor &amp; Resident Customer</strong>.
                       </span>
@@ -559,9 +559,9 @@ export const SupportTicketDetailsDrawer: React.FC<SupportTicketDetailsDrawerProp
                     <Badge variant="warning">VENDOR &amp; RESIDENT</Badge>
                   </div>
                 ) : ticket.userType === 'vendor' ? (
-                  <div className="col-span-2 bg-[#EFE8D8]/70 p-2.5 rounded-xl border border-[#C4A066]/40 flex items-center justify-between text-xs text-[#18281F]">
+                  <div className="col-span-2 bg-[#EEE5DA]/70 p-2.5 rounded-xl border border-[#C8A878]/40 flex items-center justify-between text-xs text-[#211A19]">
                     <div className="flex items-center gap-2">
-                      <ShoppingBag size={14} className="text-[#C4A066] shrink-0" />
+                      <ShoppingBag size={14} className="text-[#C8A878] shrink-0" />
                       <span>
                         <strong>Vendor Intake Channel:</strong> App created exclusively for vendors (Vendor Mobile App &amp; Vendor Web Portal).
                       </span>
@@ -569,7 +569,7 @@ export const SupportTicketDetailsDrawer: React.FC<SupportTicketDetailsDrawerProp
                     <Badge variant="primary">{ticket.source === 'mobile_app' ? 'VENDOR APP' : 'VENDOR PORTAL'}</Badge>
                   </div>
                 ) : (
-                  <div className="col-span-2 bg-[#FEF3C7]/60 p-2.5 rounded-xl border border-[#F59E0B]/40 flex items-center justify-between text-xs text-[#18281F]">
+                  <div className="col-span-2 bg-[#FEF3C7]/60 p-2.5 rounded-xl border border-[#F59E0B]/40 flex items-center justify-between text-xs text-[#211A19]">
                     <div className="flex items-center gap-2">
                       <Globe size={14} className="text-[#D97706] shrink-0" />
                       <span>
@@ -581,17 +581,17 @@ export const SupportTicketDetailsDrawer: React.FC<SupportTicketDetailsDrawerProp
                 )}
 
                 {(ticket.orderId || ticket.category === 'billing' || ticket.category === 'technical') && (
-                  <div className="col-span-2 bg-[#FAF9F6] p-3 rounded-xl border border-[#E4DCC9] flex items-center justify-between text-xs text-[#18281F] shadow-xs">
+                  <div className="col-span-2 bg-[#FAF8F5] p-3 rounded-xl border border-[#E7DFD5] flex items-center justify-between text-xs text-[#211A19] shadow-xs">
                     <div className="flex items-center gap-2.5">
-                      <div className="w-8 h-8 rounded-lg bg-[#18281F] text-[#C4A066] flex items-center justify-center font-bold shrink-0">
+                      <div className="w-8 h-8 rounded-lg bg-[#211A19] text-[#C8A878] flex items-center justify-center font-bold shrink-0">
                         <ShoppingBag size={16} />
                       </div>
                       <div className="flex flex-col">
-                        <span className="font-bold text-[#18281F] flex items-center gap-1.5 font-mono">
+                        <span className="font-bold text-[#211A19] flex items-center gap-1.5 font-mono">
                           Associated Order #{ticket.orderId || 'ORD-9842'}
                         </span>
-                        <span className="text-[11px] text-[#6B7C70]">
-                          Amount: <strong className="text-[#18281F] font-mono">₹{ticket.orderAmount || 707.00}</strong> • Status: In-Transit Delivery
+                        <span className="text-[11px] text-[#78716C]">
+                          Amount: <strong className="text-[#211A19] font-mono">₹{ticket.orderAmount || 707.00}</strong> • Status: In-Transit Delivery
                         </span>
                       </div>
                     </div>
@@ -608,20 +608,20 @@ export const SupportTicketDetailsDrawer: React.FC<SupportTicketDetailsDrawerProp
                 )}
               </div>
 
-              <div className="flex items-center justify-between text-xs border-t border-[#E4DCC9]/60 pt-3 mt-1">
-                <span className="text-[#6B7C70]">Created: <strong>{formatDate(ticket.createdAt)}</strong></span>
-                <span className="text-[#6B7C70]">Last Updated: <strong>{formatDate(ticket.updatedAt)}</strong></span>
+              <div className="flex items-center justify-between text-xs border-t border-[#E7DFD5]/60 pt-3 mt-1">
+                <span className="text-[#78716C]">Created: <strong>{formatDate(ticket.createdAt)}</strong></span>
+                <span className="text-[#78716C]">Last Updated: <strong>{formatDate(ticket.updatedAt)}</strong></span>
               </div>
             </div>
 
             {/* Timeline Navigation Tabs */}
-            <div className="flex items-center gap-1.5 border-b border-[#E4DCC9] pb-2">
+            <div className="flex items-center gap-1.5 border-b border-[#E7DFD5] pb-2">
               <button
                 type="button"
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
                   activeTab === 'conversation'
-                    ? 'bg-[#18281F] text-white shadow-sm'
-                    : 'bg-[#FAF9F6] text-[#6B7C70] hover:bg-[#EFE8D8]'
+                    ? 'bg-[#211A19] text-white shadow-sm'
+                    : 'bg-[#FAF8F5] text-[#78716C] hover:bg-[#EEE5DA]'
                 }`}
                 onClick={() => setActiveTab('conversation')}
               >
@@ -632,8 +632,8 @@ export const SupportTicketDetailsDrawer: React.FC<SupportTicketDetailsDrawerProp
                 type="button"
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
                   activeTab === 'notes'
-                    ? 'bg-[#18281F] text-white shadow-sm'
-                    : 'bg-[#FAF9F6] text-[#6B7C70] hover:bg-[#EFE8D8]'
+                    ? 'bg-[#211A19] text-white shadow-sm'
+                    : 'bg-[#FAF8F5] text-[#78716C] hover:bg-[#EEE5DA]'
                 }`}
                 onClick={() => setActiveTab('notes')}
               >
@@ -644,8 +644,8 @@ export const SupportTicketDetailsDrawer: React.FC<SupportTicketDetailsDrawerProp
                 type="button"
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
                   activeTab === 'attachments'
-                    ? 'bg-[#18281F] text-white shadow-sm'
-                    : 'bg-[#FAF9F6] text-[#6B7C70] hover:bg-[#EFE8D8]'
+                    ? 'bg-[#211A19] text-white shadow-sm'
+                    : 'bg-[#FAF8F5] text-[#78716C] hover:bg-[#EEE5DA]'
                 }`}
                 onClick={() => setActiveTab('attachments')}
               >
@@ -656,8 +656,8 @@ export const SupportTicketDetailsDrawer: React.FC<SupportTicketDetailsDrawerProp
                 type="button"
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
                   activeTab === 'audit'
-                    ? 'bg-[#18281F] text-white shadow-sm'
-                    : 'bg-[#FAF9F6] text-[#6B7C70] hover:bg-[#EFE8D8]'
+                    ? 'bg-[#211A19] text-white shadow-sm'
+                    : 'bg-[#FAF8F5] text-[#78716C] hover:bg-[#EEE5DA]'
                 }`}
                 onClick={() => setActiveTab('audit')}
               >
@@ -684,8 +684,8 @@ export const SupportTicketDetailsDrawer: React.FC<SupportTicketDetailsDrawerProp
                             m.isInternalNote
                               ? 'bg-[#FEF3C7] border-[#F59E0B]/40'
                               : isAdmin
-                              ? 'bg-white border-[#C4A066]/60 ml-4'
-                              : 'bg-[#FAF9F6] border-[#E4DCC9] mr-4'
+                              ? 'bg-white border-[#C8A878]/60 ml-4'
+                              : 'bg-[#FAF8F5] border-[#E7DFD5] mr-4'
                           }`}
                         >
                           <div className="flex items-center justify-between text-xs">
@@ -693,18 +693,18 @@ export const SupportTicketDetailsDrawer: React.FC<SupportTicketDetailsDrawerProp
                               {m.isInternalNote ? (
                                 <Lock size={12} className="text-[#D97706]" />
                               ) : (
-                                <User size={12} className="text-[#6B7C70]" />
+                                <User size={12} className="text-[#78716C]" />
                               )}
-                              <span className="font-bold text-[#18281F]">{m.senderName}</span>
-                              <span className="text-[10px] px-1.5 py-0.5 rounded bg-[#E4DCC9]/50 text-[#18281F] font-semibold uppercase">
+                              <span className="font-bold text-[#211A19]">{m.senderName}</span>
+                              <span className="text-[10px] px-1.5 py-0.5 rounded bg-[#E7DFD5]/50 text-[#211A19] font-semibold uppercase">
                                 {m.isInternalNote ? 'STAFF NOTE' : m.senderRole}
                               </span>
                             </div>
-                            <span className="text-[11px] text-[#6B7C70]">
+                            <span className="text-[11px] text-[#78716C]">
                               {formatDate(m.createdAt)}
                             </span>
                           </div>
-                          <p className="text-xs text-[#18281F] whitespace-pre-wrap leading-relaxed">
+                          <p className="text-xs text-[#211A19] whitespace-pre-wrap leading-relaxed">
                             {m.message}
                           </p>
                         </div>
@@ -714,12 +714,12 @@ export const SupportTicketDetailsDrawer: React.FC<SupportTicketDetailsDrawerProp
               </div>
             ) : activeTab === 'attachments' ? (
               <div className="flex flex-col gap-2.5">
-                <div className="p-3 bg-white border border-[#E4DCC9] rounded-xl flex items-center justify-between text-xs">
+                <div className="p-3 bg-white border border-[#E7DFD5] rounded-xl flex items-center justify-between text-xs">
                   <div className="flex items-center gap-2">
-                    <FileText size={16} className="text-[#C4A066]" />
+                    <FileText size={16} className="text-[#C8A878]" />
                     <div>
-                      <span className="font-bold text-[#18281F] block">razorpay_settlement_receipt.pdf</span>
-                      <span className="text-[10px] text-[#6B7C70]">1.4 MB • Uploaded by {ticket.reporterName}</span>
+                      <span className="font-bold text-[#211A19] block">razorpay_settlement_receipt.pdf</span>
+                      <span className="text-[10px] text-[#78716C]">1.4 MB • Uploaded by {ticket.reporterName}</span>
                     </div>
                   </div>
                   <Button variant="outline" size="sm" leftIcon={<Download size={12} />}>
@@ -727,12 +727,12 @@ export const SupportTicketDetailsDrawer: React.FC<SupportTicketDetailsDrawerProp
                   </Button>
                 </div>
 
-                <div className="p-3 bg-white border border-[#E4DCC9] rounded-xl flex items-center justify-between text-xs">
+                <div className="p-3 bg-white border border-[#E7DFD5] rounded-xl flex items-center justify-between text-xs">
                   <div className="flex items-center gap-2">
-                    <FileText size={16} className="text-[#C4A066]" />
+                    <FileText size={16} className="text-[#C8A878]" />
                     <div>
-                      <span className="font-bold text-[#18281F] block">gate_scanner_error_log.txt</span>
-                      <span className="text-[10px] text-[#6B7C70]">42 KB • System Diagnostic Log</span>
+                      <span className="font-bold text-[#211A19] block">gate_scanner_error_log.txt</span>
+                      <span className="text-[10px] text-[#78716C]">42 KB • System Diagnostic Log</span>
                     </div>
                   </div>
                   <Button variant="outline" size="sm" leftIcon={<Download size={12} />}>
@@ -742,21 +742,21 @@ export const SupportTicketDetailsDrawer: React.FC<SupportTicketDetailsDrawerProp
               </div>
             ) : (
               <div className="flex flex-col gap-2 text-xs">
-                <div className="p-3 bg-white border border-[#E4DCC9] rounded-xl flex flex-col gap-1">
-                  <span className="font-bold text-[#18281F]">Status Changed to IN_PROGRESS</span>
-                  <span className="text-[#6B7C70] text-[11px]">Updated by Super Admin • {formatDate(ticket.updatedAt)}</span>
+                <div className="p-3 bg-white border border-[#E7DFD5] rounded-xl flex flex-col gap-1">
+                  <span className="font-bold text-[#211A19]">Status Changed to IN_PROGRESS</span>
+                  <span className="text-[#78716C] text-[11px]">Updated by Super Admin • {formatDate(ticket.updatedAt)}</span>
                 </div>
-                <div className="p-3 bg-white border border-[#E4DCC9] rounded-xl flex flex-col gap-1">
-                  <span className="font-bold text-[#18281F]">Ticket Created</span>
-                  <span className="text-[#6B7C70] text-[11px]">Logged by {ticket.reporterName} • {formatDate(ticket.createdAt)}</span>
+                <div className="p-3 bg-white border border-[#E7DFD5] rounded-xl flex flex-col gap-1">
+                  <span className="font-bold text-[#211A19]">Ticket Created</span>
+                  <span className="text-[#78716C] text-[11px]">Logged by {ticket.reporterName} • {formatDate(ticket.createdAt)}</span>
                 </div>
               </div>
             )}
 
             {/* Response Form */}
-            <form onSubmit={handleSendReply} className="p-4 bg-white border border-[#E4DCC9] rounded-2xl shadow-sm flex flex-col gap-3 mt-2">
+            <form onSubmit={handleSendReply} className="p-4 bg-white border border-[#E7DFD5] rounded-2xl shadow-sm flex flex-col gap-3 mt-2">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-bold text-[#18281F] uppercase tracking-wider">
+                <span className="text-xs font-bold text-[#211A19] uppercase tracking-wider">
                   Dispatch Reply / Staff Note
                 </span>
 
@@ -765,7 +765,7 @@ export const SupportTicketDetailsDrawer: React.FC<SupportTicketDetailsDrawerProp
                     type="checkbox"
                     checked={isInternalNote || activeTab === 'notes'}
                     onChange={(e) => setIsInternalNote(e.target.checked)}
-                    className="rounded border-[#E4DCC9]"
+                    className="rounded border-[#E7DFD5]"
                   />
                   <Lock size={12} /> Internal Staff Note
                 </label>
@@ -780,7 +780,7 @@ export const SupportTicketDetailsDrawer: React.FC<SupportTicketDetailsDrawerProp
                 }
                 value={replyMessage}
                 onChange={(e) => setReplyMessage(e.target.value)}
-                className="w-full p-3 bg-[#FAF9F6] border border-[#E4DCC9] rounded-xl text-xs text-[#18281F] outline-none focus:border-[#C4A066] resize-none"
+                className="w-full p-3 bg-[#FAF8F5] border border-[#E7DFD5] rounded-xl text-xs text-[#211A19] outline-none focus:border-[#C8A878] resize-none"
               />
 
               <div className="flex items-center justify-between">
@@ -800,38 +800,38 @@ export const SupportTicketDetailsDrawer: React.FC<SupportTicketDetailsDrawerProp
           {/* ================= RIGHT SIDE: Command & Control Panel ================= */}
           <div className="lg:col-span-5 flex flex-col gap-4">
             {/* SLA Timer Widget */}
-            <div className="p-4 bg-white border border-[#E4DCC9] rounded-2xl shadow-sm flex flex-col gap-2">
+            <div className="p-4 bg-white border border-[#E7DFD5] rounded-2xl shadow-sm flex flex-col gap-2">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-bold text-[#18281F] flex items-center gap-1.5">
-                  <Clock size={14} className="text-[#C4A066]" /> SLA Resolution Target
+                <span className="text-xs font-bold text-[#211A19] flex items-center gap-1.5">
+                  <Clock size={14} className="text-[#C8A878]" /> SLA Resolution Target
                 </span>
                 <Badge variant={secondsRemaining < 3600 ? 'danger' : 'success'}>
                   {secondsRemaining < 3600 ? 'SLA AT RISK' : 'SLA COMPLIANT'}
                 </Badge>
               </div>
 
-              <div className="p-3 bg-[#FAF9F6] border border-[#E4DCC9] rounded-xl text-center">
-                <span className="text-xl font-bold font-mono text-[#18281F]">
+              <div className="p-3 bg-[#FAF8F5] border border-[#E7DFD5] rounded-xl text-center">
+                <span className="text-xl font-bold font-mono text-[#211A19]">
                   {formatSLATime(secondsRemaining)}
                 </span>
-                <span className="text-[10px] text-[#6B7C70] block mt-0.5">Live Countdown before SLA escalation breach</span>
+                <span className="text-[10px] text-[#78716C] block mt-0.5">Live Countdown before SLA escalation breach</span>
               </div>
             </div>
 
             {/* Quick Actions Panel */}
-            <div className="p-4 bg-white border border-[#E4DCC9] rounded-2xl shadow-sm flex flex-col gap-3">
-              <h4 className="text-xs font-bold text-[#18281F] uppercase tracking-wider">
+            <div className="p-4 bg-white border border-[#E7DFD5] rounded-2xl shadow-sm flex flex-col gap-3">
+              <h4 className="text-xs font-bold text-[#211A19] uppercase tracking-wider">
                 Quick Command Actions
               </h4>
 
               {/* Assign Agent */}
               <div className="flex flex-col gap-1.5 text-xs">
                 <div className="flex items-center justify-between">
-                  <label className="text-[#6B7C70] font-medium">Assigned Agent:</label>
+                  <label className="text-[#78716C] font-medium">Assigned Agent:</label>
                   <button
                     type="button"
                     onClick={() => setIsAssignModalOpen(true)}
-                    className="text-[11px] font-bold text-[#C4A066] hover:underline"
+                    className="text-[11px] font-bold text-[#C8A878] hover:underline"
                   >
                     Advanced Reassign
                   </button>
@@ -839,7 +839,7 @@ export const SupportTicketDetailsDrawer: React.FC<SupportTicketDetailsDrawerProp
                 <select
                   value={assignedAgent}
                   onChange={(e) => handleAgentChange(e.target.value)}
-                  className="w-full p-2 bg-[#FAF9F6] border border-[#E4DCC9] rounded-xl text-xs font-semibold text-[#18281F] outline-none cursor-pointer"
+                  className="w-full p-2 bg-[#FAF8F5] border border-[#E7DFD5] rounded-xl text-xs font-semibold text-[#211A19] outline-none cursor-pointer"
                 >
                   <option value="Super Admin">Super Admin</option>
                   <option value="Vikram Mehta">Vikram Mehta (Tier 2)</option>
@@ -849,7 +849,7 @@ export const SupportTicketDetailsDrawer: React.FC<SupportTicketDetailsDrawerProp
               </div>
 
               {/* Action Buttons Grid */}
-              <div className="flex flex-col gap-2 pt-2 border-t border-[#E4DCC9]/60">
+              <div className="flex flex-col gap-2 pt-2 border-t border-[#E7DFD5]/60">
                 <div className="grid grid-cols-2 gap-2">
                   <Button
                     variant="outline"
@@ -930,19 +930,19 @@ export const SupportTicketDetailsDrawer: React.FC<SupportTicketDetailsDrawerProp
               </div>
 
               {/* Followers List Display */}
-              <div className="flex flex-col gap-1 text-xs pt-2 border-t border-[#E4DCC9]/60">
-                <span className="text-[#6B7C70] font-medium block">Active Staff Followers ({followers.length}):</span>
+              <div className="flex flex-col gap-1 text-xs pt-2 border-t border-[#E7DFD5]/60">
+                <span className="text-[#78716C] font-medium block">Active Staff Followers ({followers.length}):</span>
                 <div className="flex items-center gap-1.5 flex-wrap">
                   {followers.map((f) => (
                     <span
                       key={f}
-                      className="text-[11px] font-bold px-2 py-0.5 rounded-lg bg-[#EFE8D8] text-[#18281F] border border-[#C4A066]/40 flex items-center gap-1"
+                      className="text-[11px] font-bold px-2 py-0.5 rounded-lg bg-[#EEE5DA] text-[#211A19] border border-[#C8A878]/40 flex items-center gap-1"
                     >
-                      <User size={11} className="text-[#C4A066]" /> {f}
+                      <User size={11} className="text-[#C8A878]" /> {f}
                       <button
                         type="button"
                         onClick={() => setFollowers(followers.filter((item) => item !== f))}
-                        className="text-[#6B7C70] hover:text-rose-500 ml-0.5 font-bold"
+                        className="text-[#78716C] hover:text-rose-500 ml-0.5 font-bold"
                       >
                         ×
                       </button>
@@ -967,8 +967,8 @@ export const SupportTicketDetailsDrawer: React.FC<SupportTicketDetailsDrawerProp
                 leftIcon={<Save size={14} />}
                 className={`w-full font-bold transition-all ${
                   hasUnsavedChanges
-                    ? 'bg-[#C4A066] text-white hover:bg-[#B38F55] shadow-md animate-pulse'
-                    : 'bg-[#E4DCC9] text-[#6B7C70] cursor-not-allowed opacity-70'
+                    ? 'bg-[#C8A878] text-white hover:bg-[#B38F55] shadow-md animate-pulse'
+                    : 'bg-[#E7DFD5] text-[#78716C] cursor-not-allowed opacity-70'
                 }`}
                 disabled={!hasUnsavedChanges}
                 onClick={handleSaveChanges}
@@ -978,22 +978,22 @@ export const SupportTicketDetailsDrawer: React.FC<SupportTicketDetailsDrawerProp
             </div>
 
             {/* Tags & Labels Card */}
-            <div className="p-4 bg-white border border-[#E4DCC9] rounded-2xl shadow-sm flex flex-col gap-2.5">
-              <span className="text-xs font-bold text-[#18281F] uppercase tracking-wider flex items-center gap-1.5">
-                <Tag size={13} className="text-[#C4A066]" /> Ticket Tags
+            <div className="p-4 bg-white border border-[#E7DFD5] rounded-2xl shadow-sm flex flex-col gap-2.5">
+              <span className="text-xs font-bold text-[#211A19] uppercase tracking-wider flex items-center gap-1.5">
+                <Tag size={13} className="text-[#C8A878]" /> Ticket Tags
               </span>
 
               <div className="flex items-center gap-1.5 flex-wrap">
                 {tags.map((t) => (
                   <span
                     key={t}
-                    className="text-xs font-semibold text-[#18281F] bg-[#FAF9F6] border border-[#E4DCC9] px-2 py-1 rounded-lg flex items-center gap-1"
+                    className="text-xs font-semibold text-[#211A19] bg-[#FAF8F5] border border-[#E7DFD5] px-2 py-1 rounded-lg flex items-center gap-1"
                   >
                     #{t}
                     <button
                       type="button"
                       onClick={() => handleRemoveTag(t)}
-                      className="text-[#6B7C70] hover:text-rose-500"
+                      className="text-[#78716C] hover:text-rose-500"
                     >
                       ×
                     </button>
@@ -1007,36 +1007,36 @@ export const SupportTicketDetailsDrawer: React.FC<SupportTicketDetailsDrawerProp
                 value={newTagInput}
                 onChange={(e) => setNewTagInput(e.target.value)}
                 onKeyDown={handleAddTag}
-                className="w-full p-2 bg-[#FAF9F6] border border-[#E4DCC9] rounded-xl text-xs text-[#18281F] outline-none"
+                className="w-full p-2 bg-[#FAF8F5] border border-[#E7DFD5] rounded-xl text-xs text-[#211A19] outline-none"
               />
             </div>
 
             {/* Merged Tickets & Consolidation History Card */}
-            <div className="p-4 bg-white border border-[#E4DCC9] rounded-2xl shadow-sm flex flex-col gap-2.5">
+            <div className="p-4 bg-white border border-[#E7DFD5] rounded-2xl shadow-sm flex flex-col gap-2.5">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-bold text-[#18281F] uppercase tracking-wider flex items-center gap-1.5">
-                  <GitMerge size={14} className="text-[#C4A066]" /> Merged Tickets History
+                <span className="text-xs font-bold text-[#211A19] uppercase tracking-wider flex items-center gap-1.5">
+                  <GitMerge size={14} className="text-[#C8A878]" /> Merged Tickets History
                 </span>
-                <span className="text-[11px] font-bold text-[#C4A066] px-2 py-0.5 rounded-full bg-[#EFE8D8]">
+                <span className="text-[11px] font-bold text-[#C8A878] px-2 py-0.5 rounded-full bg-[#EEE5DA]">
                   {activeMergedList.length} Merged
                 </span>
               </div>
 
               {activeMergedList.length === 0 ? (
-                <div className="p-3 bg-[#FAF9F6] border border-[#E4DCC9] rounded-xl text-center">
-                  <span className="text-xs text-[#6B7C70]">No child tickets merged into this master ticket yet.</span>
+                <div className="p-3 bg-[#FAF8F5] border border-[#E7DFD5] rounded-xl text-center">
+                  <span className="text-xs text-[#78716C]">No child tickets merged into this master ticket yet.</span>
                 </div>
               ) : (
                 <div className="flex flex-col gap-2 text-xs">
                   {activeMergedList.map((m, idx) => (
-                    <div key={idx} className="p-2.5 bg-[#FAF9F6] border border-[#E4DCC9] rounded-xl flex items-center justify-between gap-2 shadow-xs">
+                    <div key={idx} className="p-2.5 bg-[#FAF8F5] border border-[#E7DFD5] rounded-xl flex items-center justify-between gap-2 shadow-xs">
                       <div className="flex flex-col min-w-0 flex-1">
                         <div className="flex items-center gap-1.5">
-                          <span className="font-mono font-bold text-[#C4A066]">#{m.ticketNumber}</span>
+                          <span className="font-mono font-bold text-[#C8A878]">#{m.ticketNumber}</span>
                           <span className="text-[10px] font-bold px-1.5 py-0.2 rounded bg-amber-100 text-amber-800">MERGED</span>
                         </div>
-                        <span className="text-[#18281F] font-semibold text-[11px] truncate">{m.subject}</span>
-                        <span className="text-[10px] text-[#6B7C70]">Merged by {m.mergedBy} • {m.mergedAt}</span>
+                        <span className="text-[#211A19] font-semibold text-[11px] truncate">{m.subject}</span>
+                        <span className="text-[10px] text-[#78716C]">Merged by {m.mergedBy} • {m.mergedAt}</span>
                       </div>
 
                       <Button
@@ -1055,16 +1055,16 @@ export const SupportTicketDetailsDrawer: React.FC<SupportTicketDetailsDrawerProp
             </div>
 
             {/* Creator's Past Tickets Snapshot */}
-            <div className="p-4 bg-white border border-[#E4DCC9] rounded-2xl shadow-sm flex flex-col gap-2.5">
+            <div className="p-4 bg-white border border-[#E7DFD5] rounded-2xl shadow-sm flex flex-col gap-2.5">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-bold text-[#18281F] uppercase tracking-wider flex items-center gap-1.5">
-                  <History size={14} className="text-[#C4A066]" /> Past Tickets by {ticket?.reporterName} ({creatorPastTickets.length})
+                <span className="text-xs font-bold text-[#211A19] uppercase tracking-wider flex items-center gap-1.5">
+                  <History size={14} className="text-[#C8A878]" /> Past Tickets by {ticket?.reporterName} ({creatorPastTickets.length})
                 </span>
               </div>
 
               {creatorPastTickets.length === 0 ? (
-                <div className="p-3 bg-[#FAF9F6] border border-[#E4DCC9] rounded-xl text-center">
-                  <span className="text-xs text-[#6B7C70]">First-time inquiry by {ticket?.reporterName}. No prior past tickets on record.</span>
+                <div className="p-3 bg-[#FAF8F5] border border-[#E7DFD5] rounded-xl text-center">
+                  <span className="text-xs text-[#78716C]">First-time inquiry by {ticket?.reporterName}. No prior past tickets on record.</span>
                 </div>
               ) : (
                 <div className="flex flex-col gap-2 text-xs">
@@ -1072,14 +1072,14 @@ export const SupportTicketDetailsDrawer: React.FC<SupportTicketDetailsDrawerProp
                     <div
                       key={pt.id}
                       onClick={() => onSelectTicket && onSelectTicket(pt.id)}
-                      className="p-2.5 bg-[#FAF9F6] border border-[#E4DCC9] rounded-xl flex items-center justify-between cursor-pointer hover:bg-[#EFE8D8] hover:border-[#C4A066] transition-all shadow-xs"
+                      className="p-2.5 bg-[#FAF8F5] border border-[#E7DFD5] rounded-xl flex items-center justify-between cursor-pointer hover:bg-[#EEE5DA] hover:border-[#C8A878] transition-all shadow-xs"
                     >
                       <div className="flex flex-col min-w-0 flex-1 pr-2">
                         <div className="flex items-center gap-1.5">
-                          <span className="font-mono font-bold text-[#C4A066]">#{pt.ticketNumber}</span>
-                          <span className="text-[10px] text-[#6B7C70]">• {formatDate(pt.createdAt)}</span>
+                          <span className="font-mono font-bold text-[#C8A878]">#{pt.ticketNumber}</span>
+                          <span className="text-[10px] text-[#78716C]">• {formatDate(pt.createdAt)}</span>
                         </div>
-                        <span className="text-[#18281F] font-semibold text-[11px] truncate">{pt.subject}</span>
+                        <span className="text-[#211A19] font-semibold text-[11px] truncate">{pt.subject}</span>
                       </div>
 
                       <SupportTicketStatusBadge status={pt.status} />
@@ -1147,7 +1147,7 @@ export const SupportTicketDetailsDrawer: React.FC<SupportTicketDetailsDrawerProp
             </p>
           </div>
 
-          <div className="flex items-center justify-end gap-2 pt-3 border-t border-[#E4DCC9]">
+          <div className="flex items-center justify-end gap-2 pt-3 border-t border-[#E7DFD5]">
             <Button
               type="button"
               variant="ghost"

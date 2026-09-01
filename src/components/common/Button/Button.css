@@ -40,59 +40,59 @@
 
 /* Variants */
 .btn-primary {
-  background-color: var(--primary, #18281F);
-  color: var(--primary-foreground, #F7F4EE);
-  border: 1px solid var(--primary, #18281F);
+  background-color: var(--primary, #541D26);
+  color: #FFFFFF;
+  border: 1px solid rgba(200, 168, 120, 0.4);
   box-shadow: var(--shadow-sm);
 }
 
 .btn-primary:hover:not(:disabled) {
-  background-color: var(--primary-card, #243A2D);
-  border-color: var(--gold, #C4A066);
+  background-color: var(--primary-hover, #6B2732);
+  border-color: var(--gold, #C8A878);
   box-shadow: var(--shadow-md);
 }
 
 .btn-secondary {
-  background-color: var(--form-bg, #FAF9F6);
-  color: var(--ink, #18281F);
-  border: 1px solid var(--border, #E4DCC9);
+  background-color: #FFFFFF;
+  color: var(--ink, #211A19);
+  border: 1px solid var(--border, #E7DFD5);
 }
 
 .btn-secondary:hover:not(:disabled) {
-  background-color: var(--secondary, #EFE8D8);
-  border-color: var(--gold, #C4A066);
+  background-color: var(--form-bg, #FAF8F5);
+  border-color: var(--gold, #C8A878);
 }
 
 .btn-danger {
-  background-color: var(--status-danger, #E11D48);
+  background-color: var(--status-danger, #DC2626);
   color: #FFFFFF;
 }
 
 .btn-danger:hover:not(:disabled) {
-  background-color: #BE123C;
+  background-color: #B91C1C;
 }
 
 .btn-outline {
   background-color: #FFFFFF;
-  color: var(--ink, #18281F);
-  border: 1px solid var(--border, #E4DCC9);
+  color: var(--ink, #211A19);
+  border: 1px solid var(--border, #E7DFD5);
 }
 
 .btn-outline:hover:not(:disabled) {
-  background-color: var(--secondary, #EFE8D8);
-  border-color: var(--gold, #C4A066);
+  background-color: var(--form-bg, #FAF8F5);
+  border-color: var(--gold, #C8A878);
 }
 
 .btn-ghost {
-  background-color: #FAF9F6;
-  color: var(--ink, #18281F);
-  border: 1px solid #E4DCC9;
+  background-color: #FAF8F5;
+  color: var(--ink, #211A19);
+  border: 1px solid #E7DFD5;
 }
 
 .btn-ghost:hover:not(:disabled) {
-  background-color: var(--secondary, #EFE8D8);
-  color: var(--primary, #18281F);
-  border-color: var(--gold, #C4A066);
+  background-color: #FAF8F5;
+  color: var(--primary, #541D26);
+  border-color: var(--gold, #C8A878);
 }
 
 .btn-icon-left, .btn-icon-right {
@@ -102,5 +102,5 @@
 }
 
 .btn-icon-left {
-  color: var(--accent-gold, #E6C35C);
+  color: var(--accent-gold, #C8A878);
 }

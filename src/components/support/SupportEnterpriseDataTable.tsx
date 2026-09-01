@@ -141,9 +141,9 @@ export const SupportEnterpriseDataTable: React.FC<SupportEnterpriseDataTableProp
         cell: (ticket) => (
           <div onClick={(e) => e.stopPropagation()} className="cursor-pointer">
             {selectedIds.has(ticket.id) ? (
-              <CheckSquare size={16} className="text-[#C4A066]" onClick={() => toggleSelectRow(ticket.id)} />
+              <CheckSquare size={16} className="text-[#C8A878]" onClick={() => toggleSelectRow(ticket.id)} />
             ) : (
-              <Square size={16} className="text-[#6B7C70]" onClick={() => toggleSelectRow(ticket.id)} />
+              <Square size={16} className="text-[#78716C]" onClick={() => toggleSelectRow(ticket.id)} />
             )}
           </div>
         ),
@@ -154,7 +154,7 @@ export const SupportEnterpriseDataTable: React.FC<SupportEnterpriseDataTableProp
       list.push({
         header: 'Ticket ID',
         cell: (t) => (
-          <span className="font-mono text-xs font-bold text-[#C4A066] bg-[#EFE8D8]/60 px-2 py-0.5 rounded whitespace-nowrap inline-block">
+          <span className="font-mono text-xs font-bold text-[#C8A878] bg-[#EEE5DA]/60 px-2 py-0.5 rounded whitespace-nowrap inline-block">
             {t.ticketNumber}
           </span>
         ),
@@ -166,8 +166,8 @@ export const SupportEnterpriseDataTable: React.FC<SupportEnterpriseDataTableProp
         header: 'Subject',
         cell: (t) => (
           <div className="flex flex-col">
-            <span className="font-bold text-[#18281F] text-xs line-clamp-1">{t.subject}</span>
-            <span className="text-[11px] text-[#6B7C70] line-clamp-1">{t.description}</span>
+            <span className="font-bold text-[#211A19] text-xs line-clamp-1">{t.subject}</span>
+            <span className="text-[11px] text-[#78716C] line-clamp-1">{t.description}</span>
           </div>
         ),
       });
@@ -195,10 +195,10 @@ export const SupportEnterpriseDataTable: React.FC<SupportEnterpriseDataTableProp
               className={`text-[11px] font-bold px-2 py-0.5 rounded-lg flex items-center gap-1 border whitespace-nowrap ${
                 isWeb
                   ? 'bg-[#FEF3C7] text-[#D97706] border-[#F59E0B]/40'
-                  : 'bg-[#FAF9F6] text-[#18281F] border-[#E4DCC9]'
+                  : 'bg-[#FAF8F5] text-[#211A19] border-[#E7DFD5]'
               }`}
             >
-              {isWeb ? <Globe size={12} className="text-[#D97706]" /> : <Smartphone size={12} className="text-[#C4A066]" />}
+              {isWeb ? <Globe size={12} className="text-[#D97706]" /> : <Smartphone size={12} className="text-[#C8A878]" />}
               {t.userType === 'user'
                 ? 'Website Intake'
                 : effectiveSource === 'mobile_app'
@@ -221,11 +221,11 @@ export const SupportEnterpriseDataTable: React.FC<SupportEnterpriseDataTableProp
                 e.stopPropagation();
                 if (onOpenUserProfile) onOpenUserProfile(t.reporterName);
               }}
-              className="font-bold text-[#18281F] hover:text-[#C4A066] underline text-left flex items-center gap-1 cursor-pointer transition-colors"
+              className="font-bold text-[#211A19] hover:text-[#C8A878] underline text-left flex items-center gap-1 cursor-pointer transition-colors"
             >
-              <User size={12} className="text-[#C4A066]" /> {t.reporterName}
+              <User size={12} className="text-[#C8A878]" /> {t.reporterName}
             </button>
-            <span className="text-[#6B7C70] text-[11px]">{t.reporterEmail}</span>
+            <span className="text-[#78716C] text-[11px]">{t.reporterEmail}</span>
           </div>
         ),
       });
@@ -243,12 +243,12 @@ export const SupportEnterpriseDataTable: React.FC<SupportEnterpriseDataTableProp
                   e.stopPropagation();
                   if (onOpenVendorProfile) onOpenVendorProfile(t.entityName || '');
                 }}
-                className="text-xs text-[#18281F] font-semibold hover:text-[#C4A066] underline text-left flex items-center gap-1 cursor-pointer transition-colors"
+                className="text-xs text-[#211A19] font-semibold hover:text-[#C8A878] underline text-left flex items-center gap-1 cursor-pointer transition-colors"
               >
-                <Building2 size={12} className="text-[#C4A066]" /> {t.entityName || 'Vendor Store'}
+                <Building2 size={12} className="text-[#C8A878]" /> {t.entityName || 'Vendor Store'}
               </button>
             ) : (
-              <span className="text-xs text-[#6B7C70] italic">N/A (User Account)</span>
+              <span className="text-xs text-[#78716C] italic">N/A (User Account)</span>
             )}
           </div>
         ),
@@ -287,7 +287,7 @@ export const SupportEnterpriseDataTable: React.FC<SupportEnterpriseDataTableProp
       list.push({
         header: 'Assigned To',
         cell: (t) => (
-          <span className="text-xs font-semibold text-[#18281F]">{t.assignedTo || 'Super Admin'}</span>
+          <span className="text-xs font-semibold text-[#211A19]">{t.assignedTo || 'Super Admin'}</span>
         ),
       });
     }
@@ -302,14 +302,14 @@ export const SupportEnterpriseDataTable: React.FC<SupportEnterpriseDataTableProp
     if (visibleColumns.createdAt) {
       list.push({
         header: 'Created At',
-        cell: (t) => <span className="text-xs text-[#6B7C70]">{formatDate(t.createdAt)}</span>,
+        cell: (t) => <span className="text-xs text-[#78716C]">{formatDate(t.createdAt)}</span>,
       });
     }
 
     if (visibleColumns.updatedAt) {
       list.push({
         header: 'Updated At',
-        cell: (t) => <span className="text-xs text-[#6B7C70]">{formatDate(t.updatedAt)}</span>,
+        cell: (t) => <span className="text-xs text-[#78716C]">{formatDate(t.updatedAt)}</span>,
       });
     }
 
@@ -317,7 +317,7 @@ export const SupportEnterpriseDataTable: React.FC<SupportEnterpriseDataTableProp
       list.push({
         header: 'Due Date',
         cell: (_t) => (
-          <span className="text-xs text-[#6B7C70] flex items-center gap-1">
+          <span className="text-xs text-[#78716C] flex items-center gap-1">
             <Clock size={12} /> Today, 6:00 PM
           </span>
         ),
@@ -343,7 +343,7 @@ export const SupportEnterpriseDataTable: React.FC<SupportEnterpriseDataTableProp
         header: 'Tags',
         cell: (t) => (
           <div className="flex items-center gap-1 flex-wrap">
-            <span className="text-[10px] font-semibold text-[#C4A066] bg-[#EFE8D8] px-1.5 py-0.5 rounded flex items-center gap-1">
+            <span className="text-[10px] font-semibold text-[#C8A878] bg-[#EEE5DA] px-1.5 py-0.5 rounded flex items-center gap-1">
               <Tag size={10} /> #{t.category}
             </span>
           </div>
@@ -381,7 +381,7 @@ export const SupportEnterpriseDataTable: React.FC<SupportEnterpriseDataTableProp
             {selectedIds.size === tickets.length ? 'Deselect All' : 'Select All'}
           </Button>
           {selectedIds.size > 0 && (
-            <span className="text-xs font-bold text-[#C4A066]">
+            <span className="text-xs font-bold text-[#C8A878]">
               {selectedIds.size} selected
             </span>
           )}
@@ -411,7 +411,7 @@ export const SupportEnterpriseDataTable: React.FC<SupportEnterpriseDataTableProp
           {/* Column Visibility Dropdown Menu */}
           {isColumnMenuOpen && (
             <div className="column-visibility-menu">
-              <span className="text-xs font-bold text-[#18281F] block mb-2">Toggle Table Columns</span>
+              <span className="text-xs font-bold text-[#211A19] block mb-2">Toggle Table Columns</span>
               <div className="flex flex-col gap-1 max-h-60 overflow-y-auto">
                 {Object.keys(visibleColumns).map((colKey) => (
                   <label key={colKey} className="column-checkbox-item">
@@ -421,7 +421,7 @@ export const SupportEnterpriseDataTable: React.FC<SupportEnterpriseDataTableProp
                       onChange={(e) =>
                         setVisibleColumns((prev) => ({ ...prev, [colKey]: e.target.checked }))
                       }
-                      className="rounded border-[#E4DCC9]"
+                      className="rounded border-[#E7DFD5]"
                     />
                     <span className="capitalize">{colKey.replace(/([A-Z])/g, ' $1')}</span>
                   </label>

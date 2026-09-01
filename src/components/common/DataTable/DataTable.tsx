@@ -166,7 +166,7 @@ export function DataTable<T>({
 
           <div ref={observerRef} className="infinite-scroll-trigger">
             {isFetchingMore ? (
-              <div className="flex items-center gap-2 text-xs font-semibold text-[#C4A066]">
+              <div className="flex items-center gap-2 text-xs font-semibold text-[#C8A878]">
                 <LoadingSpinner size="sm" />
                 <span>Loading more entries...</span>
               </div>
@@ -180,7 +180,7 @@ export function DataTable<T>({
                 <ChevronDown size={14} />
               </button>
             ) : (
-              <div className="flex items-center gap-1.5 text-xs text-[#6B7C70] font-semibold">
+              <div className="flex items-center gap-1.5 text-xs text-[#78716C] font-semibold">
                 <CheckCircle2 size={14} className="text-[#10B981]" />
                 <span>All {data.length} records loaded</span>
               </div>

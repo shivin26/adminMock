@@ -19,6 +19,7 @@ const INITIAL_SUB_ADMINS: SubAdminUser[] = [
     status: 'active',
     createdAt: '2026-08-01T10:00:00Z',
     createdBy: 'Super Admin',
+    creatorId: 'super-admin',
     createdRole: 'super_admin',
   },
   {
@@ -31,6 +32,7 @@ const INITIAL_SUB_ADMINS: SubAdminUser[] = [
     status: 'active',
     createdAt: '2026-08-01T11:00:00Z',
     createdBy: 'Super Admin',
+    creatorId: 'super-admin',
     createdRole: 'super_admin',
   },
   {
@@ -43,6 +45,7 @@ const INITIAL_SUB_ADMINS: SubAdminUser[] = [
     status: 'active',
     createdAt: '2026-08-02T14:30:00Z',
     createdBy: 'Sub-Admin Vikram Mehta',
+    creatorId: 'sub-1',
     createdRole: 'sub_admin',
   },
   {
@@ -55,6 +58,7 @@ const INITIAL_SUB_ADMINS: SubAdminUser[] = [
     status: 'active',
     createdAt: '2026-08-15T12:00:00Z',
     createdBy: 'Sub-Admin Aarushi Verma',
+    creatorId: 'sub-aarushi',
     createdRole: 'sub_admin',
   },
   {
@@ -67,6 +71,7 @@ const INITIAL_SUB_ADMINS: SubAdminUser[] = [
     status: 'active',
     createdAt: '2026-08-16T15:00:00Z',
     createdBy: 'Sub-Admin Aarushi Verma',
+    creatorId: 'sub-aarushi',
     createdRole: 'sub_admin',
   },
 ];
@@ -79,14 +84,20 @@ export const getLocalSubAdmins = (): SubAdminUser[] => {
       let modified = false;
       const updated = list.map((item) => {
         const nameLower = (item.name || '').toLowerCase();
+        const emailLower = (item.email || '').toLowerCase();
         if (
-          (nameLower.includes('raj') || nameLower.includes('jenga')) &&
-          (!item.createdBy || item.createdBy === 'Super Admin' || item.createdRole === 'super_admin')
+          nameLower.includes('raj') ||
+          nameLower.includes('jenga') ||
+          emailLower.includes('raj') ||
+          emailLower.includes('jenga')
         ) {
-          modified = true;
+          if (item.createdBy !== 'Sub-Admin Aarushi Verma' || item.creatorId !== 'sub-aarushi') {
+            modified = true;
+          }
           return {
             ...item,
             createdBy: 'Sub-Admin Aarushi Verma',
+            creatorId: 'sub-aarushi',
             createdRole: 'sub_admin' as const,
           };
         }
@@ -97,7 +108,7 @@ export const getLocalSubAdmins = (): SubAdminUser[] => {
         localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(updated));
         return updated;
       }
-      return list;
+      return updated;
     }
   } catch {}
   return INITIAL_SUB_ADMINS;
@@ -121,6 +132,11 @@ export const mapSubAdminDTOToDomain = (raw: any): SubAdminUser => {
       : Array.isArray(raw.power_permissions)
       ? raw.power_permissions
       : ['SOCIETIES'],
+    allowedDelegationPowers: Array.isArray(raw.allowed_delegation_powers)
+      ? raw.allowed_delegation_powers
+      : Array.isArray(raw.allowedDelegationPowers)
+      ? raw.allowedDelegationPowers
+      : undefined,
     status:
       String(raw.status || 'active').toLowerCase() === 'suspended' ||
       String(raw.status || '').toLowerCase() === 'blocked'
@@ -128,6 +144,7 @@ export const mapSubAdminDTOToDomain = (raw: any): SubAdminUser => {
         : 'active',
     createdAt: raw.created_at || raw.createdAt || new Date().toISOString(),
     createdBy: raw.created_by || raw.createdBy || 'Super Admin',
+    creatorId: raw.creator_id || raw.creatorId || (raw.created_role === 'sub_admin' ? 'sub-aarushi' : 'super-admin'),
     createdRole: raw.created_role || raw.createdRole || 'super_admin',
   };
 };
@@ -162,16 +179,31 @@ export const subAdminsApi = {
    * POST /admin/subadmins (also POST /admin/sub-admins)
    */
   createSubAdmin: async (payload: CreateSubAdminRequest): Promise<SubAdminUser> => {
+    const apiPayload = {
+      name: payload.name,
+      email: payload.email,
+      password: payload.password,
+      powers: payload.powers,
+      allowed_delegation_powers: payload.allowedDelegationPowers,
+      allowedDelegationPowers: payload.allowedDelegationPowers,
+      created_by: payload.createdBy,
+      creator_id: payload.creatorId,
+      creatorId: payload.creatorId,
+      created_role: payload.createdRole,
+    };
+
     try {
       let response: any;
       try {
-        response = await axiosInstance.post<SubAdminUser>('/admin/subadmins', payload);
+        response = await axiosInstance.post<SubAdminUser>('/admin/subadmins', apiPayload);
       } catch {
-        response = await axiosInstance.post<SubAdminUser>('/admin/sub-admins', payload);
+        response = await axiosInstance.post<SubAdminUser>('/admin/sub-admins', apiPayload);
       }
       const data = mapSubAdminDTOToDomain(response.data?.data || response.data);
       if (payload.createdBy) data.createdBy = payload.createdBy;
+      if (payload.creatorId) data.creatorId = payload.creatorId;
       if (payload.createdRole) data.createdRole = payload.createdRole;
+      if (payload.allowedDelegationPowers) data.allowedDelegationPowers = payload.allowedDelegationPowers;
 
       const current = getLocalSubAdmins();
       saveLocalSubAdmins([data, ...current]);
@@ -184,9 +216,11 @@ export const subAdminsApi = {
         password: payload.password || 'password123',
         role: 'sub_admin',
         powers: payload.powers,
+        allowedDelegationPowers: payload.allowedDelegationPowers,
         status: 'active',
         createdAt: new Date().toISOString(),
         createdBy: payload.createdBy || 'Super Admin',
+        creatorId: payload.creatorId || 'super-admin',
         createdRole: payload.createdRole || 'super_admin',
       };
       const current = getLocalSubAdmins();
@@ -232,11 +266,18 @@ export const subAdminsApi = {
     id: string,
     payload: UpdateSubAdminPowersRequest
   ): Promise<SubAdminUser> => {
+    const apiPayload = {
+      powers: payload.powers,
+      allowed_delegation_powers: payload.allowedDelegationPowers,
+      allowedDelegationPowers: payload.allowedDelegationPowers,
+      status: payload.status,
+    };
+
     try {
-      const response = await axiosInstance.put<any>(`/admin/subadmins/${id}`, payload);
+      const response = await axiosInstance.put<any>(`/admin/subadmins/${id}`, apiPayload);
       const updatedBackend = response.data?.data || response.data;
       const current = getLocalSubAdmins();
-      const updatedList = current.map((sub) => (sub.id === id ? { ...sub, powers: payload.powers } : sub));
+      const updatedList = current.map((sub) => (sub.id === id ? { ...sub, powers: payload.powers, allowedDelegationPowers: payload.allowedDelegationPowers !== undefined ? payload.allowedDelegationPowers : sub.allowedDelegationPowers } : sub));
       saveLocalSubAdmins(updatedList);
       
       // Update active session user data if logged in
@@ -246,6 +287,9 @@ export const subAdminsApi = {
           const activeUser = JSON.parse(activeUserRaw);
           if (activeUser.id === id || activeUser.email === updatedBackend?.email) {
             activeUser.powers = payload.powers;
+            if (payload.allowedDelegationPowers !== undefined) {
+              activeUser.allowedDelegationPowers = payload.allowedDelegationPowers;
+            }
             localStorage.setItem('digilocal_user_data', JSON.stringify(activeUser));
           }
         }
@@ -260,6 +304,7 @@ export const subAdminsApi = {
           updatedTarget = {
             ...sub,
             powers: payload.powers,
+            allowedDelegationPowers: payload.allowedDelegationPowers !== undefined ? payload.allowedDelegationPowers : sub.allowedDelegationPowers,
             status: payload.status || sub.status,
           };
           return updatedTarget;
@@ -275,6 +320,7 @@ export const subAdminsApi = {
           const activeUser = JSON.parse(activeUserRaw);
           if (activeUser.id === id || activeUser.email === (updatedTarget as SubAdminUser).email) {
             activeUser.powers = payload.powers;
+            activeUser.allowedDelegationPowers = (updatedTarget as SubAdminUser).allowedDelegationPowers;
             localStorage.setItem('digilocal_user_data', JSON.stringify(activeUser));
           }
         }

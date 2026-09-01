@@ -2,7 +2,7 @@
   position: fixed;
   inset: 0;
   z-index: 99999;
-  background-color: rgba(15, 25, 20, 0.65);
+  background-color: rgba(33, 26, 25, 0.65);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   display: flex;
@@ -19,9 +19,9 @@
   display: flex;
   flex-direction: column;
   background-color: #FFFFFF;
-  border: 1px solid var(--border, #E4DCC9);
-  border-radius: var(--radius-lg, 1.25rem);
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.35);
+  border: 1px solid var(--border, #E7DFD5);
+  border-radius: var(--radius-bento, 2rem);
+  box-shadow: 0 25px 50px -12px rgba(33, 26, 25, 0.35);
   overflow: hidden;
   position: relative;
   z-index: 100000;
@@ -37,29 +37,29 @@
   align-items: flex-start;
   justify-content: space-between;
   padding: 1.25rem 1.5rem;
-  border-bottom: 1px solid var(--border, #E4DCC9);
-  background-color: var(--primary, #18281F);
-  color: #F7F4EE;
+  border-bottom: 1px solid var(--border, #E7DFD5);
+  background-color: var(--primary, #541D26);
+  color: #FFFFFF;
   flex-shrink: 0;
 }
 
 .modal-title {
   font-size: var(--font-size-lg);
   font-weight: 700;
-  color: #F7F4EE;
+  color: #FFFFFF;
   font-family: var(--font-serif);
 }
 
 .modal-subtitle {
   font-size: var(--font-size-xs);
-  color: var(--secondary, #EFE8D8);
+  color: #EEE5DA;
   margin-top: 0.25rem;
 }
 
 .modal-close-btn {
   background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  color: #F7F4EE;
+  border: 1px solid rgba(200, 168, 120, 0.3);
+  color: #FFFFFF;
   cursor: pointer;
   padding: 0.4rem;
   border-radius: var(--radius-full);
@@ -70,9 +70,9 @@
 }
 
 .modal-close-btn:hover {
-  color: #18281F;
-  background-color: var(--accent-gold, #E6C35C);
-  border-color: var(--accent-gold, #E6C35C);
+  color: #211A19;
+  background-color: var(--gold, #C8A878);
+  border-color: var(--gold, #C8A878);
 }
 
 .modal-body {
@@ -80,7 +80,7 @@
   overflow-y: auto;
   flex: 1;
   background-color: #FFFFFF;
-  color: var(--ink, #18281F);
+  color: var(--ink, #211A19);
   -webkit-overflow-scrolling: touch;
 }
 
@@ -90,7 +90,7 @@
   justify-content: flex-end;
   gap: 0.75rem;
   padding: 1rem 1.5rem;
-  border-top: 1px solid var(--border, #E4DCC9);
-  background-color: var(--form-bg, #FAF9F6);
+  border-top: 1px solid var(--border, #E7DFD5);
+  background-color: var(--form-bg, #FAF8F5);
   flex-shrink: 0;
 }

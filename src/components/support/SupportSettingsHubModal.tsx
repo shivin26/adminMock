@@ -109,34 +109,34 @@ export const SupportSettingsHubModal: React.FC<SupportSettingsHubModalProps> = (
         {/* Tab 1: Categories & Rules */}
         {activeTab === 'general' && (
           <div className="settings-section-card">
-            <h4 className="text-xs font-bold text-[#18281F] uppercase tracking-wider">
+            <h4 className="text-xs font-bold text-[#211A19] uppercase tracking-wider">
               Categories &amp; Lifecycle Controls
             </h4>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
               <div className="flex flex-col gap-1">
-                <label className="font-semibold text-[#18281F]">Auto-Close Resolved Tickets (Days):</label>
+                <label className="font-semibold text-[#211A19]">Auto-Close Resolved Tickets (Days):</label>
                 <input
                   type="number"
                   value={autoCloseResolvedDays}
                   onChange={(e) => setAutoCloseResolvedDays(Number(e.target.value))}
-                  className="p-2.5 bg-[#FAF9F6] border border-[#E4DCC9] rounded-xl outline-none font-bold text-[#18281F]"
+                  className="p-2.5 bg-[#FAF8F5] border border-[#E7DFD5] rounded-xl outline-none font-bold text-[#211A19]"
                 />
               </div>
 
               <div className="flex flex-col gap-1">
-                <label className="font-semibold text-[#18281F]">Max Active Load Per Agent:</label>
+                <label className="font-semibold text-[#211A19]">Max Active Load Per Agent:</label>
                 <input
                   type="number"
                   value={maxOpenTicketsPerAgent}
                   onChange={(e) => setMaxOpenTicketsPerAgent(Number(e.target.value))}
-                  className="p-2.5 bg-[#FAF9F6] border border-[#E4DCC9] rounded-xl outline-none font-bold text-[#18281F]"
+                  className="p-2.5 bg-[#FAF8F5] border border-[#E7DFD5] rounded-xl outline-none font-bold text-[#211A19]"
                 />
               </div>
             </div>
 
-            <div className="flex flex-col gap-2 border-t border-[#E4DCC9]/60 pt-3 text-xs">
-              <span className="font-bold text-[#18281F]">Active Platform Categories:</span>
+            <div className="flex flex-col gap-2 border-t border-[#E7DFD5]/60 pt-3 text-xs">
+              <span className="font-bold text-[#211A19]">Active Platform Categories:</span>
               <div className="flex items-center gap-2 flex-wrap">
                 <Badge variant="primary">TECHNICAL INQUIRIES</Badge>
                 <Badge variant="warning">BILLING &amp; SETTLEMENTS</Badge>
@@ -150,16 +150,16 @@ export const SupportSettingsHubModal: React.FC<SupportSettingsHubModalProps> = (
         {/* Tab 2: SLA & Escalations */}
         {activeTab === 'sla' && (
           <div className="settings-section-card">
-            <h4 className="text-xs font-bold text-[#18281F] uppercase tracking-wider">
+            <h4 className="text-xs font-bold text-[#211A19] uppercase tracking-wider">
               SLA Policy Thresholds
             </h4>
 
-            <div className="p-3 bg-[#FAF9F6] border border-[#E4DCC9] rounded-xl text-xs flex flex-col gap-2">
-              <div className="flex items-center justify-between font-bold text-[#18281F]">
+            <div className="p-3 bg-[#FAF8F5] border border-[#E7DFD5] rounded-xl text-xs flex flex-col gap-2">
+              <div className="flex items-center justify-between font-bold text-[#211A19]">
                 <span>P1 Critical Target: 15m 1st Response / 1h Resolution</span>
                 <Badge variant="danger">CRITICAL</Badge>
               </div>
-              <div className="flex items-center justify-between font-bold text-[#18281F]">
+              <div className="flex items-center justify-between font-bold text-[#211A19]">
                 <span>P2 High Target: 30m 1st Response / 4h Resolution</span>
                 <Badge variant="warning">HIGH</Badge>
               </div>
@@ -170,21 +170,21 @@ export const SupportSettingsHubModal: React.FC<SupportSettingsHubModalProps> = (
         {/* Tab 3: Auto-Assignment */}
         {activeTab === 'assignment' && (
           <div className="settings-section-card">
-            <h4 className="text-xs font-bold text-[#18281F] uppercase tracking-wider">
+            <h4 className="text-xs font-bold text-[#211A19] uppercase tracking-wider">
               Auto-Assignment &amp; Round-Robin Routing
             </h4>
 
-            <label className="flex items-center gap-2 text-xs font-bold text-[#18281F] cursor-pointer">
+            <label className="flex items-center gap-2 text-xs font-bold text-[#211A19] cursor-pointer">
               <input
                 type="checkbox"
                 checked={enableRoundRobin}
                 onChange={(e) => setEnableRoundRobin(e.target.checked)}
-                className="rounded border-[#E4DCC9]"
+                className="rounded border-[#E7DFD5]"
               />
               Enable Automatic Round-Robin Intake Assignment
             </label>
 
-            <p className="text-xs text-[#6B7C70] bg-[#FAF9F6] p-3 rounded-xl border border-[#E4DCC9]">
+            <p className="text-xs text-[#78716C] bg-[#FAF8F5] p-3 rounded-xl border border-[#E7DFD5]">
               When enabled, incoming vendor and society support tickets are automatically assigned to the active staff agent with the lowest open workload.
             </p>
           </div>
@@ -193,17 +193,17 @@ export const SupportSettingsHubModal: React.FC<SupportSettingsHubModalProps> = (
         {/* Tab 4: Email Templates */}
         {activeTab === 'templates' && (
           <div className="settings-section-card">
-            <h4 className="text-xs font-bold text-[#18281F] uppercase tracking-wider">
+            <h4 className="text-xs font-bold text-[#211A19] uppercase tracking-wider">
               Customer Notification Email Templates
             </h4>
 
             <div className="flex flex-col gap-1.5 text-xs">
-              <label className="font-semibold text-[#18281F]">Ticket Confirmation Email Body:</label>
+              <label className="font-semibold text-[#211A19]">Ticket Confirmation Email Body:</label>
               <textarea
                 rows={4}
                 value={ticketCreatedTemplate}
                 onChange={(e) => setTicketCreatedTemplate(e.target.value)}
-                className="w-full p-3 bg-[#FAF9F6] border border-[#E4DCC9] rounded-xl font-mono text-xs text-[#18281F] outline-none"
+                className="w-full p-3 bg-[#FAF8F5] border border-[#E7DFD5] rounded-xl font-mono text-xs text-[#211A19] outline-none"
               />
             </div>
           </div>
@@ -212,7 +212,7 @@ export const SupportSettingsHubModal: React.FC<SupportSettingsHubModalProps> = (
         {/* Tab 5: Business Hours & Holidays */}
         {activeTab === 'hours' && (
           <div className="settings-section-card">
-            <h4 className="text-xs font-bold text-[#18281F] uppercase tracking-wider">
+            <h4 className="text-xs font-bold text-[#211A19] uppercase tracking-wider">
               Operational Business Hours &amp; Holiday Calendar
             </h4>
 
@@ -231,19 +231,19 @@ export const SupportSettingsHubModal: React.FC<SupportSettingsHubModalProps> = (
             </div>
 
             <div className="flex flex-col gap-1 text-xs">
-              <label className="font-semibold text-[#18281F]">Statutory Holidays Schedule:</label>
+              <label className="font-semibold text-[#211A19]">Statutory Holidays Schedule:</label>
               <input
                 type="text"
                 value={holidayNotice}
                 onChange={(e) => setHolidayNotice(e.target.value)}
-                className="w-full p-2.5 bg-[#FAF9F6] border border-[#E4DCC9] rounded-xl font-medium text-[#18281F] outline-none"
+                className="w-full p-2.5 bg-[#FAF8F5] border border-[#E7DFD5] rounded-xl font-medium text-[#211A19] outline-none"
               />
             </div>
           </div>
         )}
 
         {/* Footer Actions */}
-        <div className="flex items-center justify-end gap-2 pt-3 border-t border-[#E4DCC9]">
+        <div className="flex items-center justify-end gap-2 pt-3 border-t border-[#E7DFD5]">
           <Button type="button" variant="ghost" onClick={onClose}>
             Cancel
           </Button>

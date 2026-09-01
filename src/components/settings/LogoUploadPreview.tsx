@@ -26,21 +26,21 @@ export const LogoUploadPreview: React.FC<LogoUploadPreviewProps> = ({
   };
 
   return (
-    <div className="p-4 bg-[#FAF9F6] border border-[#E4DCC9] rounded-2xl flex flex-col gap-4">
-      <div className="flex items-center gap-3 pb-3 border-b border-[#E4DCC9]">
-        <div className="w-9 h-9 rounded-xl bg-[#18281F] text-[#E6C35C] flex items-center justify-center shrink-0">
+    <div className="p-4 bg-[#FAF8F5] border border-[#E7DFD5] rounded-2xl flex flex-col gap-4">
+      <div className="flex items-center gap-3 pb-3 border-b border-[#E7DFD5]">
+        <div className="w-9 h-9 rounded-xl bg-[#211A19] text-[#A88B58] flex items-center justify-center shrink-0">
           <Upload size={18} />
         </div>
         <div>
-          <h4 className="text-sm font-bold text-[#18281F]">Brand Visual Assets Preview</h4>
-          <p className="text-xs text-[#6B7C70]">
+          <h4 className="text-sm font-bold text-[#211A19]">Brand Visual Assets Preview</h4>
+          <p className="text-xs text-[#78716C]">
             Preview active brand logo rendering on top header bar.
           </p>
         </div>
       </div>
 
-      <div className="flex items-center gap-4 p-3.5 bg-[#18281F] rounded-xl border border-[#243A2D]">
-        <div className="w-11 h-11 rounded-xl bg-white text-[#18281F] flex items-center justify-center overflow-hidden shrink-0 border border-[#C4A066] p-1">
+      <div className="flex items-center gap-4 p-3.5 bg-[#211A19] rounded-xl border border-[#6B2732]">
+        <div className="w-11 h-11 rounded-xl bg-white text-[#211A19] flex items-center justify-center overflow-hidden shrink-0 border border-[#C8A878] p-1">
           <img
             src={logoUrl || '/logo.png'}
             alt="Platform Logo"
@@ -51,7 +51,7 @@ export const LogoUploadPreview: React.FC<LogoUploadPreviewProps> = ({
           />
         </div>
         <div className="flex flex-col">
-          <span className="text-[10px] text-[#E6C35C] font-bold uppercase tracking-wider">Header Brand Live View</span>
+          <span className="text-[10px] text-[#A88B58] font-bold uppercase tracking-wider">Header Brand Live View</span>
           <span className="text-sm font-bold text-white font-serif">{platformName || 'DigiLocal'}</span>
         </div>
 
@@ -62,7 +62,7 @@ export const LogoUploadPreview: React.FC<LogoUploadPreviewProps> = ({
             className="hidden"
             onChange={handleFileUpload}
           />
-          <span className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold bg-[#FAF9F6] hover:bg-[#EFE8D8] text-[#18281F] rounded-lg border border-[#E4DCC9] transition-all shadow-sm">
+          <span className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold bg-[#FAF8F5] hover:bg-[#EEE5DA] text-[#211A19] rounded-lg border border-[#E7DFD5] transition-all shadow-sm">
             <Upload size={14} /> Upload Logo File
           </span>
         </label>

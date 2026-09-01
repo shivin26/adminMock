@@ -9,14 +9,22 @@
   }
 
   body {
-    background-color: var(--background);
-    color: var(--foreground);
-    font-family: 'Inter', var(--font-sans);
+    background-color: var(--background, #F8F6F0);
+    color: var(--foreground, #211A19);
+    font-family: var(--font-sans);
     font-optical-sizing: auto;
     min-height: 100vh;
     line-height: 1.5;
     -webkit-font-smoothing: antialiased;
     overflow-x: hidden;
+  }
+
+  h1, h2, h3, .font-serif {
+    font-family: var(--font-serif);
+  }
+
+  code, pre, .font-mono {
+    font-family: var(--font-mono);
   }
 
   a {
@@ -37,31 +45,31 @@
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--background);
+  background: var(--background, #F8F6F0);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #EFE8D8;
-  border: 1px solid var(--border);
+  background: #EEE5DA;
+  border: 1px solid var(--border, #E7DFD5);
   border-radius: var(--radius-full);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--gold);
+  background: var(--gold, #C8A878);
 }
 
 /* Bento Card Component Class */
 .glass-panel, .bento-card {
-  background-color: var(--card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
+  background-color: var(--card, #FFFFFF);
+  border: 1px solid var(--border, #E7DFD5);
+  border-radius: var(--radius-bento, 2rem);
   box-shadow: var(--shadow-md);
   transition: all var(--transition-normal);
 }
 
 .bento-card:hover {
   box-shadow: var(--shadow-lg);
-  border-color: var(--gold);
+  border-color: var(--gold, #C8A878);
 }
 
 /* Smooth Fade-in Animation Utility */

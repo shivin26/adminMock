@@ -23,7 +23,7 @@ export function AreaChartWidget<T extends Record<string, unknown>>({
   xKey,
   yKey,
   height = 260,
-  color = '#18281F',
+  color = '#211A19',
 
   valueFormatter,
 }: AreaChartWidgetProps<T>): React.ReactElement {

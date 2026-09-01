@@ -21,37 +21,37 @@
 }
 
 .badge-primary {
-  background-color: #18281F;
-  color: #F7F4EE;
-  border: 1px solid #18281F;
+  background-color: #541D26;
+  color: #FFFFFF;
+  border: 1px solid #541D26;
 }
 
 .badge-success {
-  background-color: var(--secondary, #EFE8D8);
-  color: var(--primary, #18281F);
-  border: 1px solid var(--gold, #C4A066);
+  background-color: #F0FDF4;
+  color: #16A34A;
+  border: 1px solid #BBF7D0;
 }
 
 .badge-warning {
-  background-color: #FEF3C7;
+  background-color: #FFFBEB;
   color: #D97706;
-  border: 1px solid rgba(217, 119, 6, 0.2);
+  border: 1px solid #FDE68A;
 }
 
 .badge-danger {
-  background-color: #FFE4E6;
-  color: #E11D48;
-  border: 1px solid rgba(225, 29, 72, 0.2);
+  background-color: #FEF2F2;
+  color: #DC2626;
+  border: 1px solid #FECACA;
 }
 
 .badge-info {
-  background-color: var(--form-bg, #FAF9F6);
-  color: var(--primary, #18281F);
-  border: 1px solid var(--border, #E4DCC9);
+  background-color: #EFF6FF;
+  color: #2563EB;
+  border: 1px solid #BFDBFE;
 }
 
 .badge-neutral {
-  background-color: #FAF9F6;
-  color: #6B7C70;
-  border: 1px solid #E4DCC9;
+  background-color: #F3F4F6;
+  color: #4B5563;
+  border: 1px solid #E5E7EB;
 }

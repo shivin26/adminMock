@@ -40,7 +40,7 @@ export const LoginPage: React.FC = () => {
     <div className="login-page-container">
       <div className="login-card glass-panel animate-fade-in">
         <div className="login-header">
-          <div className="login-logo-badge overflow-hidden p-1.5 bg-white border border-[#C4A066] shadow-sm">
+          <div className="login-logo-badge overflow-hidden p-1.5 bg-white border border-[#C8A878] shadow-sm">
             <img src="/logo.png" alt="DigiLocal Logo" className="w-full h-full object-contain" />
           </div>
           <h2 className="login-title">DigiLocal Portal</h2>

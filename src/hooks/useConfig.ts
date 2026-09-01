@@ -13,14 +13,17 @@ export const usePlatformConfig = () => {
   });
 };
 
+import { logBackendMutation } from '../services/audit.service';
+
 export const useUpdatePlatformConfig = () => {
   const queryClient = useQueryClient();
   const { addToast } = useToast();
 
   return useMutation({
     mutationFn: (payload: PlatformConfig) => configApi.updateConfig(payload),
-    onSuccess: (data) => {
+    onSuccess: (data, payload) => {
       queryClient.invalidateQueries({ queryKey: CACHE_KEYS.config.main });
+      logBackendMutation('SETTINGS', 'UPDATE', 'Updated platform branding & logo configuration', `Updated platform title: "${payload.appTitle}"`);
       addToast({
         type: 'success',
         title: 'Branding Settings Updated',
@@ -44,6 +47,7 @@ export const useChangePassword = () => {
   return useMutation({
     mutationFn: (payload: PasswordChangeRequest) => configApi.changePassword(payload),
     onSuccess: (data) => {
+      logBackendMutation('SETTINGS', 'UPDATE', 'Changed administrator account password', 'Security password successfully updated.');
       addToast({
         type: 'success',
         title: 'Password Updated',

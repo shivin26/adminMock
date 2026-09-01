@@ -56,49 +56,49 @@ export const SocietyDetailsDrawer: React.FC<SocietyDetailsDrawerProps> = ({
     >
       <div className="flex flex-col gap-5 p-1">
         {/* Society Header & Name Card */}
-        <div className="p-4 bg-white border border-[#E4DCC9] rounded-2xl shadow-sm flex items-center gap-3">
-          <div className="w-12 h-12 rounded-xl bg-[#18281F] text-[#E6C35C] flex items-center justify-center shrink-0">
+        <div className="p-4 bg-white border border-[#E7DFD5] rounded-2xl shadow-sm flex items-center gap-3">
+          <div className="w-12 h-12 rounded-xl bg-[#211A19] text-[#A88B58] flex items-center justify-center shrink-0">
             <Building2 size={24} />
           </div>
           <div>
-            <span className="text-xs font-bold text-[#6B7C70] uppercase tracking-wider block">Residential Society</span>
-            <h3 className="text-lg font-bold text-[#18281F] font-serif">{society.name}</h3>
-            <span className="text-xs text-[#6B7C70]">Code: {society.code}</span>
+            <span className="text-xs font-bold text-[#78716C] uppercase tracking-wider block">Residential Society</span>
+            <h3 className="text-lg font-bold text-[#211A19] font-serif">{society.name}</h3>
+            <span className="text-xs text-[#78716C]">Code: {society.code}</span>
           </div>
         </div>
 
         {/* Society Metadata Bento Card */}
-        <div className="p-4 bg-white border border-[#E4DCC9] rounded-2xl shadow-sm flex flex-col gap-3">
-          <div className="flex justify-between items-center text-sm border-b border-[#E4DCC9]/60 pb-2">
-            <span className="text-[#6B7C70] font-medium">Society Enclave:</span>
-            <span className="font-bold text-[#18281F]">{society.name}</span>
+        <div className="p-4 bg-white border border-[#E7DFD5] rounded-2xl shadow-sm flex flex-col gap-3">
+          <div className="flex justify-between items-center text-sm border-b border-[#E7DFD5]/60 pb-2">
+            <span className="text-[#78716C] font-medium">Society Enclave:</span>
+            <span className="font-bold text-[#211A19]">{society.name}</span>
           </div>
 
-          <div className="flex justify-between items-center text-sm border-b border-[#E4DCC9]/60 pb-2">
-            <span className="text-[#6B7C70] font-medium">Location Address:</span>
-            <span className="font-semibold text-[#18281F] flex items-center gap-1">
-              <MapPin size={14} className="text-[#C4A066]" />
+          <div className="flex justify-between items-center text-sm border-b border-[#E7DFD5]/60 pb-2">
+            <span className="text-[#78716C] font-medium">Location Address:</span>
+            <span className="font-semibold text-[#211A19] flex items-center gap-1">
+              <MapPin size={14} className="text-[#C8A878]" />
               {society.address}
             </span>
           </div>
 
-          <div className="flex justify-between items-center text-sm border-b border-[#E4DCC9]/60 pb-2">
-            <span className="text-[#6B7C70] font-medium">City / State:</span>
-            <span className="font-semibold text-[#18281F]">
+          <div className="flex justify-between items-center text-sm border-b border-[#E7DFD5]/60 pb-2">
+            <span className="text-[#78716C] font-medium">City / State:</span>
+            <span className="font-semibold text-[#211A19]">
               {society.city}, {society.state}
             </span>
           </div>
 
           <div className="flex justify-between items-center text-sm">
-            <span className="text-[#6B7C70] font-medium">Vendors Onboarded:</span>
+            <span className="text-[#78716C] font-medium">Vendors Onboarded:</span>
             <Badge variant="primary">{effectiveVendors.length} Active Vendors</Badge>
           </div>
         </div>
 
         {/* Vendor List Inside Society */}
         <div>
-          <h4 className="text-xs font-bold text-[#6B7C70] uppercase tracking-wider mb-3 flex items-center gap-1.5">
-            <Store size={14} className="text-[#C4A066]" />
+          <h4 className="text-xs font-bold text-[#78716C] uppercase tracking-wider mb-3 flex items-center gap-1.5">
+            <Store size={14} className="text-[#C8A878]" />
             Vendors Servicing {society.name}
           </h4>
 
@@ -107,29 +107,29 @@ export const SocietyDetailsDrawer: React.FC<SocietyDetailsDrawerProps> = ({
               <LoadingSpinner size="md" label="Loading vendors..." />
             </div>
           ) : effectiveVendors.length === 0 ? (
-            <div className="p-6 text-center text-xs text-[#6B7C70] bg-white border border-[#E4DCC9] rounded-xl shadow-sm">
-              No active vendors assigned to <strong className="text-[#18281F]">{society.name}</strong> yet.
+            <div className="p-6 text-center text-xs text-[#78716C] bg-white border border-[#E7DFD5] rounded-xl shadow-sm">
+              No active vendors assigned to <strong className="text-[#211A19]">{society.name}</strong> yet.
             </div>
           ) : (
             <div className="flex flex-col gap-3">
               {effectiveVendors.map((v) => (
                 <div
                   key={v.id}
-                  className="flex items-center gap-3 p-3.5 bg-white border border-[#E4DCC9] rounded-xl shadow-sm hover:border-[#C4A066] transition-all"
+                  className="flex items-center gap-3 p-3.5 bg-white border border-[#E7DFD5] rounded-xl shadow-sm hover:border-[#C8A878] transition-all"
                 >
                   <img
                     src={v.avatarUrl}
                     alt={v.storeName}
-                    className="w-11 h-11 rounded-lg object-cover border border-[#E4DCC9]"
+                    className="w-11 h-11 rounded-lg object-cover border border-[#E7DFD5]"
                   />
                   <div className="flex-1 min-w-0">
-                    <span className="text-sm font-bold text-[#18281F] truncate block">
+                    <span className="text-sm font-bold text-[#211A19] truncate block">
                       {v.storeName}
                     </span>
-                    <span className="text-xs text-[#6B7C70] flex items-center gap-1 mt-0.5">
-                      <User size={12} className="text-[#C4A066]" /> {v.ownerName} • <Building2 size={12} /> {society.name}
+                    <span className="text-xs text-[#78716C] flex items-center gap-1 mt-0.5">
+                      <User size={12} className="text-[#C8A878]" /> {v.ownerName} • <Building2 size={12} /> {society.name}
                     </span>
-                    <span className="text-xs text-[#6B7C70] flex items-center gap-1 mt-0.5">
+                    <span className="text-xs text-[#78716C] flex items-center gap-1 mt-0.5">
                       <Mail size={12} /> {v.email}
                     </span>
                   </div>

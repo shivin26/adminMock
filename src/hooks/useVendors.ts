@@ -32,14 +32,17 @@ export const useOnHoldVendors = () => {
   });
 };
 
+import { logBackendMutation } from '../services/audit.service';
+
 export const useApproveVendor = () => {
   const queryClient = useQueryClient();
   const { addToast } = useToast();
 
   return useMutation({
     mutationFn: (vendorId: string | number) => vendorsApi.approveVendor(vendorId),
-    onSuccess: (data) => {
+    onSuccess: (data, vendorId) => {
       queryClient.invalidateQueries({ queryKey: CACHE_KEYS.vendors.all });
+      logBackendMutation('VENDORS', 'STATUS_CHANGE', `Approved vendor application #${vendorId}`, data.message, String(vendorId));
       addToast({
         type: 'success',
         title: 'Vendor Approved',
@@ -71,8 +74,9 @@ export const useHoldVendor = () => {
       subject: string;
       email_content: string;
     }) => vendorsApi.holdVendor(vendorId, { subject, email_content }),
-    onSuccess: (data) => {
+    onSuccess: (data, variables) => {
       queryClient.invalidateQueries({ queryKey: CACHE_KEYS.vendors.all });
+      logBackendMutation('VENDORS', 'STATUS_CHANGE', `Placed vendor #${variables.vendorId} on hold`, `Subject: ${variables.subject}`, String(variables.vendorId));
       addToast({
         type: 'warning',
         title: 'Application Placed On Hold',
@@ -97,8 +101,9 @@ export const useRejectVendor = () => {
   return useMutation({
     mutationFn: ({ vendorId, reason }: { vendorId: string | number; reason?: string }) =>
       vendorsApi.rejectVendor(vendorId, reason),
-    onSuccess: (data) => {
+    onSuccess: (data, variables) => {
       queryClient.invalidateQueries({ queryKey: CACHE_KEYS.vendors.all });
+      logBackendMutation('VENDORS', 'STATUS_CHANGE', `Rejected vendor #${variables.vendorId} application`, `Reason: ${variables.reason || 'Unspecified'}`, String(variables.vendorId));
       addToast({
         type: 'info',
         title: 'Vendor Application Rejected',
@@ -136,6 +141,8 @@ export const useToggleVendorStatus = () => {
       queryClient.invalidateQueries({ queryKey: ['vendors', 'on_hold'] });
 
       const isBlocking = variables.status === 'suspended';
+      logBackendMutation('VENDORS', 'STATUS_CHANGE', `${isBlocking ? 'Blocked' : 'Unblocked'} vendor #${variables.vendorId}`, `Status changed to ${variables.status.toUpperCase()}`, String(variables.vendorId));
+
       addToast({
         type: isBlocking ? 'warning' : 'success',
         title: isBlocking ? 'Vendor Account Blocked' : 'Vendor Account Activated',
@@ -149,6 +156,44 @@ export const useToggleVendorStatus = () => {
       addToast({
         type: 'error',
         title: 'Status Update Failed',
+        description: appErr.message,
+      });
+    },
+  });
+};
+
+export const useUpdateVendorDetails = () => {
+  const queryClient = useQueryClient();
+  const { addToast } = useToast();
+
+  return useMutation({
+    mutationFn: ({
+      vendorId,
+      payload,
+    }: {
+      vendorId: string | number;
+      payload: Partial<Vendor> & Record<string, any>;
+    }) => vendorsApi.updateVendorDetails(vendorId, payload),
+
+    onSuccess: (updatedVendor) => {
+      queryClient.invalidateQueries({ queryKey: ['vendors'] });
+      queryClient.invalidateQueries({ queryKey: CACHE_KEYS.vendors.all });
+      queryClient.invalidateQueries({ queryKey: CACHE_KEYS.vendors.pending });
+      queryClient.invalidateQueries({ queryKey: ['vendors', 'on_hold'] });
+
+      logBackendMutation('VENDORS', 'UPDATE', `Updated backend parameters for vendor "${updatedVendor.storeName}" (#${updatedVendor.id})`, `Updated store name, owner, contact, address, or tax details.`, String(updatedVendor.id));
+
+      addToast({
+        type: 'success',
+        title: 'Vendor Parameters Updated',
+        description: `Vendor profile for "${updatedVendor.storeName}" saved successfully.`,
+      });
+    },
+    onError: (error: unknown) => {
+      const appErr = ErrorHandler.handle(error);
+      addToast({
+        type: 'error',
+        title: 'Vendor Update Failed',
         description: appErr.message,
       });
     },
