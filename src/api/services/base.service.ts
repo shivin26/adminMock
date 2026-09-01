@@ -1,5 +1,5 @@
-import { AxiosInstance, AxiosRequestConfig } from 'axios';
-import { ApiResponse, PaginatedResponse, QueryParams } from '../../types/api';
+import type { AxiosInstance, AxiosRequestConfig } from 'axios';
+import type { ApiResponse, PaginatedResponse, QueryParams } from '../../types/api';
 
 export abstract class BaseApiService {
   protected readonly http: AxiosInstance;

@@ -4,6 +4,7 @@ import { Button } from '../common/Button/Button';
 import { Badge } from '../common/Badge/Badge';
 import { LoadingSpinner } from '../ui/LoadingSpinner';
 import { useVendors, useToggleVendorStatus } from '../../hooks/useVendors';
+import { useVendorDetails } from '../../hooks/useVendor';
 import { useTickets } from '../../hooks/useSupport';
 import { useToast } from '../../context/ToastContext';
 import { SupportTicketStatusBadge } from './SupportTicketStatusBadge';
@@ -25,13 +26,14 @@ export const VendorProfileDetailsModal: React.FC<VendorProfileDetailsModalProps>
   onSelectTicket,
 }) => {
   const { addToast } = useToast();
-  const { data: vendors = [], isLoading } = useVendors();
+  const { data: vendors = [], isLoading: isVendorsLoading } = useVendors();
+  const { data: detailVendor, isLoading: isDetailLoading } = useVendorDetails(vendorIdentifier || '');
   const { data: allTickets = [] } = useTickets();
   const toggleVendorMutation = useToggleVendorStatus();
   const [showHistory, setShowHistory] = useState(false);
 
-  // Find vendor by storeName or ID
-  const foundVendor = vendors.find(
+  // Find vendor by storeName or ID from list query or detail query
+  const foundVendor = detailVendor || vendors.find(
     (v) =>
       v.id === vendorIdentifier ||
       v.storeName.toLowerCase().includes((vendorIdentifier || '').toLowerCase())

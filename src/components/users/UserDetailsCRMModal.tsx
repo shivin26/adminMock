@@ -3,7 +3,17 @@ import { Modal } from '../common/Modal/Modal';
 import { Button } from '../common/Button/Button';
 import { Badge } from '../common/Badge/Badge';
 import { LoadingSpinner } from '../ui/LoadingSpinner';
-import { useUserProfile, useFlagUser, useResetUserFlags } from '../../hooks/useUsers';
+import {
+  useUserProfile,
+  useFlagUser,
+  useResetUserFlags,
+  useUserOrders,
+  useUserPayments,
+  useUserTimeline,
+  useUserAddresses,
+  useUserNotifications,
+  useUserAuditLogs,
+} from '../../hooks/useUsers';
 import { useTickets } from '../../hooks/useSupport';
 import { useToast } from '../../context/ToastContext';
 import { SupportTicketStatusBadge } from '../support/SupportTicketStatusBadge';
@@ -55,6 +65,13 @@ export const UserDetailsCRMModal: React.FC<UserDetailsCRMModalProps> = ({
 }) => {
   const { addToast } = useToast();
   const { data: user, isLoading, refetch } = useUserProfile(userIdentifier);
+  const { data: apiOrders = [] } = useUserOrders(user?.id);
+  const { data: apiPayments = [] } = useUserPayments(user?.id);
+  const { data: apiTimeline = [] } = useUserTimeline(user?.id);
+  const { data: apiAddresses = [] } = useUserAddresses(user?.id);
+  const { data: apiNotifications = [] } = useUserNotifications(user?.id);
+  const { data: apiAuditLogs = [] } = useUserAuditLogs(user?.id);
+
   const { data: allTickets = [] } = useTickets();
   const flagUserMutation = useFlagUser();
   const resetFlagsMutation = useResetUserFlags();
@@ -73,143 +90,34 @@ export const UserDetailsCRMModal: React.FC<UserDetailsCRMModalProps> = ({
 
   if (!userIdentifier) return null;
 
-  // Mock User Orders
-  const mockOrders = [
-    {
-      id: 'ORD-9842',
-      storeName: 'FreshBites Daily Grocery',
-      total: 1250,
-      status: 'DELIVERED',
-      date: new Date(Date.now() - 86400000 * 2).toISOString(),
-      items: '2x Organic Milk, 1x Multigrain Bread, 5kg Rice',
-    },
-    {
-      id: 'ORD-9841',
-      storeName: 'Priya Organic Mart',
-      total: 890,
-      status: 'DELIVERED',
-      date: new Date(Date.now() - 86400000 * 5).toISOString(),
-      items: '1x Fresh Apples, 2x Honey Jars',
-    },
-    {
-      id: 'ORD-9835',
-      storeName: 'Suresh Dairy Supplies',
-      total: 450,
-      status: 'DELIVERED',
-      date: new Date(Date.now() - 86400000 * 12).toISOString(),
-      items: '3x Cottage Cheese, 2x Butter Packs',
-    },
-  ];
-
-  // Mock User Payments
-  const mockPayments = [
-    {
-      txnId: 'pay_Lkw908123984',
-      orderId: 'ORD-9842',
-      amount: 1250,
-      method: 'Razorpay UPI (Google Pay)',
-      status: 'SUCCESS',
-      date: new Date(Date.now() - 86400000 * 2).toISOString(),
-    },
-    {
-      txnId: 'pay_Lkw887612344',
-      orderId: 'ORD-9841',
-      amount: 890,
-      method: 'Razorpay Credit Card (HDFC)',
-      status: 'SUCCESS',
-      date: new Date(Date.now() - 86400000 * 5).toISOString(),
-    },
-    {
-      txnId: 'pay_Lkw776512399',
-      orderId: 'ORD-9835',
-      amount: 450,
-      method: 'DigiLocal Wallet',
-      status: 'SUCCESS',
-      date: new Date(Date.now() - 86400000 * 12).toISOString(),
-    },
-  ];
-
-  // Mock User Timeline Events
-  const mockTimeline = [
-    {
-      id: 't-1',
-      title: 'Support Complaint Lodged',
-      detail: 'Filed ticket #TICK-9082 regarding delivery delay via Website Intake.',
-      time: '2 hours ago',
-      icon: <Headphones size={13} className="text-[#C8A878]" />,
-    },
-    {
-      id: 't-2',
-      title: 'Order Placed (#ORD-9842)',
-      detail: 'Completed payment of ₹1,250 via Razorpay UPI.',
-      time: '2 days ago',
-      icon: <ShoppingBag size={13} className="text-emerald-600" />,
-    },
-    {
-      id: 't-3',
-      title: 'Warning Strike Issued',
-      detail: 'Admin issued dispute warning strike (1/3 strikes).',
-      time: '5 days ago',
-      icon: <Flag size={13} className="text-amber-500" />,
-    },
-    {
-      id: 't-4',
-      title: 'Account Registered',
-      detail: 'Verified phone +91 98765 43210 & joined Anupam Society.',
-      time: '3 months ago',
-      icon: <User size={13} className="text-[#211A19]" />,
-    },
-  ];
-
-  // Mock Addresses
-  const mockAddresses = [
-    {
-      id: 'addr-1',
-      label: 'Primary Home Address',
-      fullAddress: `${user?.flatNumber || 'B-402'}, ${user?.societyName || 'Anupam Society'}, Sector 4, Commercial Belt, New Delhi - 110001`,
-      isDefault: true,
-    },
-    {
-      id: 'addr-2',
-      label: 'Secondary Office Address',
-      fullAddress: `Tower B, 5th Floor, Cyber City Tech Park, Gurgaon - 122002`,
-      isDefault: false,
-    },
-  ];
-
-  // Mock Notifications
-  const mockNotifications = [
-    {
-      id: 'n-1',
-      title: 'Order Delivered (#ORD-9842)',
-      body: 'Your grocery order from FreshBites has been delivered to your doorstep.',
-      date: '2 days ago',
-    },
-    {
-      id: 'n-2',
-      title: 'Support Ticket Reply',
-      body: 'Agent Vikram Mehta updated ticket #TICK-9081 status to IN PROGRESS.',
-      date: '3 days ago',
-    },
-  ];
-
-  // Mock Audit Logs
-  const mockAuditLogs = [
-    {
-      id: 'a-1',
-      action: 'STRIKE_ISSUED',
-      performedBy: 'Super Admin',
-      ip: '192.168.1.45',
-      date: '5 days ago',
-    },
-    {
-      id: 'a-2',
-      action: 'PROFILE_UPDATED',
-      performedBy: 'User (Self-service)',
-      ip: '49.36.112.18',
-      date: '10 days ago',
-    },
-  ];
+  const mockOrders = apiOrders;
+  const mockPayments = apiPayments;
+  const mockTimeline = apiTimeline.map((t: any) => ({
+    id: t.id,
+    title: t.event || t.title,
+    detail: t.detail,
+    time: formatDate(t.date || t.time),
+    icon: t.type === 'order' ? <ShoppingBag size={13} className="text-emerald-600" /> : <Headphones size={13} className="text-[#C8A878]" />,
+  }));
+  const mockAddresses = apiAddresses.map((a: any) => ({
+    id: a.id,
+    label: a.type || a.label,
+    fullAddress: a.fullAddress || `${a.flat}, ${a.society}, ${a.city} - ${a.pincode}`,
+    isDefault: Boolean(a.isDefault),
+  }));
+  const mockNotifications = apiNotifications.map((n: any) => ({
+    id: n.id,
+    title: n.title,
+    body: n.message || n.body,
+    date: formatDate(n.date),
+  }));
+  const mockAuditLogs = apiAuditLogs.map((a: any) => ({
+    id: a.id,
+    action: a.action,
+    performedBy: a.operator || a.performedBy,
+    ip: a.ip,
+    date: formatDate(a.timestamp || a.date),
+  }));
 
   // Quick Action Handlers
   const handleBlockUser = () => {

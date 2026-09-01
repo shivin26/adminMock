@@ -1,6 +1,6 @@
 import { BaseApiService } from './base.service';
 import { apiClient } from '../client';
-import {
+import type {
   Vendor,
   VendorQueryParams,
   VendorPayment,
@@ -9,7 +9,7 @@ import {
   BulkVendorActionPayload,
   VendorStatus,
 } from '../../types/vendor';
-import { PaginatedResponse } from '../../types/api';
+import type { PaginatedResponse } from '../../types/api';
 import { vendorsApi } from '../../services/api/vendors.api';
 
 const MOCK_VENDOR_PAYMENTS: Record<string, VendorPayment[]> = {};

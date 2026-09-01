@@ -88,3 +88,51 @@ export const useUserAnalytics = () => {
     queryFn: () => usersApi.getUserAnalytics(),
   });
 };
+
+export const useUserOrders = (userId?: string | null) => {
+  return useQuery({
+    queryKey: ['users', userId, 'orders'] as const,
+    queryFn: () => usersApi.getUserOrders(userId!),
+    enabled: Boolean(userId),
+  });
+};
+
+export const useUserPayments = (userId?: string | null) => {
+  return useQuery({
+    queryKey: ['users', userId, 'payments'] as const,
+    queryFn: () => usersApi.getUserPayments(userId!),
+    enabled: Boolean(userId),
+  });
+};
+
+export const useUserTimeline = (userId?: string | null) => {
+  return useQuery({
+    queryKey: ['users', userId, 'timeline'] as const,
+    queryFn: () => usersApi.getUserTimeline(userId!),
+    enabled: Boolean(userId),
+  });
+};
+
+export const useUserAddresses = (userId?: string | null) => {
+  return useQuery({
+    queryKey: ['users', userId, 'addresses'] as const,
+    queryFn: () => usersApi.getUserAddresses(userId!),
+    enabled: Boolean(userId),
+  });
+};
+
+export const useUserNotifications = (userId?: string | null) => {
+  return useQuery({
+    queryKey: ['users', userId, 'notifications'] as const,
+    queryFn: () => usersApi.getUserNotifications(userId!),
+    enabled: Boolean(userId),
+  });
+};
+
+export const useUserAuditLogs = (userId?: string | null) => {
+  return useQuery({
+    queryKey: ['users', userId, 'audit-logs'] as const,
+    queryFn: () => usersApi.getUserAuditLogs(userId!),
+    enabled: Boolean(userId),
+  });
+};

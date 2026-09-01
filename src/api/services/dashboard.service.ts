@@ -1,6 +1,6 @@
 import { BaseApiService } from './base.service';
 import { apiClient } from '../client';
-import {
+import type {
   DashboardMetrics,
   RevenuePoint,
   VendorGrowthPoint,

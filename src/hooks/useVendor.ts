@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { vendorService } from '../api/services/vendor.service';
-import {
+import type {
   VendorQueryParams,
   CreateVendorPayload,
   UpdateVendorPayload,
@@ -8,7 +8,7 @@ import {
   Vendor,
   VendorStatus,
 } from '../types/vendor';
-import { PaginatedResponse } from '../types/api';
+import type { PaginatedResponse } from '../types/api';
 import { toast } from '../components/feedback/ToastSystem';
 
 export const VENDORS_QUERY_KEY = 'vendors';

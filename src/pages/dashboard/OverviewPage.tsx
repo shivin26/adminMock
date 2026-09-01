@@ -7,6 +7,7 @@ import { Button } from '../../components/common/Button/Button';
 import { Badge } from '../../components/common/Badge/Badge';
 import { useSocieties } from '../../hooks/useSocieties';
 import { useVendors } from '../../hooks/useVendors';
+import { useDashboardData } from '../../hooks/useDashboard';
 import { usePermission } from '../../hooks/usePermission';
 import { formatCurrency, formatDate } from '../../utils/formatters.utils';
 import {

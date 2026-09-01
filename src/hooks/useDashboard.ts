@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { dashboardService, DashboardData } from '../api/services/dashboard.service';
+import { dashboardService, type DashboardData } from '../api/services/dashboard.service';
 
 export const DASHBOARD_QUERY_KEY = ['dashboard', 'overview'];
 

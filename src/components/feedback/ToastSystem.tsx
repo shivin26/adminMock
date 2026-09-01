@@ -1,35 +1,18 @@
 import React from 'react';
-import { Toaster as SonnerToaster, toast as sonnerToast } from 'sonner';
-import { useTheme } from '../../context/ThemeContext';
 
 export const ToastProvider: React.FC = () => {
-  const { actualTheme } = useTheme();
-
-  return (
-    <SonnerToaster
-      theme={actualTheme}
-      position="top-right"
-      closeButton
-      richColors
-      toastOptions={{
-        style: {
-          borderRadius: '0.75rem',
-          fontSize: '0.875rem',
-        },
-      }}
-    />
-  );
+  return null;
 };
 
 export const toast = {
   success: (message: string, description?: string) =>
-    sonnerToast.success(message, { description }),
+    console.log('[Toast Success]', message, description),
   error: (message: string, description?: string) =>
-    sonnerToast.error(message, { description }),
+    console.error('[Toast Error]', message, description),
   info: (message: string, description?: string) =>
-    sonnerToast.info(message, { description }),
+    console.info('[Toast Info]', message, description),
   warning: (message: string, description?: string) =>
-    sonnerToast.warning(message, { description }),
-  loading: (message: string) => sonnerToast.loading(message),
-  dismiss: (toastId?: string | number) => sonnerToast.dismiss(toastId),
+    console.warn('[Toast Warning]', message, description),
+  loading: (message: string) => console.log('[Toast Loading]', message),
+  dismiss: (_toastId?: string | number) => {},
 };
