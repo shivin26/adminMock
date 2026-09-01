@@ -74,17 +74,68 @@ export const useUpdatePersonStatus = () => {
 
 export const useFlagPerson = () => {
   const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ id, reason }: { id: string; reason?: string }) => peopleApi.flagPerson(id, reason),
+    onSuccess: (res, variables) => {
+      // Optimistically update people cache
+      queryClient.setQueriesData({ queryKey: ['people'] }, (oldData: any) => {
+        if (!Array.isArray(oldData)) return oldData;
+        return oldData.map((p: any) => {
+          if (String(p.id) === String(variables.id) || String(p.id).includes(variables.id)) {
+            return {
+              ...p,
+              ...res.person,
+              flagsCount: res.person.flagsCount,
+              strikes: res.person.strikes,
+              status: res.person.status,
+              isBlocked: res.person.isBlocked,
+              isAutoBanned: res.person.isAutoBanned,
+            };
+          }
+          return p;
+        });
+      });
+
+      queryClient.invalidateQueries({ queryKey: ['people'] });
+      queryClient.invalidateQueries({ queryKey: ['users'] });
+      logBackendMutation('USERS', 'UPDATE', `Issued warning strike to user account #${variables.id}`, `Strikes count: ${res.person.flagsCount}/3. Auto-banned: ${res.wasBanned}`, variables.id);
+    },
+  });
+};
+
+export const useResetPersonStrikes = () => {
+  const queryClient = useQueryClient();
   const { addToast } = useToast();
 
   return useMutation({
-    mutationFn: (id: string) => peopleApi.flagPerson(id),
-    onSuccess: (_data, id) => {
+    mutationFn: (id: string) => peopleApi.resetStrikes(id),
+    onSuccess: (person, id) => {
+      queryClient.setQueriesData({ queryKey: ['people'] }, (oldData: any) => {
+        if (!Array.isArray(oldData)) return oldData;
+        return oldData.map((p: any) => {
+          if (String(p.id) === String(id) || String(p.id).includes(id)) {
+            return {
+              ...p,
+              ...person,
+              flagsCount: 0,
+              strikes: 0,
+              status: 'active',
+              isBlocked: false,
+              isAutoBanned: false,
+            };
+          }
+          return p;
+        });
+      });
+
       queryClient.invalidateQueries({ queryKey: ['people'] });
-      logBackendMutation('USERS', 'UPDATE', `Flagged user account #${id}`, 'User flagged for administrative review.', id);
+      queryClient.invalidateQueries({ queryKey: ['users'] });
+      logBackendMutation('USERS', 'UPDATE', `Reset warning strikes for user account #${id}`, `Strikes count reset to 0. Status: ACTIVE`, id);
       addToast({
-        type: 'warning',
-        title: 'User Flagged',
-        description: `User account #${id} flagged for review.`,
+        type: 'success',
+        title: 'Strikes Reset',
+        description: `Strikes count reset to 0 for ${person.name}. Account status is ACTIVE.`,
       });
     },
   });

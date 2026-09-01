@@ -199,3 +199,13 @@ export const useUpdateVendorDetails = () => {
     },
   });
 };
+
+export const useVendorOrders = (vendorId?: string | number) => {
+  return useQuery({
+    queryKey: ['vendors', 'orders', vendorId],
+    queryFn: () => vendorsApi.getVendorOrders(vendorId!),
+    enabled: Boolean(vendorId),
+    staleTime: 0,
+    refetchOnWindowFocus: true,
+  });
+};

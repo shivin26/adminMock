@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 const envSchema = z.object({
-  VITE_API_BASE_URL: z.string().url().default('https://digi-local-backend.onrender.com/api'),
+  VITE_API_BASE_URL: z.string().url().default('http://172.25.12.197:5000/api'),
   VITE_APP_NAME: z.string().default('Digi Local Admin'),
   VITE_ENV: z.enum(['development', 'staging', 'production', 'test']).default('development'),
   VITE_ENABLE_MOCK_API: z

@@ -164,14 +164,12 @@ export const subAdminsApi = {
         rawData = response.data?.data || response.data?.subadmins || response.data;
       }
 
-      if (Array.isArray(rawData) && rawData.length > 0) {
-        const mapped = rawData.map(mapSubAdminDTOToDomain);
-        saveLocalSubAdmins(mapped);
-        return mapped;
+      if (Array.isArray(rawData)) {
+        return rawData.map(mapSubAdminDTOToDomain);
       }
-      return getLocalSubAdmins();
+      return [];
     } catch {
-      return getLocalSubAdmins();
+      return [];
     }
   },
 

@@ -60,37 +60,19 @@ export const supportApi = {
     search?: string;
   }): Promise<SupportTicket[]> => {
     try {
-      const response = await axiosInstance.get('/support/tickets', { params: filters });
-      const rawData = response.data?.data || response.data?.tickets || response.data;
-      if (Array.isArray(rawData)) {
-        const mapped = rawData.map(mapRawTicketToDomain);
-        saveLocalTickets(mapped);
-        return mapped;
+      const endpoints = ['/admin/support/tickets', '/support/tickets', '/tickets'];
+      for (const ep of endpoints) {
+        try {
+          const response = await axiosInstance.get(ep, { params: filters });
+          const rawData = response.data?.data || response.data?.tickets || response.data;
+          if (Array.isArray(rawData)) {
+            return rawData.map(mapRawTicketToDomain);
+          }
+        } catch {}
       }
     } catch {}
 
-    let list = getLocalTickets();
-
-    if (filters?.status && filters.status !== 'all') {
-      list = list.filter((t) => t.status === filters.status);
-    }
-
-    if (filters?.category && filters.category !== 'all') {
-      list = list.filter((t) => t.category === filters.category);
-    }
-
-    if (filters?.search) {
-      const q = filters.search.toLowerCase().trim();
-      list = list.filter(
-        (t) =>
-          t.subject.toLowerCase().includes(q) ||
-          t.ticketNumber.toLowerCase().includes(q) ||
-          t.reporterName.toLowerCase().includes(q) ||
-          (t.entityName && t.entityName.toLowerCase().includes(q))
-      );
-    }
-
-    return list;
+    return [];
   },
 
   /**
@@ -106,67 +88,24 @@ export const supportApi = {
           if (raw) return mapRawTicketToDomain(raw);
         } catch {}
       }
-    } catch (e) {
-      console.warn('Backend ticket fetch failed, falling back to local dataset:', e);
-    }
+    } catch {}
 
-    const tickets = getLocalTickets();
-    const found = tickets.find((t) => t.id === String(ticketId) || t.ticketNumber === String(ticketId));
-    if (found) return found;
-
-    return {
-      id: String(ticketId),
-      ticketNumber: String(ticketId).startsWith('TICK-') ? String(ticketId) : `TICK-${ticketId}`,
-      subject: 'Landing Website Inquiry: Partner Store Onboarding & API Integration',
-      description: 'Submitted via landing website contact intake. Inquiring regarding partner store onboarding documentation, payment gateway setup, and API credentials.',
-      category: 'onboarding',
-      priority: 'high',
-      status: 'open',
-      userType: 'vendor',
-      source: 'landing_website',
-      reporterName: 'Aarav Gupta',
-      reporterEmail: 'aarav.retail@gmail.com',
-      entityName: 'Apex Electronics & Appliances',
-      assignedTo: 'Vikram Mehta',
-      slaMinutesRemaining: 180,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    };
+    throw new Error(`Support Ticket #${ticketId} not found.`);
   },
 
   /**
    * GET /api/support/tickets/:ticketId/messages
    */
   getTicketMessages: async (ticketId: string | number): Promise<TicketMessage[]> => {
-    const allMsgs = getLocalMessages();
-    const ticketMsgs = allMsgs[String(ticketId)] || [];
-    if (ticketMsgs.length > 0) return ticketMsgs;
-
     try {
       const res = await axiosInstance.get(`/support/tickets/${ticketId}/messages`);
-      if (Array.isArray(res.data) && res.data.length > 0) {
-        return res.data.map(mapRawMessageToDomain);
+      const raw = res.data?.data || res.data?.messages || res.data;
+      if (Array.isArray(raw)) {
+        return raw.map(mapRawMessageToDomain);
       }
     } catch {}
 
-    return [
-      {
-        id: 'm-1',
-        ticketId: String(ticketId),
-        senderName: 'Aarav Gupta',
-        senderRole: 'user',
-        message: 'Hello Support Team, we are looking to integrate our retail store with the DigiLocal platform.',
-        createdAt: new Date(Date.now() - 3600000 * 2).toISOString(),
-      },
-      {
-        id: 'm-2',
-        ticketId: String(ticketId),
-        senderName: 'Vikram Mehta',
-        senderRole: 'admin',
-        message: 'Welcome! I have assigned your ticket to our onboarding team. Please share your GSTIN and store license.',
-        createdAt: new Date(Date.now() - 3600000 * 1).toISOString(),
-      },
-    ];
+    return [];
   },
 
   /**

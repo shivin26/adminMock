@@ -20,7 +20,7 @@ import {
 import { useDebounce } from '../../hooks/useDebounce';
 import type { Vendor, VendorStatus } from '../../types/vendor.types';
 import { formatCurrency, getStatusBadgeVariant } from '../../utils/formatters.utils';
-import { Search, XCircle, ShieldCheck, Ban, ShoppingBag, PauseCircle, Clock, MapPin, AlertTriangle, Bell, CheckCircle2 } from 'lucide-react';
+import { Search, XCircle, ShieldCheck, Ban, ShoppingBag, PauseCircle, Clock, MapPin, AlertTriangle, Bell, CheckCircle2, ExternalLink } from 'lucide-react';
 import { useQueryClient } from '@tanstack/react-query';
 import { saveLocalVendors, saveLocalPendingVendors, getLocalVendors, getLocalPendingVendors } from '../../services/api/vendors.api';
 import { VendorApprovalModal } from '../../components/vendors/VendorApprovalModal';
@@ -227,7 +227,16 @@ export const VendorsPage: React.FC = () => {
             }}
           />
           <div>
-            <span className="vendor-store-title font-serif">{vendor.storeName}</span>
+            <span
+              className="vendor-store-title font-serif hover:text-[#C8A878] hover:underline cursor-pointer transition-colors"
+              onClick={(e) => {
+                e.stopPropagation();
+                setSelectedDrawerVendor(vendor);
+              }}
+              title="Click to view full vendor profile & orders"
+            >
+              {vendor.storeName}
+            </span>
             <span className="vendor-owner-title">
               {vendor.ownerName} • {vendor.email}
             </span>
@@ -314,6 +323,17 @@ export const VendorsPage: React.FC = () => {
       header: 'Actions',
       cell: (vendor) => (
         <div className="flex items-center justify-end gap-1.5" onClick={(e) => e.stopPropagation()}>
+          <Button
+            variant="ghost"
+            size="sm"
+            leftIcon={<ExternalLink size={14} />}
+            className="text-[#541D26] hover:bg-[#FAF8F5] border border-[#E7DFD5]"
+            title="Inspect Vendor Profile, Audit & Orders"
+            onClick={() => setSelectedDrawerVendor(vendor)}
+          >
+            View ↗
+          </Button>
+
           {vendor.status === 'pending' || vendor.status === 'on_hold' ? (
             <>
               <Button

@@ -23,13 +23,22 @@ import {
   Square,
   ShieldCheck,
   MapPin,
+  ShoppingBag,
+  Package,
+  ExternalLink,
+  CreditCard,
+  Store,
 } from 'lucide-react';
 
 import { ImagePreviewModal } from '../common/Modal/ImagePreviewModal';
+import { Modal } from '../common/Modal/Modal';
+import { OrderDetailsModal } from '../support/OrderDetailsModal';
+import { LoadingSpinner } from '../ui/LoadingSpinner';
 import { useToast } from '../../context/ToastContext';
 import { useTickets } from '../../hooks/useSupport';
-import { useUpdateVendorDetails } from '../../hooks/useVendors';
+import { useUpdateVendorDetails, useVendorOrders } from '../../hooks/useVendors';
 import { SupportTicketStatusBadge } from '../support/SupportTicketStatusBadge';
+import { formatDateTime } from '../../utils/formatters.utils';
 
 export interface VendorDetailsDrawerProps {
   isOpen: boolean;
@@ -57,9 +66,13 @@ export const VendorDetailsDrawer: React.FC<VendorDetailsDrawerProps> = ({
   const { addToast } = useToast();
   const { data: allTickets = [] } = useTickets();
   const updateVendorMutation = useUpdateVendorDetails();
+  const { data: vendorOrders = [], isLoading: isOrdersLoading } = useVendorOrders(vendor?.id);
 
+  const [activeTab, setActiveTab] = useState<'profile' | 'orders' | 'tickets'>('profile');
+  const [selectedOrderIdForModal, setSelectedOrderIdForModal] = useState<string | null>(null);
   const [isEditMode, setIsEditMode] = useState(false);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
+  const [showSaveConfirm, setShowSaveConfirm] = useState(false);
 
   // Form State matching API fields
   const [formData, setFormData] = useState({
@@ -165,7 +178,11 @@ export const VendorDetailsDrawer: React.FC<VendorDetailsDrawerProps> = ({
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
-  const handleSaveVendorDetails = () => {
+  const triggerSaveVendorPrompt = () => {
+    setShowSaveConfirm(true);
+  };
+
+  const confirmSaveVendorDetails = () => {
     updateVendorMutation.mutate(
       {
         vendorId: vendor.id,
@@ -179,7 +196,22 @@ export const VendorDetailsDrawer: React.FC<VendorDetailsDrawerProps> = ({
       },
       {
         onSuccess: () => {
+          setShowSaveConfirm(false);
           setIsEditMode(false);
+          onRefetch?.();
+          addToast({
+            type: 'success',
+            title: 'Vendor Details Updated',
+            description: `Store details for "${formData.storeName || vendor.storeName}" have been updated and page refreshed.`,
+          });
+        },
+        onError: () => {
+          setShowSaveConfirm(false);
+          addToast({
+            type: 'error',
+            title: 'Update Failed',
+            description: 'Could not update vendor store details. Please try again.',
+          });
         },
       }
     );
@@ -285,7 +317,7 @@ export const VendorDetailsDrawer: React.FC<VendorDetailsDrawerProps> = ({
                 variant="primary"
                 leftIcon={<Save size={14} />}
                 isLoading={updateVendorMutation.isPending}
-                onClick={handleSaveVendorDetails}
+                onClick={triggerSaveVendorPrompt}
               >
                 Save All Changes
               </Button>
@@ -306,6 +338,46 @@ export const VendorDetailsDrawer: React.FC<VendorDetailsDrawerProps> = ({
             )}
           </div>
         </div>
+
+        {/* Tab Navigation Header */}
+        <div className="flex items-center gap-2 border-b border-[#E7DFD5] pb-2 font-sans text-xs flex-wrap">
+          <button
+            onClick={() => setActiveTab('profile')}
+            className={`flex items-center gap-1.5 px-4 py-2.5 rounded-xl font-bold transition-all ${
+              activeTab === 'profile'
+                ? 'bg-[#541D26] text-white shadow-xs'
+                : 'bg-white text-[#78716C] border border-[#E7DFD5] hover:border-[#C8A878] hover:text-[#211A19]'
+            }`}
+          >
+            <Store size={15} /> Store Profile &amp; Audit
+          </button>
+
+          <button
+            onClick={() => setActiveTab('orders')}
+            className={`flex items-center gap-1.5 px-4 py-2.5 rounded-xl font-bold transition-all ${
+              activeTab === 'orders'
+                ? 'bg-[#541D26] text-white shadow-xs'
+                : 'bg-white text-[#78716C] border border-[#E7DFD5] hover:border-[#C8A878] hover:text-[#211A19]'
+            }`}
+          >
+            <ShoppingBag size={15} /> Received Orders Log ({vendorOrders.length})
+          </button>
+
+          <button
+            onClick={() => setActiveTab('tickets')}
+            className={`flex items-center gap-1.5 px-4 py-2.5 rounded-xl font-bold transition-all ${
+              activeTab === 'tickets'
+                ? 'bg-[#541D26] text-white shadow-xs'
+                : 'bg-white text-[#78716C] border border-[#E7DFD5] hover:border-[#C8A878] hover:text-[#211A19]'
+            }`}
+          >
+            <MessageSquare size={15} /> Support Complaints ({vendorTickets.length})
+          </button>
+        </div>
+
+        {/* TAB 1: STORE PROFILE & AUDIT */}
+        {activeTab === 'profile' && (
+          <div className="flex flex-col gap-6 animate-fadeIn">
 
         {/* On Hold Reason Banner */}
         {vendor.status === 'on_hold' && vendor.holdReason && (
@@ -778,7 +850,7 @@ export const VendorDetailsDrawer: React.FC<VendorDetailsDrawerProps> = ({
                 variant="primary"
                 leftIcon={<Save size={14} />}
                 isLoading={updateVendorMutation.isPending}
-                onClick={handleSaveVendorDetails}
+                onClick={triggerSaveVendorPrompt}
               >
                 Save All Changes
               </Button>
@@ -898,9 +970,148 @@ export const VendorDetailsDrawer: React.FC<VendorDetailsDrawerProps> = ({
             </div>
           </div>
         )}
+        </div>
+        )}
 
-        {/* Vendor Support Tickets & Complaints Log Section */}
-        <div className="p-5 bg-white border border-[#E7DFD5] rounded-2xl shadow-xs flex flex-col gap-4 font-sans">
+        {/* TAB 2: VENDOR RECEIVED ORDERS LOG */}
+        {activeTab === 'orders' && (
+          <div className="flex flex-col gap-4 text-xs font-sans animate-fadeIn">
+            <div className="p-4 bg-[#FAF8F5] border border-[#E7DFD5] rounded-2xl flex items-center justify-between flex-wrap gap-2">
+              <div className="flex items-center gap-2">
+                <div className="w-9 h-9 rounded-xl bg-[#541D26] text-white flex items-center justify-center font-bold">
+                  <ShoppingBag size={18} />
+                </div>
+                <div>
+                  <h4 className="font-bold text-[#211A19] font-serif text-sm">
+                    Orders Fulfilled by {vendor.storeName}
+                  </h4>
+                  <span className="text-[#78716C] block text-[11px]">
+                    Live order queue dispatches and store transactions ({vendorOrders.length} orders total)
+                  </span>
+                </div>
+              </div>
+              <Badge variant="primary">STORE MERCHANT ORDERS</Badge>
+            </div>
+
+            {isOrdersLoading ? (
+              <div className="p-12 text-center bg-white border border-[#E7DFD5] rounded-2xl">
+                <LoadingSpinner size="md" label="Fetching vendor orders from backend API..." />
+              </div>
+            ) : vendorOrders.length > 0 ? (
+              <div className="flex flex-col gap-3">
+                {vendorOrders.map((ord: any) => (
+                  <div
+                    key={ord.id}
+                    className="p-4 bg-white border border-[#E7DFD5] rounded-2xl flex flex-col gap-3 shadow-xs hover:border-[#C8A878] transition-all"
+                  >
+                    {/* Header */}
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <span className="font-mono font-bold text-[#C8A878] bg-[#FAF8F5] px-2 py-0.5 border border-[#E7DFD5] rounded-lg text-xs">
+                          #{ord.orderId || ord.id}
+                        </span>
+                        <span className="font-bold text-[#211A19] text-sm">Customer: {ord.customerName}</span>
+                        {ord.customerPhone && (
+                          <span className="text-xs text-[#78716C] font-mono">({ord.customerPhone})</span>
+                        )}
+                      </div>
+                      <Badge variant="success">{ord.status}</Badge>
+                    </div>
+
+                    <span className="text-[10px] text-[#78716C] font-mono">
+                      Order Placed: <strong>{formatDateTime(ord.createdAt || ord.created_at)}</strong>
+                    </span>
+
+                    {/* Itemized Catalog Table (Unit Price & Item Total) */}
+                    {Array.isArray(ord.items) && ord.items.length > 0 ? (
+                      <div className="border border-[#E7DFD5] rounded-xl overflow-hidden text-xs bg-[#FAF8F5]">
+                        <div className="grid grid-cols-12 bg-[#EEE5DA] px-3 py-1.5 font-bold text-[#211A19] border-b border-[#E7DFD5]">
+                          <span className="col-span-5">Product Item</span>
+                          <span className="col-span-2 text-center">Qty</span>
+                          <span className="col-span-2 text-right">Unit Price</span>
+                          <span className="col-span-3 text-right">Total</span>
+                        </div>
+                        {ord.items.map((item: any, idx: number) => {
+                          const uPrice = Number(item.unitPrice ?? item.price ?? item.unit_price ?? 0);
+                          const qty = Number(item.quantity || item.qty || 1);
+                          const iTotal = Number(item.itemTotal ?? item.item_total ?? (uPrice * qty));
+                          return (
+                            <div key={item.id || idx} className="grid grid-cols-12 px-3 py-1.5 border-b border-[#E7DFD5]/50 items-center last:border-0">
+                              <span className="col-span-5 font-medium text-[#211A19] truncate">{item.name || item.item_name || 'Product Item'}</span>
+                              <span className="col-span-2 text-center font-mono text-[#78716C] font-semibold">{qty}</span>
+                              <span className="col-span-2 text-right font-mono text-[#78716C]">₹{uPrice.toFixed(2)}</span>
+                              <span className="col-span-3 text-right font-mono font-bold text-[#211A19]">₹{iTotal.toFixed(2)}</span>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    ) : (
+                      <div className="p-2.5 bg-[#FAF8F5] border border-[#E7DFD5] rounded-xl text-xs text-[#78716C] flex items-center gap-1.5">
+                        <Package size={14} className="text-[#C8A878]" /> Ordered Items
+                      </div>
+                    )}
+
+                    {/* Financial Breakdown & Address */}
+                    <div className="p-3 bg-[#FAF8F5] border border-[#E7DFD5] rounded-xl flex flex-col gap-1.5 text-xs">
+                      {ord.subtotal > 0 && (
+                        <div className="flex items-center justify-between text-[#78716C]">
+                          <span>Subtotal:</span>
+                          <span className="font-mono text-[#211A19]">₹{ord.subtotal.toFixed(2)}</span>
+                        </div>
+                      )}
+                      {ord.deliveryFee > 0 && (
+                        <div className="flex items-center justify-between text-[#78716C]">
+                          <span>Delivery Charge:</span>
+                          <span className="font-mono text-[#211A19]">₹{ord.deliveryFee.toFixed(2)}</span>
+                        </div>
+                      )}
+                      {ord.taxAmount > 0 && (
+                        <div className="flex items-center justify-between text-[#78716C]">
+                          <span>Platform Tax:</span>
+                          <span className="font-mono text-[#211A19]">₹{ord.taxAmount.toFixed(2)}</span>
+                        </div>
+                      )}
+                      {ord.discount > 0 && (
+                        <div className="flex items-center justify-between text-emerald-700">
+                          <span>Discount:</span>
+                          <span className="font-mono">- ₹{ord.discount.toFixed(2)}</span>
+                        </div>
+                      )}
+                      <div className="flex items-center justify-between font-bold text-sm text-[#211A19] pt-1.5 border-t border-[#E7DFD5]">
+                        <span>Order Total Amount:</span>
+                        <span className="font-mono text-emerald-700">₹{(ord.totalAmount || ord.total || 0).toFixed(2)}</span>
+                      </div>
+
+                      <div className="flex items-center justify-between text-[11px] pt-1.5 border-t border-[#E7DFD5]/60 text-[#78716C]">
+                        <span>Payment: <strong className="text-[#211A19]">{ord.paymentMethod}</strong> ({ord.paymentStatus || 'PAID'})</span>
+                        <span className="truncate max-w-[200px]" title={ord.deliveryAddress}>📍 {ord.deliveryAddress || 'Registered Address'}</span>
+                      </div>
+                    </div>
+
+                    <div className="flex justify-end pt-1">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        leftIcon={<ExternalLink size={12} />}
+                        onClick={() => setSelectedOrderIdForModal(ord.id)}
+                      >
+                        Inspect Order Details ↗
+                      </Button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="p-8 text-center text-xs text-[#78716C] bg-[#FAF8F5] border border-[#E7DFD5] rounded-2xl font-medium">
+                No orders currently recorded for this vendor store.
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* TAB 3: VENDOR SUPPORT TICKETS & COMPLAINTS */}
+        {activeTab === 'tickets' && (
+          <div className="p-5 bg-white border border-[#E7DFD5] rounded-2xl shadow-xs flex flex-col gap-4 font-sans animate-fadeIn">
           <div className="flex items-center justify-between border-b border-[#E7DFD5] pb-3 flex-wrap gap-2">
             <div>
               <h5 className="text-sm font-bold text-[#211A19] uppercase tracking-wider flex items-center gap-1.5 font-serif">
@@ -970,7 +1181,8 @@ export const VendorDetailsDrawer: React.FC<VendorDetailsDrawerProps> = ({
             </div>
           )}
         </div>
-      </div>
+      )}
+    </div>
 
       <ImagePreviewModal
         isOpen={!!previewImage}
@@ -978,6 +1190,51 @@ export const VendorDetailsDrawer: React.FC<VendorDetailsDrawerProps> = ({
         imageUrl={previewImage || ''}
         title={`${vendor.storeName} — Profile Picture`}
         subtitle={`Owner: ${vendor.ownerName} (${vendor.email})`}
+      />
+
+      {/* Save Changes Confirmation Warning Modal */}
+      <Modal
+        isOpen={showSaveConfirm}
+        onClose={() => setShowSaveConfirm(false)}
+        title="⚠️ Confirm Vendor Details Update"
+        subtitle={`Target Store: ${formData.storeName || vendor.storeName}`}
+        size="sm"
+      >
+        <div className="flex flex-col gap-4 p-4 text-xs font-sans">
+          <div className="p-3.5 bg-amber-50 border border-amber-200 rounded-xl text-amber-900 flex items-start gap-2.5">
+            <AlertTriangle size={18} className="text-amber-600 shrink-0 mt-0.5" />
+            <p className="leading-relaxed">
+              Are you sure you want to save these store details for <strong>{formData.storeName || vendor.storeName}</strong>?
+              This action will update the vendor parameters directly in the backend database and refresh the page view.
+            </p>
+          </div>
+
+          <div className="flex items-center justify-end gap-2 pt-3 border-t border-[#E7DFD5]">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setShowSaveConfirm(false)}
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="primary"
+              size="sm"
+              leftIcon={<Save size={14} />}
+              isLoading={updateVendorMutation.isPending}
+              onClick={confirmSaveVendorDetails}
+            >
+              Yes, Save Changes 💾
+            </Button>
+          </div>
+        </div>
+      </Modal>
+
+      {/* Order Inspection Modal */}
+      <OrderDetailsModal
+        isOpen={Boolean(selectedOrderIdForModal)}
+        onClose={() => setSelectedOrderIdForModal(null)}
+        orderId={selectedOrderIdForModal}
       />
     </Drawer>
   );

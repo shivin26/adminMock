@@ -32,33 +32,17 @@ export const VendorProfileDetailsModal: React.FC<VendorProfileDetailsModalProps>
   const toggleVendorMutation = useToggleVendorStatus();
   const [showHistory, setShowHistory] = useState(false);
 
-  // Find vendor by storeName or ID from list query or detail query
-  const foundVendor = detailVendor || vendors.find(
-    (v) =>
-      v.id === vendorIdentifier ||
-      v.storeName.toLowerCase().includes((vendorIdentifier || '').toLowerCase())
-  );
+  const foundVendor =
+    detailVendor ||
+    vendors.find(
+      (v) =>
+        v.id === vendorIdentifier ||
+        v.storeName.toLowerCase().includes((vendorIdentifier || '').toLowerCase())
+    );
 
-  const vendor: Vendor = foundVendor || {
-    id: vendorIdentifier || 'v-101',
-    storeName: vendorIdentifier || 'FreshBites Daily Grocery',
-    ownerName: 'Rajesh Sharma',
-    email: 'rajesh.freshbites@gmail.com',
-    phone: '+91 98765 43210',
-    address: 'Shop #12, Greenwood Commercial Block',
-    societyName: 'Greenwood Heights Society',
-    category: 'Daily Grocery & Produce',
-    status: 'suspended',
-    subscriptionTier: 'pro',
-    subscriptionRenewalDate: new Date().toISOString(),
-    gstin: '07ABCDE1234F1Z5',
-    totalEarnings: 45000,
-    totalOrdersCount: 142,
-    avatarUrl: '',
-    payments: [],
-    createdAt: new Date(Date.now() - 86400000 * 180).toISOString(),
-    updatedAt: new Date().toISOString(),
-  };
+  if (!foundVendor) return null;
+
+  const vendor: Vendor = foundVendor;
 
   const ratingVal = (vendor as any).rating || 1.8;
 

@@ -13,6 +13,7 @@ import {
   useUserAddresses,
   useUserNotifications,
   useUserAuditLogs,
+  useUpdateUser,
 } from '../../hooks/useUsers';
 import { useTickets } from '../../hooks/useSupport';
 import { useToast } from '../../context/ToastContext';
@@ -36,6 +37,8 @@ import {
   Trash2,
   ExternalLink,
   Clock,
+  Calendar,
+  Pen,
 } from 'lucide-react';
 
 export interface UserDetailsCRMModalProps {
@@ -77,6 +80,7 @@ export const UserDetailsCRMModal: React.FC<UserDetailsCRMModalProps> = ({
   const resetFlagsMutation = useResetUserFlags();
 
   const [activeTab, setActiveTab] = useState<TabType>('overview');
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
   const userPastTickets = useMemo(() => {
     if (!user) return [];
@@ -204,11 +208,11 @@ export const UserDetailsCRMModal: React.FC<UserDetailsCRMModalProps> = ({
             <div className="flex items-center gap-3 text-xs w-full md:w-auto justify-between border-t md:border-t-0 pt-2 md:pt-0 border-[#E7DFD5]">
               <div className="flex flex-col px-3 py-1.5 bg-white border border-[#E7DFD5] rounded-xl text-center">
                 <span className="text-[10px] text-[#78716C] uppercase font-bold">Total Orders</span>
-                <span className="font-bold text-[#211A19]">{user.totalOrders || 28}</span>
+                <span className="font-bold text-[#211A19]">{mockOrders.length || user.totalOrders || 0}</span>
               </div>
               <div className="flex flex-col px-3 py-1.5 bg-white border border-[#E7DFD5] rounded-xl text-center">
                 <span className="text-[10px] text-[#78716C] uppercase font-bold">Total Spend</span>
-                <span className="font-bold text-emerald-700">₹{(user.totalSpend || 14500).toLocaleString('en-IN')}</span>
+                <span className="font-bold text-emerald-700">₹{(user.totalSpend || (mockOrders.reduce((sum: number, o: any) => sum + (o.totalAmount || o.total || 0), 0))).toLocaleString('en-IN')}</span>
               </div>
               <div className="flex flex-col px-3 py-1.5 bg-white border border-[#E7DFD5] rounded-xl text-center">
                 <span className="text-[10px] text-[#78716C] uppercase font-bold">Strikes Meter</span>
@@ -375,40 +379,130 @@ export const UserDetailsCRMModal: React.FC<UserDetailsCRMModalProps> = ({
 
               {/* 2. TAB: ORDERS */}
               {activeTab === 'orders' && (
-                <div className="flex flex-col gap-2 text-xs animate-fadeIn">
-                  {mockOrders.map((ord) => (
-                    <div
-                      key={ord.id}
-                      className="p-3.5 bg-[#FAF8F5] border border-[#E7DFD5] rounded-xl flex items-center justify-between shadow-xs hover:border-[#C8A878] transition-all"
-                    >
-                      <div className="flex flex-col gap-0.5 min-w-0">
-                        <div className="flex items-center gap-2">
-                          <span className="font-mono font-bold text-[#C8A878]">{ord.id}</span>
-                          <span className="font-bold text-[#211A19]">{ord.storeName}</span>
-                        </div>
-                        <span className="text-[11px] text-[#78716C] truncate">{ord.items}</span>
-                        <span className="text-[10px] text-[#78716C]">{formatDate(ord.date)}</span>
-                      </div>
+                <div className="flex flex-col gap-3 text-xs animate-fadeIn">
+                  {mockOrders.map((ord: any) => {
+                    let itemsSummary = 'Ordered items';
+                    if (typeof ord.items === 'string') {
+                      itemsSummary = ord.items;
+                    } else if (Array.isArray(ord.items) && ord.items.length > 0) {
+                      itemsSummary = ord.items
+                        .map((i: any) => (typeof i === 'string' ? i : `${i.name || i.item_name || 'Item'} (x${i.quantity || i.qty || 1})`))
+                        .join(', ');
+                    }
 
-                      <div className="flex items-center gap-3 shrink-0">
-                        <span className="font-mono font-bold text-emerald-700">₹{ord.total}</span>
-                        <Badge variant="success">{ord.status}</Badge>
+                    const subtotal = Number(ord.subtotal || ord.sub_total || 0);
+                    const deliveryFee = Number(ord.deliveryFee || ord.delivery_charge || ord.delivery_fee || 0);
+                    const taxAmount = Number(ord.taxAmount || ord.tax_amount || 0);
+                    const discount = Number(ord.discount || 0);
+                    const totalAmount = Number(ord.totalAmount || ord.total || ord.total_amount || 0);
+                    const paymentMethod = ord.paymentMethod || ord.payment_method || 'Online Payment';
+                    const paymentStatus = ord.paymentStatus || ord.payment_status || 'PAID';
+                    const deliveryAddress = ord.deliveryAddress || ord.delivery_address || user?.societyName || 'Registered Residence';
+
+                    return (
+                      <div
+                        key={ord.id}
+                        className="p-4 bg-white border border-[#E7DFD5] rounded-2xl flex flex-col gap-3 shadow-xs hover:border-[#C8A878] transition-all"
+                      >
+                        {/* Order Header */}
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-2">
+                            <span className="font-mono font-bold text-[#C8A878] bg-[#FAF8F5] px-2 py-0.5 border border-[#E7DFD5] rounded-lg text-xs">
+                              #{ord.orderId || ord.id}
+                            </span>
+                            <span className="font-bold text-[#211A19] font-serif text-sm">{ord.storeName || 'Partner Store'}</span>
+                          </div>
+                          <Badge variant="success">{ord.status || 'COMPLETED'}</Badge>
+                        </div>
+
+                        <span className="text-[10px] text-[#78716C] font-mono">
+                          Timestamp: <strong>{formatDateTime(ord.createdAt || ord.created_at || ord.date)}</strong>
+                        </span>
+
+                        {/* Itemized Products Table (Unit Price & Item Total) */}
+                        {Array.isArray(ord.items) && ord.items.length > 0 ? (
+                          <div className="border border-[#E7DFD5] rounded-xl overflow-hidden text-xs bg-[#FAF8F5]">
+                            <div className="grid grid-cols-12 bg-[#EEE5DA] px-3 py-1.5 font-bold text-[#211A19] border-b border-[#E7DFD5]">
+                              <span className="col-span-5">Product Item</span>
+                              <span className="col-span-2 text-center">Qty</span>
+                              <span className="col-span-2 text-right">Unit Price</span>
+                              <span className="col-span-3 text-right">Total</span>
+                            </div>
+                            {ord.items.map((item: any, idx: number) => {
+                              const uPrice = Number(item.unitPrice ?? item.price ?? item.unit_price ?? 0);
+                              const qty = Number(item.quantity || item.qty || 1);
+                              const iTotal = Number(item.itemTotal ?? item.item_total ?? (uPrice * qty));
+                              return (
+                                <div key={item.id || idx} className="grid grid-cols-12 px-3 py-1.5 border-b border-[#E7DFD5]/50 items-center last:border-0">
+                                  <span className="col-span-5 font-medium text-[#211A19] truncate">{item.name || item.item_name || 'Product Item'}</span>
+                                  <span className="col-span-2 text-center font-mono text-[#78716C] font-semibold">{qty}</span>
+                                  <span className="col-span-2 text-right font-mono text-[#78716C]">₹{uPrice.toFixed(2)}</span>
+                                  <span className="col-span-3 text-right font-mono font-bold text-[#211A19]">₹{iTotal.toFixed(2)}</span>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        ) : (
+                          <div className="p-2.5 bg-[#FAF8F5] border border-[#E7DFD5] rounded-xl text-xs text-[#78716C] flex items-center gap-1.5">
+                            <Package size={14} className="text-[#C8A878]" /> {itemsSummary}
+                          </div>
+                        )}
+
+                        {/* Financial Breakdown & Address */}
+                        <div className="p-3 bg-[#FAF8F5] border border-[#E7DFD5] rounded-xl flex flex-col gap-1.5 text-xs">
+                          {subtotal > 0 && (
+                            <div className="flex items-center justify-between text-[#78716C]">
+                              <span>Subtotal:</span>
+                              <span className="font-mono text-[#211A19]">₹{subtotal.toFixed(2)}</span>
+                            </div>
+                          )}
+                          {deliveryFee > 0 && (
+                            <div className="flex items-center justify-between text-[#78716C]">
+                              <span>Delivery Charge:</span>
+                              <span className="font-mono text-[#211A19]">₹{deliveryFee.toFixed(2)}</span>
+                            </div>
+                          )}
+                          {taxAmount > 0 && (
+                            <div className="flex items-center justify-between text-[#78716C]">
+                              <span>GST Tax:</span>
+                              <span className="font-mono text-[#211A19]">₹{taxAmount.toFixed(2)}</span>
+                            </div>
+                          )}
+                          {discount > 0 && (
+                            <div className="flex items-center justify-between text-emerald-700">
+                              <span>Promo Discount:</span>
+                              <span className="font-mono">- ₹{discount.toFixed(2)}</span>
+                            </div>
+                          )}
+                          <div className="flex items-center justify-between font-bold text-sm text-[#211A19] pt-1.5 border-t border-[#E7DFD5]">
+                            <span>Total Paid:</span>
+                            <span className="font-mono text-emerald-700">₹{totalAmount.toFixed(2)}</span>
+                          </div>
+
+                          <div className="flex items-center justify-between text-[11px] pt-1.5 border-t border-[#E7DFD5]/60 text-[#78716C]">
+                            <span>Method: <strong className="text-[#211A19]">{paymentMethod}</strong> ({paymentStatus})</span>
+                            <span className="truncate max-w-[180px]" title={deliveryAddress}>📍 {deliveryAddress}</span>
+                          </div>
+                        </div>
+
                         {onSelectOrder && (
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            leftIcon={<ExternalLink size={12} />}
-                            onClick={() => {
-                              onClose();
-                              onSelectOrder(ord.id);
-                            }}
-                          >
-                            Details
-                          </Button>
+                          <div className="flex justify-end pt-1">
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              leftIcon={<ExternalLink size={12} />}
+                              onClick={() => {
+                                onClose();
+                                onSelectOrder(ord.id);
+                              }}
+                            >
+                              Inspect Full Order ↗
+                            </Button>
+                          </div>
                         )}
                       </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               )}
 
@@ -572,6 +666,16 @@ export const UserDetailsCRMModal: React.FC<UserDetailsCRMModalProps> = ({
                 </div>
 
                 <div className="border-t border-[#E7DFD5] pt-3 flex flex-col gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    leftIcon={<Pen size={13} className="text-[#C8A878]" />}
+                    className="justify-start text-xs font-semibold"
+                    onClick={() => setIsEditModalOpen(true)}
+                  >
+                    Edit Account Details ✏️
+                  </Button>
+
                   <Button
                     variant="outline"
                     size="sm"

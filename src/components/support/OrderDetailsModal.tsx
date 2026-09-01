@@ -124,18 +124,26 @@ export const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({
 
             <div className="border border-[#E7DFD5] rounded-xl overflow-hidden text-xs">
               <div className="grid grid-cols-12 bg-[#FAF8F5] p-2.5 font-bold text-[#211A19] border-b border-[#E7DFD5]">
-                <span className="col-span-7">Item Name</span>
+                <span className="col-span-5">Product Item</span>
                 <span className="col-span-2 text-center">Qty</span>
-                <span className="col-span-3 text-right">Price</span>
+                <span className="col-span-2 text-right">Unit Price</span>
+                <span className="col-span-3 text-right">Total</span>
               </div>
 
-              {orderData.items.map((item) => (
-                <div key={item.id} className="grid grid-cols-12 p-2.5 border-b border-[#E7DFD5]/60 items-center last:border-0">
-                  <span className="col-span-7 font-medium text-[#211A19]">{item.name}</span>
-                  <span className="col-span-2 text-center font-mono font-semibold">{item.quantity}</span>
-                  <span className="col-span-3 text-right font-mono font-bold">₹{item.price.toFixed(2)}</span>
-                </div>
-              ))}
+              {orderData.items.map((item) => {
+                const uPrice = Number(item.unitPrice ?? item.price ?? 0);
+                const qty = Number(item.quantity || 1);
+                const iTotal = Number(item.itemTotal ?? (uPrice * qty));
+
+                return (
+                  <div key={item.id} className="grid grid-cols-12 p-2.5 border-b border-[#E7DFD5]/60 items-center last:border-0">
+                    <span className="col-span-5 font-medium text-[#211A19]">{item.name}</span>
+                    <span className="col-span-2 text-center font-mono font-semibold">{qty}</span>
+                    <span className="col-span-2 text-right font-mono text-[#78716C]">₹{uPrice.toFixed(2)}</span>
+                    <span className="col-span-3 text-right font-mono font-bold text-[#211A19]">₹{iTotal.toFixed(2)}</span>
+                  </div>
+                );
+              })}
             </div>
           </div>
 

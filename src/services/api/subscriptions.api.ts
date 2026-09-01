@@ -137,51 +137,7 @@ export const subscriptionsApi = {
       } catch {}
     }
 
-    if (!rawData || !Array.isArray(rawData) || rawData.length === 0) {
-      // Cross-reference live backend vendors list to synthesize live subscriptions
-      try {
-        const vendors = await vendorsApi.getAllVendors();
-        let pendingVendors: any[] = [];
-        try {
-          pendingVendors = await vendorsApi.getPendingRequests();
-        } catch {}
-
-        const allVendors = [...vendors, ...pendingVendors];
-
-        if (allVendors && allVendors.length > 0) {
-          const now = new Date();
-          const mappedSubs = allVendors.map((v, idx) => {
-            const renewalDateStr = v.subscriptionRenewalDate || '2026-12-31';
-            const renewal = new Date(renewalDateStr);
-            const diffTime = renewal.getTime() - now.getTime();
-            const daysRemaining = Math.max(0, Math.ceil(diffTime / (1000 * 60 * 60 * 24)));
-            const tier = (v.subscriptionTier as any) || (idx % 2 === 0 ? 'pro' : 'enterprise');
-            const isBlocked = v.status === 'suspended' || v.status === 'blocked';
-            const isPending = v.status === 'pending';
-
-            return {
-              id: `sub-${v.id}`,
-              vendorId: String(v.id),
-              storeName: v.storeName || 'Store',
-              ownerName: v.ownerName || 'Owner',
-              societyName: v.societyName || 'Unassigned',
-              tier: tier === 'subscribed' ? 'pro' : tier,
-              price: tier === 'enterprise' ? 9999 : 2999,
-              startDate: v.createdAt || '2026-01-01',
-              renewalDate: renewalDateStr,
-              daysRemaining,
-              status: isBlocked ? 'suspended' : isPending ? 'pending' : (daysRemaining < 15 ? 'expiring_soon' : 'active'),
-              isVendorBlocked: isBlocked,
-              vendorStatus: v.status || (isPending ? 'pending' : 'active'),
-              payments: v.payments || [],
-            } satisfies Subscription;
-          });
-          rawData = mappedSubs;
-        }
-      } catch {}
-    }
-
-    if (Array.isArray(rawData) && rawData.length > 0) {
+    if (Array.isArray(rawData)) {
       return rawData.map(mapSubscriptionDTOToDomain).filter((sub) => {
         if (params?.search) {
           const query = params.search.toLowerCase();

@@ -1,6 +1,7 @@
 import { axiosInstance } from './axiosInstance';
 import type { Vendor, VendorApprovalResponse } from '../../types/vendor.types';
-import { mapVendorDTOToDomain, setVendorStatusOverride } from '../mappers/vendor.mapper';
+import { mapVendorDTOToDomain, setVendorStatusOverride, saveVendorEditOverride } from '../mappers/vendor.mapper';
+import { mapOrderDTOToDomain, type OrderDetails } from './orders.api';
 import { cleanQueryParams } from '../../utils/api.utils';
 import { ENV } from '../../constants/env.constants';
 
@@ -92,12 +93,10 @@ export const vendorsApi = {
           uniqueMap.set(domainVendor.id, domainVendor);
         }
       }
-      const domainList = Array.from(uniqueMap.values());
-      saveLocalVendors(domainList);
-      return domainList;
+      return Array.from(uniqueMap.values());
     }
 
-    return getLocalVendors();
+    return [];
   },
 
   /**
@@ -122,14 +121,12 @@ export const vendorsApi = {
             uniqueMap.set(domainVendor.id, domainVendor);
           }
         }
-        const domainList = Array.from(uniqueMap.values());
-        saveLocalPendingVendors(domainList);
-        return domainList;
+        return Array.from(uniqueMap.values());
       }
     } catch (err) {
       console.warn('Backend pending requests fetch failed:', err);
     }
-    return getLocalPendingVendors();
+    return [];
   },
 
   /**
@@ -422,45 +419,63 @@ export const vendorsApi = {
       saveLocalPendingVendors(updatedPending);
     }
 
+    saveVendorEditOverride(sId, updatedFields);
+
     const apiPayload = {
-      vendor_id: vendorId,
-      id: vendorId,
-      vendor_name: updatedFields.ownerName || updatedFields.vendor_name,
-      owner_name: updatedFields.ownerName,
-      shop_name: updatedFields.storeName || updatedFields.shop_name,
-      store_name: updatedFields.storeName,
+      store_name: updatedFields.storeName || updatedFields.shop_name || updatedFields.store_name,
+      owner_name: updatedFields.ownerName || updatedFields.owner_name || updatedFields.vendor_name,
+      vendor_name: updatedFields.ownerName || updatedFields.vendor_name || updatedFields.owner_name,
       email: updatedFields.email,
-      phone_number: updatedFields.phone || updatedFields.phone_number,
-      phone: updatedFields.phone,
+      phone_number: updatedFields.phone ? String(updatedFields.phone).replace(/\D/g, '') : updatedFields.phone_number,
+      area: updatedFields.area || updatedFields.societyName || updatedFields.locationArea,
+      city: updatedFields.city || 'Noida',
+      pincode: updatedFields.pincode || '201301',
+      category: updatedFields.category || 'Grocery & Daily Needs',
       gstin: updatedFields.gstin,
-      pan_number: updatedFields.panNumber || updatedFields.pan_number,
-      category: updatedFields.category,
-      vendor_type: updatedFields.vendorType || updatedFields.vendor_type,
-      shop_number: updatedFields.shopNumber || updatedFields.shop_number,
-      area: updatedFields.area || updatedFields.locationArea,
-      city: updatedFields.city,
-      state: updatedFields.state,
-      pincode: updatedFields.pincode,
-      shop_image: updatedFields.avatarUrl || updatedFields.shop_image,
-      description: updatedFields.description,
-      status: updatedFields.status ? String(updatedFields.status).toUpperCase() : undefined,
-      hold_reason: updatedFields.holdReason,
-      hold_email_subject: updatedFields.holdEmailSubject,
-      has_resubmitted: updatedFields.hasResubmitted,
-      resubmitted_at_readable: updatedFields.resubmittedAtReadable,
+      min_order_value: updatedFields.min_order_value ?? 0,
+      delivery_charge: updatedFields.delivery_charge ?? 20,
+      status: updatedFields.status ? String(updatedFields.status).toUpperCase() : 'ACTIVE',
+      ...updatedFields,
     };
 
     try {
       let response: any;
       try {
-        response = await axiosInstance.put<any>(`/vendors/${vendorId}`, apiPayload);
-      } catch {
         response = await axiosInstance.put<any>(`/admin/vendors/${vendorId}`, apiPayload);
+      } catch {
+        response = await axiosInstance.put<any>(`/vendors/${vendorId}`, apiPayload);
       }
       const resData = response.data?.data || response.data?.vendor || response.data;
-      return mapVendorDTOToDomain(resData);
+      const mapped = mapVendorDTOToDomain(resData);
+      return { ...mapped, ...updatedFields };
     } catch {
       return updatedDomainObj || mapVendorDTOToDomain({ ...updatedFields, vendor_id: vendorId });
     }
+  },
+
+  /**
+   * GET /admin/vendors/:vendorId/orders (also GET /vendors/:vendorId/orders)
+   */
+  getVendorOrders: async (vendorId: string | number): Promise<OrderDetails[]> => {
+    try {
+      let raw: any;
+      try {
+        const response = await axiosInstance.get(`/admin/vendors/${vendorId}/orders`);
+        raw = response.data?.data || response.data?.orders || response.data;
+      } catch {
+        try {
+          const response = await axiosInstance.get(`/vendors/${vendorId}/orders`);
+          raw = response.data?.data || response.data?.orders || response.data;
+        } catch {
+          const response = await axiosInstance.get(`/admin/orders`, { params: { vendor_id: vendorId } });
+          raw = response.data?.data || response.data?.orders || response.data;
+        }
+      }
+      if (Array.isArray(raw)) {
+        return raw.map(mapOrderDTOToDomain);
+      }
+    } catch {}
+
+    return [];
   },
 };

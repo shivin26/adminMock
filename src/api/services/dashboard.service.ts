@@ -97,10 +97,27 @@ class DashboardService extends BaseApiService {
       if (data && data.metrics) {
         return data;
       }
-    } catch (err) {
-      console.warn('Backend dashboard fetch failed, falling back to local mock data:', err);
-    }
-    return MOCK_DASHBOARD_DATA;
+    } catch {}
+
+    return {
+      metrics: {
+        totalRevenue: 0,
+        revenueChangePercent: 0,
+        activeVendors: 0,
+        vendorsChangePercent: 0,
+        totalSubscriptions: 0,
+        subscriptionsChangePercent: 0,
+        growthRatePercent: 0,
+        growthRateChangePercent: 0,
+      },
+      revenueChart: [],
+      vendorGrowthChart: [],
+      subscriptionChart: [],
+      recentPayments: [],
+      recentVendors: [],
+      recentActivities: [],
+      notifications: [],
+    };
   }
 }
 

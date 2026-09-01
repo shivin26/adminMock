@@ -1,7 +1,8 @@
 import { axiosInstance } from './axiosInstance';
 import { vendorsApi } from './vendors.api';
 import type { UserProfile } from '../../types/user.types';
-import { mapUserDTOToDomain } from '../mappers/user.mapper';
+import { mapUserDTOToDomain, saveUserEditOverride } from '../mappers/user.mapper';
+import { mapOrderDTOToDomain } from './orders.api';
 import { cleanQueryParams } from '../../utils/api.utils';
 
 const INITIAL_USERS: UserProfile[] = [];
@@ -84,29 +85,96 @@ export const usersApi = {
       }
     } catch {}
 
+    // Fallback: Fetch users list and find matching user by ID, Name, Email, or Phone
+    try {
+      const allUsers = await usersApi.getUsers();
+      const q = String(userId).toLowerCase().trim();
+      const match = allUsers.find(
+        (u) =>
+          u.id.toLowerCase() === q ||
+          (u.name && u.name.toLowerCase().trim() === q) ||
+          (u.name && u.name.toLowerCase().trim().includes(q)) ||
+          (u.email && u.email.toLowerCase().trim() === q) ||
+          (u.phone && u.phone.includes(q))
+      );
+      if (match) return match;
+    } catch {}
+
     const users = getStoredUsers();
-    const found = users.find((u) => u.id === userId || u.email === userId);
+    const q = String(userId).toLowerCase().trim();
+    const found = users.find(
+      (u) =>
+        u.id.toLowerCase() === q ||
+        (u.name && u.name.toLowerCase().trim() === q) ||
+        (u.email && u.email.toLowerCase().trim() === q) ||
+        (u.phone && u.phone.includes(q))
+    );
     if (found) return found;
 
-    return users[0] || {
-      id: userId,
-      name: 'User Profile',
-      email: 'user@digilocal.in',
-      phone: '+91 98765 43210',
-      societyName: 'Anupam Society',
-      flatNumber: 'A-101',
-      flagsCount: 0,
-      status: 'active',
-      totalOrders: 5,
-      totalSpend: 2500,
-      totalComplaintsRaised: 0,
-      createdAt: new Date().toISOString(),
-      lastActive: new Date().toISOString(),
-    };
+    throw new Error(`User with identifier ${userId} not found.`);
   },
 
   getUserByNameOrEmail: async (identifier: string): Promise<UserProfile> => {
     return usersApi.getUserById(identifier);
+  },
+
+  /**
+   * PUT /admin/users/:userId (Update user details)
+   */
+  updateUser: async (userId: string, payload: Partial<UserProfile>): Promise<UserProfile> => {
+    let resolvedId = userId;
+    try {
+      if (!resolvedId.startsWith('usr_') && !resolvedId.startsWith('usr-')) {
+        const allUsers = await usersApi.getUsers();
+        const q = String(userId).toLowerCase().trim();
+        const match = allUsers.find(
+          (u) =>
+            u.id.toLowerCase() === q ||
+            (u.name && u.name.toLowerCase().trim() === q) ||
+            (u.name && u.name.toLowerCase().trim().includes(q)) ||
+            (u.email && u.email.toLowerCase().trim() === q) ||
+            (u.phone && u.phone.includes(q))
+        );
+        if (match) resolvedId = match.id;
+      }
+    } catch {}
+
+    const addressStr = payload.flatNumber && payload.societyName
+      ? `${payload.flatNumber}, ${payload.societyName}`
+      : payload.societyName || payload.flatNumber || '';
+
+    const apiPayload = {
+      name: payload.name,
+      email: payload.email,
+      phone: payload.phone,
+      flat: payload.flatNumber || (payload as any).flat,
+      area: payload.societyName || (payload as any).area,
+      city: (payload as any).city || 'Noida',
+      pincode: (payload as any).pincode || '201301',
+      address: (payload as any).address || addressStr,
+      status: payload.status ? String(payload.status).toUpperCase() : 'ACTIVE',
+      ...payload,
+    };
+
+    saveUserEditOverride(resolvedId, apiPayload);
+    if (resolvedId !== userId) {
+      saveUserEditOverride(userId, apiPayload);
+    }
+
+    try {
+      let response: any;
+      try {
+        response = await axiosInstance.put(`/admin/users/${resolvedId}`, apiPayload);
+      } catch {
+        response = await axiosInstance.put(`/users/${resolvedId}`, apiPayload);
+      }
+      const raw = response.data?.data || response.data;
+      const mapped = mapUserDTOToDomain(raw);
+      return { ...mapped, ...apiPayload };
+    } catch {
+      const existing = await usersApi.getUserById(resolvedId).catch(() => ({ id: resolvedId } as UserProfile));
+      return { ...existing, ...apiPayload };
+    }
   },
 
   /**
@@ -237,40 +305,39 @@ export const usersApi = {
   },
 
   /**
-   * GET /admin/users/:userId/orders
+   * GET /admin/users/:userId/orders (v2.6.0 specification)
    */
   getUserOrders: async (userId: string): Promise<any[]> => {
+    let resolvedId = userId;
     try {
-      const response = await axiosInstance.get(`/admin/users/${userId}/orders`);
-      return response.data?.data || response.data?.orders || response.data;
-    } catch {
-      return [
-        {
-          id: 'ORD-9842',
-          storeName: 'FreshBites Daily Grocery',
-          total: 1250,
-          status: 'DELIVERED',
-          date: new Date(Date.now() - 86400000 * 2).toISOString(),
-          items: '2x Organic Milk, 1x Multigrain Bread, 5kg Rice',
-        },
-        {
-          id: 'ORD-9841',
-          storeName: 'Priya Organic Mart',
-          total: 890,
-          status: 'DELIVERED',
-          date: new Date(Date.now() - 86400000 * 5).toISOString(),
-          items: '1x Fresh Apples, 2x Honey Jars',
-        },
-        {
-          id: 'ORD-9835',
-          storeName: 'Suresh Dairy Supplies',
-          total: 450,
-          status: 'DELIVERED',
-          date: new Date(Date.now() - 86400000 * 12).toISOString(),
-          items: '3x Cottage Cheese, 2x Butter Packs',
-        },
-      ];
-    }
+      if (!resolvedId.startsWith('usr_') && !resolvedId.startsWith('usr-')) {
+        const allUsers = await usersApi.getUsers();
+        const q = String(userId).toLowerCase().trim();
+        const match = allUsers.find(
+          (u) =>
+            u.id.toLowerCase() === q ||
+            (u.name && u.name.toLowerCase().trim() === q) ||
+            (u.name && u.name.toLowerCase().trim().includes(q))
+        );
+        if (match) resolvedId = match.id;
+      }
+    } catch {}
+
+    try {
+      let raw: any;
+      try {
+        const response = await axiosInstance.get(`/admin/users/${resolvedId}/orders`);
+        raw = response.data?.data || response.data?.orders || response.data;
+      } catch {
+        const response = await axiosInstance.get(`/users/${resolvedId}/orders`);
+        raw = response.data?.data || response.data?.orders || response.data;
+      }
+      if (Array.isArray(raw)) {
+        return raw.map(mapOrderDTOToDomain);
+      }
+    } catch {}
+
+    return [];
   },
 
   /**
@@ -279,26 +346,10 @@ export const usersApi = {
   getUserPayments: async (userId: string): Promise<any[]> => {
     try {
       const response = await axiosInstance.get(`/admin/users/${userId}/payments`);
-      return response.data?.data || response.data?.payments || response.data;
+      const raw = response.data?.data || response.data?.payments || response.data;
+      return Array.isArray(raw) ? raw : [];
     } catch {
-      return [
-        {
-          txnId: 'pay_Lkw908123984',
-          orderId: 'ORD-9842',
-          amount: 1250,
-          method: 'Razorpay UPI (Google Pay)',
-          status: 'SUCCESS',
-          date: new Date(Date.now() - 86400000 * 2).toISOString(),
-        },
-        {
-          txnId: 'pay_Lkw887612344',
-          orderId: 'ORD-9841',
-          amount: 890,
-          method: 'Razorpay Credit Card (HDFC)',
-          status: 'SUCCESS',
-          date: new Date(Date.now() - 86400000 * 5).toISOString(),
-        },
-      ];
+      return [];
     }
   },
 
@@ -308,31 +359,10 @@ export const usersApi = {
   getUserTimeline: async (userId: string): Promise<any[]> => {
     try {
       const response = await axiosInstance.get(`/admin/users/${userId}/timeline`);
-      return response.data?.data || response.data?.timeline || response.data;
+      const raw = response.data?.data || response.data?.timeline || response.data;
+      return Array.isArray(raw) ? raw : [];
     } catch {
-      return [
-        {
-          id: 't-1',
-          event: 'Order Delivered Successfully',
-          detail: 'Order #ORD-9842 delivered by FreshBites agent.',
-          date: new Date(Date.now() - 86400000 * 2).toISOString(),
-          type: 'order',
-        },
-        {
-          id: 't-2',
-          event: 'Mobile OTP Verification',
-          detail: 'Primary phone verified via SMS Gateway.',
-          date: new Date(Date.now() - 86400000 * 30).toISOString(),
-          type: 'auth',
-        },
-        {
-          id: 't-3',
-          event: 'Account Created',
-          detail: 'User profile registered in Greenwood Heights Society.',
-          date: new Date(Date.now() - 86400000 * 60).toISOString(),
-          type: 'account',
-        },
-      ];
+      return [];
     }
   },
 
@@ -342,28 +372,10 @@ export const usersApi = {
   getUserAddresses: async (userId: string): Promise<any[]> => {
     try {
       const response = await axiosInstance.get(`/admin/users/${userId}/addresses`);
-      return response.data?.data || response.data?.addresses || response.data;
+      const raw = response.data?.data || response.data?.addresses || response.data;
+      return Array.isArray(raw) ? raw : [];
     } catch {
-      return [
-        {
-          id: 'addr-1',
-          type: 'Primary Residence',
-          flat: 'Flat A-101, 1st Floor',
-          society: 'Greenwood Heights Society',
-          city: 'Indore',
-          pincode: '452001',
-          isDefault: true,
-        },
-        {
-          id: 'addr-2',
-          type: 'Office Workstation',
-          flat: 'Block B, Tech Park IT Tower',
-          society: 'Vijay Nagar Business Hub',
-          city: 'Indore',
-          pincode: '452010',
-          isDefault: false,
-        },
-      ];
+      return [];
     }
   },
 
@@ -373,24 +385,10 @@ export const usersApi = {
   getUserNotifications: async (userId: string): Promise<any[]> => {
     try {
       const response = await axiosInstance.get(`/admin/users/${userId}/notifications`);
-      return response.data?.data || response.data?.notifications || response.data;
+      const raw = response.data?.data || response.data?.notifications || response.data;
+      return Array.isArray(raw) ? raw : [];
     } catch {
-      return [
-        {
-          id: 'n-1',
-          title: 'Order Status Update',
-          message: 'Your order #ORD-9842 has been delivered.',
-          date: new Date(Date.now() - 86400000 * 2).toISOString(),
-          read: true,
-        },
-        {
-          id: 'n-2',
-          title: 'Society Announcement',
-          message: 'Maintenance work scheduled for Greenwood Enclave tomorrow.',
-          date: new Date(Date.now() - 86400000 * 4).toISOString(),
-          read: false,
-        },
-      ];
+      return [];
     }
   },
 
@@ -400,24 +398,10 @@ export const usersApi = {
   getUserAuditLogs: async (userId: string): Promise<any[]> => {
     try {
       const response = await axiosInstance.get(`/admin/users/${userId}/audit-logs`);
-      return response.data?.data || response.data?.logs || response.data;
+      const raw = response.data?.data || response.data?.logs || response.data;
+      return Array.isArray(raw) ? raw : [];
     } catch {
-      return [
-        {
-          id: 'log-101',
-          action: 'PROFILE_UPDATE',
-          operator: 'System Admin',
-          timestamp: new Date(Date.now() - 86400000 * 2).toISOString(),
-          ip: '192.168.1.45',
-        },
-        {
-          id: 'log-102',
-          action: 'SMS_OTP_DISPATCH',
-          operator: 'Auth Gateway',
-          timestamp: new Date(Date.now() - 86400000 * 30).toISOString(),
-          ip: '10.0.4.12',
-        },
-      ];
+      return [];
     }
   },
 };

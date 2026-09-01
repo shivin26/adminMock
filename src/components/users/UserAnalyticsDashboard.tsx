@@ -104,7 +104,40 @@ export const UserAnalyticsDashboard: React.FC = () => {
   const { data: people = [] } = usePeopleList();
   const [timeRange, setTimeRange] = useState<'7d' | '30d' | '90d' | '1y'>('30d');
 
-  const totalRegistered = people.length || 15;
+  const totalRegistered = people.length;
+
+  const dynamicTopCustomers = React.useMemo(() => {
+    if (!people || people.length === 0) return [];
+    return people.map((p, idx) => ({
+      rank: idx + 1,
+      name: p.name,
+      email: p.email,
+      society: p.societyName,
+      orders: p.totalOrdersCount || 0,
+      totalSpend: (p.totalOrdersCount || 0) * 450,
+    })).slice(0, 5);
+  }, [people]);
+
+  const dynamicTopSocieties = React.useMemo(() => {
+    if (!people || people.length === 0) return [];
+    const map: Record<string, { users: number; orders: number }> = {};
+    people.forEach((p) => {
+      const sName = p.societyName || 'Unassigned Society';
+      if (!map[sName]) map[sName] = { users: 0, orders: 0 };
+      map[sName].users += 1;
+      map[sName].orders += (p.totalOrdersCount || 0);
+    });
+    const colors = ['#211A19', '#C8A878', '#D97706', '#059669', '#78716C'];
+    return Object.entries(map)
+      .map(([society, val], idx) => ({
+        society,
+        users: val.users,
+        orders: val.orders,
+        fill: colors[idx % colors.length],
+      }))
+      .sort((a, b) => b.users - a.users)
+      .slice(0, 5);
+  }, [people]);
 
   // Export CSV
   const handleExportCSV = () => {
@@ -350,7 +383,7 @@ export const UserAnalyticsDashboard: React.FC = () => {
           </div>
 
           <div className="flex flex-col gap-3 text-xs">
-            {TOP_SOCIETIES_DATA.map((soc) => (
+            {(dynamicTopSocieties.length > 0 ? dynamicTopSocieties : TOP_SOCIETIES_DATA).map((soc) => (
               <div key={soc.society} className="flex flex-col gap-1">
                 <div className="flex items-center justify-between font-semibold text-[#211A19]">
                   <span>{soc.society}</span>
@@ -360,7 +393,7 @@ export const UserAnalyticsDashboard: React.FC = () => {
                   <div
                     className="h-full rounded-full transition-all"
                     style={{
-                      width: `${(soc.users / 840) * 100}%`,
+                      width: `${(soc.users / Math.max(1, (dynamicTopSocieties[0]?.users || 840))) * 100}%`,
                       backgroundColor: soc.fill,
                     }}
                   />
@@ -395,7 +428,7 @@ export const UserAnalyticsDashboard: React.FC = () => {
                 </tr>
               </thead>
               <tbody className="divide-y divide-[#E7DFD5]/60">
-                {TOP_CUSTOMERS_DATA.map((cust) => (
+                {(dynamicTopCustomers.length > 0 ? dynamicTopCustomers : TOP_CUSTOMERS_DATA).map((cust) => (
                   <tr key={cust.rank} className="hover:bg-[#FAF8F5]">
                     <td className="p-2.5 font-bold font-mono text-[#C8A878]">#{cust.rank}</td>
                     <td className="p-2.5 font-bold text-[#211A19]">

@@ -132,9 +132,9 @@ class NotificationService extends BaseApiService {
       };
     } catch {
       return {
-        items: MOCK_NOTIFICATIONS,
-        unreadCount: MOCK_NOTIFICATIONS.filter((n) => !n.isRead).length,
-        meta: { page: 1, limit: 10, totalItems: MOCK_NOTIFICATIONS.length, totalPages: 1, hasNextPage: false, hasPrevPage: false },
+        items: [],
+        unreadCount: 0,
+        meta: { page: 1, limit: 10, totalItems: 0, totalPages: 1, hasNextPage: false, hasPrevPage: false },
       };
     }
   }

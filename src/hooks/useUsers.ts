@@ -21,6 +21,19 @@ export const useUserProfile = (identifier?: string | null) => {
   });
 };
 
+export const useUpdateUser = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ userId, payload }: { userId: string; payload: Partial<any> }) =>
+      usersApi.updateUser(userId, payload),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: USER_CACHE_KEYS.all });
+      queryClient.invalidateQueries({ queryKey: ['people'] });
+    },
+  });
+};
+
 export const useFlagUser = () => {
   const queryClient = useQueryClient();
 

@@ -11,9 +11,17 @@ export interface PersonProfile {
   societyName: string;
   societyId?: string;
   flatNumber?: string;
+  address?: string;
+  area?: string;
+  city?: string;
+  pincode?: string;
   storeName?: string;
   category?: string;
   flagsCount: number;
+  strikes?: number;
+  maxStrikesAllowed?: number;
+  isBlocked?: boolean;
+  isAutoBanned?: boolean;
   rating?: number;
   totalOrdersCount: number;
   totalComplaintsCount: number;

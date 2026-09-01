@@ -92,23 +92,26 @@ export const PeopleEnterpriseDataTable: React.FC<PeopleEnterpriseDataTableProps>
           ) : (
             <div className="flex items-center gap-1">
               <span className="text-[11px] font-mono font-bold text-[#211A19]">
-                {p.flagsCount} / 3 Strikes
+                ⚡ {p.strikes ?? p.flagsCount ?? 0} / 3 Strikes
               </span>
               <div className="flex items-center gap-0.5 ml-1">
-                {[1, 2, 3].map((dot) => (
-                  <div
-                    key={dot}
-                    className={`w-2 h-2 rounded-full ${
-                      p.flagsCount >= dot
-                        ? dot === 3
-                          ? 'bg-rose-600 animate-pulse'
-                          : dot === 2
-                          ? 'bg-orange-500'
-                          : 'bg-amber-400'
-                        : 'bg-gray-200'
-                    }`}
-                  />
-                ))}
+                {[1, 2, 3].map((dot) => {
+                  const currentS = p.strikes ?? p.flagsCount ?? 0;
+                  return (
+                    <div
+                      key={dot}
+                      className={`w-2 h-2 rounded-full ${
+                        currentS >= dot
+                          ? dot === 3
+                            ? 'bg-rose-600 animate-pulse'
+                            : dot === 2
+                            ? 'bg-orange-500'
+                            : 'bg-amber-400'
+                          : 'bg-gray-200'
+                      }`}
+                    />
+                  );
+                })}
               </div>
             </div>
           )}
@@ -121,11 +124,13 @@ export const PeopleEnterpriseDataTable: React.FC<PeopleEnterpriseDataTableProps>
     {
       header: 'Status',
       cell: (p) => {
-        if (p.status === 'banned' || p.status === 'blocked') {
-          return <Badge variant="danger">BANNED / BLOCKED</Badge>;
+        const sCount = p.strikes ?? p.flagsCount ?? 0;
+        const isBannedOrBlocked = p.status === 'banned' || p.status === 'blocked' || p.isBlocked || p.isAutoBanned || sCount >= 3;
+        if (isBannedOrBlocked) {
+          return <Badge variant="danger">🔴 BLOCKED (3/3 STRIKES)</Badge>;
         }
-        if (p.status === 'warned') {
-          return <Badge variant="warning">WARNED (2 STRIKES)</Badge>;
+        if (p.status === 'warned' || sCount > 0) {
+          return <Badge variant="warning">⚡ WARNED ({sCount}/3 STRIKES)</Badge>;
         }
         return <Badge variant="success">ACTIVE ACCOUNT</Badge>;
       },

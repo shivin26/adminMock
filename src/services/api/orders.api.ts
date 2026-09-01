@@ -2,25 +2,34 @@ import { axiosInstance } from './axiosInstance';
 
 export interface OrderItem {
   id: string;
+  itemId?: string | number;
   name: string;
   quantity: number;
   price: number;
+  unitPrice?: number;
+  itemTotal?: number;
 }
 
 export interface OrderDetails {
   id: string;
   orderId: string;
-  status: 'DISPATCHED' | 'OUT_FOR_DELIVERY' | 'DELIVERED' | 'CANCELLED' | 'SETTLEMENT_PENDING';
+  userId?: string;
+  vendorId?: string | number;
+  status: string;
   statusLabel: string;
   customerName: string;
   customerPhone: string;
   deliveryAddress: string;
+  storeName: string;
   vendorName: string;
+  vendorPhone?: string;
   vendorCategory: string;
   items: OrderItem[];
+  itemsCount: number;
   subtotal: number;
   deliveryFee: number;
   taxAmount: number;
+  serviceCharge?: number;
   discount: number;
   totalAmount: number;
   paymentMethod: string;
@@ -30,130 +39,61 @@ export interface OrderDetails {
   riderPhone: string;
   riderDistanceKm: number;
   createdAt: string;
+  createdAtReadable?: string;
 }
 
-const MOCK_ORDERS_STORE: Record<string, OrderDetails> = {
-  'ORD-9841': {
-    id: 'o-101',
-    orderId: 'ORD-9841',
-    status: 'SETTLEMENT_PENDING',
-    statusLabel: 'SETTLEMENT PENDING',
-    customerName: 'Rajesh Sharma',
-    customerPhone: '+91 98765 43210',
-    deliveryAddress: 'Shop #12, Greenwood Commercial Block',
-    vendorName: 'FreshBites Daily Grocery',
-    vendorCategory: 'Grocery & Staples',
-    items: [
-      { id: 'i-1', name: 'Fortune Sunlite Refined Sunflower Oil 5L', quantity: 2, price: 740.0 },
-      { id: 'i-2', name: 'India Gate Basmati Rice Feast Rozzana 5kg', quantity: 1, price: 370.0 },
-    ],
-    subtotal: 1850.0,
-    deliveryFee: 40.0,
-    taxAmount: 92.5,
-    discount: 50.0,
-    totalAmount: 1932.5,
-    paymentMethod: 'Razorpay UPI',
-    paymentRef: 'pay_Lkw908123981',
-    paymentStatus: 'PAID (UPI)',
-    riderName: 'Ramesh Verma',
-    riderPhone: '+91 98222 11009',
-    riderDistanceKm: 0.8,
-    createdAt: new Date(Date.now() - 3600000 * 3).toISOString(),
-  },
-  'ORD-9842': {
-    id: 'o-102',
-    orderId: 'ORD-9842',
-    status: 'OUT_FOR_DELIVERY',
-    statusLabel: 'DISPATCHED & IN-TRANSIT',
-    customerName: 'Commander V.K. Nair',
-    customerPhone: '+91 98765 43210',
-    deliveryAddress: 'Flat B-402, Anupam Society, Sector 4',
-    vendorName: 'FreshMart Grocery & Organic',
-    vendorCategory: 'Daily Grocery & Produce',
-    items: [
-      { id: 'i-1', name: 'Aashirvaad Whole Wheat Atta 10kg', quantity: 1, price: 420.0 },
-      { id: 'i-2', name: 'Amul Taaza Toned Fresh Milk 1L Pack', quantity: 4, price: 220.0 },
-      { id: 'i-3', name: 'Organic Farm Fresh Tomatoes 1kg', quantity: 1, price: 40.0 },
-    ],
-    subtotal: 680.0,
-    deliveryFee: 35.0,
-    taxAmount: 34.0,
-    discount: 42.0,
-    totalAmount: 707.0,
-    paymentMethod: 'Razorpay UPI',
-    paymentRef: 'pay_Lkw908123984',
-    paymentStatus: 'PAID (UPI)',
-    riderName: 'Suresh Kumar',
-    riderPhone: '+91 98123 77889',
-    riderDistanceKm: 1.2,
-    createdAt: new Date(Date.now() - 3600000 * 6).toISOString(),
-  },
-  'ORD-9845': {
-    id: 'o-105',
-    orderId: 'ORD-9845',
-    status: 'DELIVERED',
-    statusLabel: 'DELIVERED & VERIFIED',
-    customerName: 'Aarav Gupta',
-    customerPhone: '+91 99887 76655',
-    deliveryAddress: 'Ground Floor, Silver Oaks Plaza',
-    vendorName: 'Apex Electronics & Appliances',
-    vendorCategory: 'Electronics & Hardware',
-    items: [
-      { id: 'i-1', name: 'Havells Smart Plug 16A Wi-Fi Socket', quantity: 2, price: 2400.0 },
-      { id: 'i-2', name: 'Philips LED Surge Protector Strip 4-Socket', quantity: 1, price: 800.0 },
-    ],
-    subtotal: 3200.0,
-    deliveryFee: 0.0,
-    taxAmount: 160.0,
-    discount: 100.0,
-    totalAmount: 3260.0,
-    paymentMethod: 'Razorpay NetBanking',
-    paymentRef: 'pay_Lkw908123985',
-    paymentStatus: 'PAID (NETBANKING)',
-    riderName: 'Vikrant Singh',
-    riderPhone: '+91 97666 44332',
-    riderDistanceKm: 0.0,
-    createdAt: new Date(Date.now() - 3600000 * 0.5).toISOString(),
-  },
-};
-
 export const mapOrderDTOToDomain = (raw: any): OrderDetails => {
+  const oId = String(raw.order_id || raw.id || raw.orderId || `ORD-${Date.now()}`);
+  const itemsRaw = Array.isArray(raw.items) ? raw.items : [];
+  const itemsMapped: OrderItem[] = itemsRaw.map((item: any) => ({
+    id: String(item.item_id || item.id || Math.random()),
+    itemId: item.item_id || item.id,
+    name: item.item_name || item.name || 'Product Item',
+    quantity: Number(item.quantity || item.qty || 1),
+    price: Number(item.unit_price ?? item.price ?? item.item_total ?? 0),
+    unitPrice: Number(item.unit_price ?? item.price ?? 0),
+    itemTotal: Number(item.item_total ?? item.price ?? 0),
+  }));
+
+  const checkoutAddressComponents = [raw.flat, raw.area, raw.city, raw.state, raw.pincode].filter(Boolean).join(', ');
+  const fullAddress = raw.delivery_address || raw.full_address || raw.deliveryAddress || checkoutAddressComponents || 'Order Checkout Address';
+
   return {
-    id: String(raw.id || raw.order_id || raw.orderId || `o-${Date.now()}`),
-    orderId: raw.order_id || raw.orderId || String(raw.id || 'ORD-0000'),
-    status: raw.status || 'OUT_FOR_DELIVERY',
-    statusLabel: raw.status_label || raw.statusLabel || raw.status || 'DISPATCHED & IN-TRANSIT',
+    id: oId,
+    orderId: oId,
+    userId: raw.user_id || raw.userId,
+    vendorId: raw.vendor_id || raw.vendorId,
+    status: raw.status || 'PLACED',
+    statusLabel: raw.status_label || raw.statusLabel || raw.status || 'ORDER PLACED',
     customerName: raw.customer_name || raw.customerName || 'Resident Customer',
-    customerPhone: raw.customer_phone || raw.customerPhone || '+91 98765 43210',
-    deliveryAddress: raw.delivery_address || raw.deliveryAddress || 'Anupam Society, Sector 4',
-    vendorName: raw.vendor_name || raw.vendorName || 'Partner Store',
-    vendorCategory: raw.vendor_category || raw.vendorCategory || 'Grocery & Produce',
-    items: Array.isArray(raw.items)
-      ? raw.items.map((item: any) => ({
-          id: String(item.id || item.item_id || Math.random()),
-          name: item.name || item.item_name || 'Product Item',
-          quantity: Number(item.quantity || 1),
-          price: Number(item.price || item.unit_price || 0),
-        }))
-      : [],
+    customerPhone: raw.customer_phone || raw.customerPhone || raw.phone || '',
+    deliveryAddress: fullAddress,
+    storeName: raw.store_name || raw.storeName || raw.vendor_name || raw.vendorName || 'Partner Merchant Store',
+    vendorName: raw.vendor_name || raw.vendorName || raw.owner_name || 'Vendor Owner',
+    vendorPhone: raw.vendor_phone || raw.vendorPhone || '',
+    vendorCategory: raw.category || raw.vendor_category || raw.vendorCategory || 'Grocery & Daily Needs',
+    items: itemsMapped,
+    itemsCount: Number(raw.items_count ?? raw.itemsCount ?? itemsMapped.length),
     subtotal: Number(raw.subtotal ?? raw.sub_total ?? 0),
-    deliveryFee: Number(raw.delivery_fee ?? raw.deliveryFee ?? 0),
+    deliveryFee: Number(raw.delivery_charge ?? raw.delivery_fee ?? raw.deliveryFee ?? 0),
     taxAmount: Number(raw.tax_amount ?? raw.taxAmount ?? 0),
+    serviceCharge: Number(raw.service_charge ?? raw.serviceCharge ?? 0),
     discount: Number(raw.discount ?? 0),
-    totalAmount: Number(raw.total_amount ?? raw.totalAmount ?? raw.amount ?? 0),
-    paymentMethod: raw.payment_method || raw.paymentMethod || 'Razorpay UPI',
+    totalAmount: Number(raw.total_amount ?? raw.totalAmount ?? raw.total ?? raw.amount ?? 0),
+    paymentMethod: raw.payment_method || raw.paymentMethod || 'COD / Online',
     paymentRef: raw.payment_ref || raw.paymentRef || `pay_${Date.now()}`,
     paymentStatus: raw.payment_status || raw.paymentStatus || 'PAID',
-    riderName: raw.rider_name || raw.riderName || 'Delivery Rider',
-    riderPhone: raw.rider_phone || raw.riderPhone || '+91 98123 77889',
+    riderName: raw.rider_name || raw.riderName || 'Assigned Rider',
+    riderPhone: raw.rider_phone || raw.riderPhone || '',
     riderDistanceKm: Number(raw.rider_distance_km ?? raw.riderDistanceKm ?? 0.8),
     createdAt: raw.created_at || raw.createdAt || new Date().toISOString(),
+    createdAtReadable: raw.created_at_readable || raw.createdAtReadable,
   };
 };
 
 export const ordersApi = {
   /**
-   * GET /admin/orders
+   * GET /admin/orders (Global orders list)
    */
   getOrders: async (params?: { search?: string; status?: string; page?: number; limit?: number }): Promise<OrderDetails[]> => {
     try {
@@ -166,16 +106,16 @@ export const ordersApi = {
         rawData = response.data?.data || response.data?.orders || response.data;
       }
 
-      if (Array.isArray(rawData) && rawData.length > 0) {
+      if (Array.isArray(rawData)) {
         return rawData.map(mapOrderDTOToDomain);
       }
     } catch {}
 
-    return Object.values(MOCK_ORDERS_STORE);
+    return [];
   },
 
   /**
-   * GET /admin/orders/:orderId (also GET /orders/:orderId)
+   * GET /admin/orders/:orderId (Single order details)
    */
   getOrderById: async (orderId: string): Promise<OrderDetails> => {
     try {
@@ -190,40 +130,19 @@ export const ordersApi = {
       if (raw) return mapOrderDTOToDomain(raw);
     } catch {}
 
-    const mock = MOCK_ORDERS_STORE[orderId];
-    if (mock) return mock;
+    try {
+      const allOrders = await ordersApi.getOrders();
+      const match = allOrders.find(
+        (o) => o.id === orderId || o.orderId === orderId || o.id.toLowerCase() === orderId.toLowerCase()
+      );
+      if (match) return match;
+    } catch {}
 
-    return {
-      id: `o-${orderId}`,
-      orderId,
-      status: 'OUT_FOR_DELIVERY',
-      statusLabel: 'DISPATCHED & IN-TRANSIT',
-      customerName: 'Commander V.K. Nair',
-      customerPhone: '+91 98765 43210',
-      deliveryAddress: 'Flat B-402, Anupam Society, Sector 4',
-      vendorName: 'FreshMart Grocery & Organic',
-      vendorCategory: 'Daily Grocery & Produce',
-      items: [
-        { id: 'i-1', name: 'Aashirvaad Whole Wheat Atta 10kg', quantity: 1, price: 420.0 },
-        { id: 'i-2', name: 'Amul Taaza Toned Fresh Milk 1L Pack', quantity: 4, price: 220.0 },
-      ],
-      subtotal: 640.0,
-      deliveryFee: 35.0,
-      taxAmount: 32.0,
-      discount: 0.0,
-      totalAmount: 707.0,
-      paymentMethod: 'Razorpay UPI',
-      paymentRef: 'pay_Lkw908123984',
-      paymentStatus: 'PAID (UPI)',
-      riderName: 'Suresh Kumar',
-      riderPhone: '+91 98123 77889',
-      riderDistanceKm: 1.2,
-      createdAt: new Date().toISOString(),
-    };
+    throw new Error(`Order #${orderId} not found.`);
   },
 
   /**
-   * POST /api/orders/:orderId/refund
+   * POST /admin/payments/refund
    */
   issueRefund: async (orderId: string, amount: number): Promise<{ message: string; refundId: string }> => {
     try {
@@ -238,7 +157,7 @@ export const ordersApi = {
   },
 
   /**
-   * POST /api/orders/:orderId/flag-audit
+   * POST /orders/:orderId/flag-audit
    */
   flagForAudit: async (orderId: string): Promise<{ message: string }> => {
     try {

@@ -1,6 +1,7 @@
 import type { Vendor, RawVendorDTO, VendorStatus } from '../../types/vendor.types';
 
 const OVERRIDES_STORAGE_KEY = 'digilocal_vendor_status_overrides';
+const EDITS_STORAGE_KEY = 'digilocal_vendor_edit_overrides';
 
 export const getVendorStatusOverrides = (): Record<string, VendorStatus> => {
   try {
@@ -15,6 +16,22 @@ export const setVendorStatusOverride = (vendorId: string, status: VendorStatus) 
     const overrides = getVendorStatusOverrides();
     overrides[vendorId] = status;
     localStorage.setItem(OVERRIDES_STORAGE_KEY, JSON.stringify(overrides));
+  } catch {}
+};
+
+export const getVendorEditOverrides = (): Record<string, Partial<Vendor>> => {
+  try {
+    const raw = localStorage.getItem(EDITS_STORAGE_KEY);
+    if (raw) return JSON.parse(raw);
+  } catch {}
+  return {};
+};
+
+export const saveVendorEditOverride = (vendorId: string, fields: Partial<Vendor>) => {
+  try {
+    const edits = getVendorEditOverrides();
+    edits[vendorId] = { ...(edits[vendorId] || {}), ...fields };
+    localStorage.setItem(EDITS_STORAGE_KEY, JSON.stringify(edits));
   } catch {}
 };
 
@@ -147,4 +164,6 @@ export const mapVendorDTOToDomain = (raw: any): Vendor => {
     createdAt: createdAtIso,
     updatedAt: raw.updated_at || raw.updatedAt || new Date().toISOString(),
   };
+
+  return domainVendor;
 };

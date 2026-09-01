@@ -5,8 +5,16 @@ export interface UserProfile {
   phone: string;
   societyName: string;
   flatNumber: string;
+  address?: string;
+  area?: string;
+  city?: string;
+  pincode?: string;
   flagsCount: number; // 0 to 3
-  status: 'active' | 'warned' | 'banned';
+  strikes?: number;
+  maxStrikesAllowed?: number;
+  isBlocked?: boolean;
+  isAutoBanned?: boolean;
+  status: 'active' | 'warned' | 'banned' | 'blocked';
   totalOrders: number;
   totalSpend: number;
   totalComplaintsRaised: number;
