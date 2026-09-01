@@ -46,7 +46,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggleCollapse 
     {
       title: 'Management',
       items: [
-        { label: 'Societies', path: '/dashboard/societies', icon: <Building2 className="h-4 w-4" /> },
+        { label: 'Areas', path: '/dashboard/societies', icon: <Building2 className="h-4 w-4" /> },
         { label: 'Users & Vendors', path: '/dashboard/users', icon: <Users className="h-4 w-4" /> },
         { label: 'Subscriptions', path: '/dashboard/subscriptions', icon: <CreditCard className="h-4 w-4" /> },
         { label: 'Payments & Payouts', path: '/dashboard/payments', icon: <DollarSign className="h-4 w-4" /> },

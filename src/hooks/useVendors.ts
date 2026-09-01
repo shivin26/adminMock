@@ -9,7 +9,8 @@ export const useVendors = (params?: VendorListParams) => {
   return useQuery({
     queryKey: CACHE_KEYS.vendors.list(params),
     queryFn: () => vendorsApi.getAllVendors(params),
-    staleTime: 3 * 60 * 1000,
+    staleTime: 0,
+    refetchOnWindowFocus: true,
   });
 };
 
@@ -17,7 +18,8 @@ export const usePendingVendors = () => {
   return useQuery({
     queryKey: CACHE_KEYS.vendors.pending,
     queryFn: () => vendorsApi.getPendingRequests(),
-    staleTime: 1 * 60 * 1000,
+    staleTime: 0,
+    refetchOnWindowFocus: true,
   });
 };
 
@@ -25,7 +27,8 @@ export const useOnHoldVendors = () => {
   return useQuery({
     queryKey: ['vendors', 'on_hold'],
     queryFn: () => vendorsApi.getOnHoldVendors(),
-    staleTime: 1 * 60 * 1000,
+    staleTime: 0,
+    refetchOnWindowFocus: true,
   });
 };
 
@@ -127,7 +130,11 @@ export const useToggleVendorStatus = () => {
     }) => vendorsApi.toggleVendorStatus(vendorId, status),
 
     onSuccess: (_data, variables) => {
+      queryClient.invalidateQueries({ queryKey: ['vendors'] });
       queryClient.invalidateQueries({ queryKey: CACHE_KEYS.vendors.all });
+      queryClient.invalidateQueries({ queryKey: CACHE_KEYS.vendors.pending });
+      queryClient.invalidateQueries({ queryKey: ['vendors', 'on_hold'] });
+
       const isBlocking = variables.status === 'suspended';
       addToast({
         type: isBlocking ? 'warning' : 'success',

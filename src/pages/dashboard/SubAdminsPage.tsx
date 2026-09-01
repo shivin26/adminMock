@@ -13,12 +13,19 @@ import {
 } from '../../hooks/useSubAdmins';
 import type { SubAdminUser, PowerSection } from '../../types/rbac.types';
 import { formatDate } from '../../utils/formatters.utils';
-import { Plus, ShieldAlert, ShieldCheck, Edit3, Trash2 } from 'lucide-react';
+import { useAuth } from '../../hooks/useAuth';
+import { usePermission } from '../../hooks/usePermission';
+import { useToast } from '../../context/ToastContext';
+import { Plus, ShieldAlert, ShieldCheck, Edit3, Trash2, UserCheck, Lock } from 'lucide-react';
 import { CreateSubAdminModal } from '../../components/rbac/CreateSubAdminModal';
 import { EditSubAdminPowersModal } from '../../components/rbac/EditSubAdminPowersModal';
 import { RevokeSubAdminModal } from '../../components/rbac/RevokeSubAdminModal';
 
 export const SubAdminsPage: React.FC = () => {
+  const { user } = useAuth();
+  const { isSuperAdmin } = usePermission();
+  const { addToast } = useToast();
+
   const { data: subAdmins = [], isLoading } = useSubAdmins();
   const createSubAdminMutation = useCreateSubAdmin();
   const updatePowersMutation = useUpdateSubAdminPowers();
@@ -35,6 +42,17 @@ export const SubAdminsPage: React.FC = () => {
   };
 
   const handleUpdatePowers = (subAdminId: string, powers: PowerSection[]) => {
+    // Self-power escalation prevention check for sub-admins
+    if (!isSuperAdmin && (user?.id === subAdminId || user?.email.toLowerCase() === editingSubAdmin?.email.toLowerCase())) {
+      addToast({
+        type: 'error',
+        title: 'Power Escalation Restricted',
+        description: 'Sub-admins cannot modify or escalate their own delegated section permissions.',
+      });
+      setEditingSubAdmin(null);
+      return;
+    }
+
     updatePowersMutation.mutate(
       { id: subAdminId, payload: { powers } },
       {
@@ -56,17 +74,52 @@ export const SubAdminsPage: React.FC = () => {
     },
     {
       header: 'Sub-Admin User',
-      cell: (sub) => (
-        <div className="subadmin-user-cell">
-          <div className="subadmin-avatar">
-            <ShieldCheck size={18} />
+      cell: (sub) => {
+        const isSelf = !isSuperAdmin && (user?.id === sub.id || user?.email?.toLowerCase() === sub.email?.toLowerCase());
+
+        return (
+          <div className="subadmin-user-cell">
+            <div className="subadmin-avatar">
+              <ShieldCheck size={18} />
+            </div>
+            <div>
+              <div className="flex items-center gap-1.5">
+                <span className="subadmin-name">{sub.name}</span>
+                {isSelf && (
+                  <span className="px-1.5 py-0.2 bg-[#18281F] text-white text-[9px] font-bold font-mono rounded">
+                    YOU (ACTIVE LOGGED IN)
+                  </span>
+                )}
+              </div>
+              <span className="subadmin-email">{sub.email}</span>
+            </div>
           </div>
-          <div>
-            <span className="subadmin-name">{sub.name}</span>
-            <span className="subadmin-email">{sub.email}</span>
-          </div>
-        </div>
-      ),
+        );
+      },
+    },
+    {
+      header: 'Created By (Attribution Tag)',
+      cell: (sub) => {
+        const isCreatedBySub = sub.createdRole === 'sub_admin' || (sub.createdBy && sub.createdBy.toLowerCase().includes('sub-admin'));
+        return (
+          <Badge
+            variant={isCreatedBySub ? 'info' : 'primary'}
+            className="text-[10px] font-mono tracking-tight"
+          >
+            {isCreatedBySub ? (
+              <span className="flex items-center gap-1">
+                <UserCheck size={11} className="shrink-0" />
+                {sub.createdBy || 'CREATED BY SUB-ADMIN'}
+              </span>
+            ) : (
+              <span className="flex items-center gap-1">
+                <ShieldCheck size={11} className="shrink-0" />
+                {sub.createdBy || 'CREATED BY SUPER ADMIN'}
+              </span>
+            )}
+          </Badge>
+        );
+      },
     },
     {
       header: 'Role Title',
@@ -94,35 +147,53 @@ export const SubAdminsPage: React.FC = () => {
     },
     {
       header: 'Created Date',
-      cell: (sub) => <span>{formatDate(sub.createdAt)}</span>,
+      cell: (sub) => <span className="font-mono text-xs text-[#6B7C70]">{formatDate(sub.createdAt)}</span>,
     },
     {
       header: 'Actions',
-      cell: (sub) => (
-        <div className="flex items-center justify-end gap-2" onClick={(e) => e.stopPropagation()}>
-          <Button
-            variant="outline"
-            size="sm"
-            title="Edit Sub-Admin Delegated Power Sections"
-            aria-label="Edit Sub-Admin Delegated Power Sections"
-            onClick={() => setEditingSubAdmin(sub)}
-          >
-            <Edit3 size={16} />
-          </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            className="text-rose-500 hover:bg-rose-500/10"
-            title="Revoke Sub-Admin Access"
-            aria-label="Revoke Sub-Admin Access"
-            onClick={() => setRevokingSubAdmin(sub)}
-          >
-            <Trash2 size={16} />
-          </Button>
-        </div>
-      ),
-    },
+      cell: (sub) => {
+        const isSelf = !isSuperAdmin && (user?.id === sub.id || user?.email?.toLowerCase() === sub.email?.toLowerCase());
 
+        return (
+          <div className="flex items-center justify-end gap-2" onClick={(e) => e.stopPropagation()}>
+            <Button
+              variant="outline"
+              size="sm"
+              disabled={isSelf}
+              title={isSelf ? 'Self-power escalation restricted. Only Super Admin can modify your own powers.' : 'Edit Sub-Admin Delegated Power Sections'}
+              aria-label={isSelf ? 'Self-power escalation restricted' : 'Edit Sub-Admin Delegated Power Sections'}
+              onClick={() => {
+                if (isSelf) {
+                  addToast({
+                    type: 'error',
+                    title: 'Self-Power Escalation Restricted',
+                    description: 'Sub-admins cannot modify or escalate their own delegated section permissions.',
+                  });
+                  return;
+                }
+                setEditingSubAdmin(sub);
+              }}
+            >
+              {isSelf ? <Lock size={15} className="text-amber-600" /> : <Edit3 size={16} />}
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              disabled={isSelf}
+              className={isSelf ? 'opacity-40 cursor-not-allowed' : 'text-rose-500 hover:bg-rose-500/10'}
+              title={isSelf ? 'Self-session revocation restricted.' : 'Revoke Sub-Admin Access'}
+              aria-label={isSelf ? 'Self-session revocation restricted' : 'Revoke Sub-Admin Access'}
+              onClick={() => {
+                if (isSelf) return;
+                setRevokingSubAdmin(sub);
+              }}
+            >
+              <Trash2 size={16} />
+            </Button>
+          </div>
+        );
+      },
+    },
   ];
 
   return (

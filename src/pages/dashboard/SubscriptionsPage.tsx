@@ -106,12 +106,18 @@ export const SubscriptionsPage: React.FC = () => {
     });
   };
 
-  // Recharts Chart Dataset
-  const tierPieData = [
-    { name: 'Pro Plan', value: stats?.tierBreakdown.pro || 8, color: TIER_COLORS.pro },
-    { name: 'Enterprise Plan', value: stats?.tierBreakdown.enterprise || 4, color: TIER_COLORS.enterprise },
-    { name: 'Free Tier', value: stats?.tierBreakdown.free || 2, color: TIER_COLORS.free },
-  ];
+  // Recharts Chart Dataset dynamically computed
+  const tierPieData = React.useMemo(() => {
+    const proCount = subscriptions.filter((s) => s.tier === 'pro').length || stats?.tierBreakdown.pro || 0;
+    const entCount = subscriptions.filter((s) => s.tier === 'enterprise').length || stats?.tierBreakdown.enterprise || 0;
+    const freeCount = subscriptions.filter((s) => s.tier === 'free').length || stats?.tierBreakdown.free || 0;
+
+    return [
+      { name: 'Pro Plan', value: proCount, color: TIER_COLORS.pro },
+      { name: 'Enterprise Plan', value: entCount, color: TIER_COLORS.enterprise },
+      { name: 'Free Tier', value: freeCount, color: TIER_COLORS.free },
+    ];
+  }, [subscriptions, stats]);
 
   const columns: Column<Subscription>[] = [
     {
@@ -229,22 +235,22 @@ export const SubscriptionsPage: React.FC = () => {
       <div className="kpi-grid">
         <StatCard
           title="Active Subscriptions"
-          value={stats?.totalActiveSubscriptions || (subscriptions.length > 0 ? subscriptions.length : 16)}
-          change="+3 new this month"
+          value={stats?.totalActiveSubscriptions ?? activeCount}
+          change={`${activeCount} Active Plans`}
           isPositive={true}
           icon={<CreditCard size={22} />}
         />
         <StatCard
           title="Monthly Recurring Revenue"
-          value={formatCurrency(stats?.mrr || (stats?.totalActiveSubscriptions ? stats.totalActiveSubscriptions * 2999 : 47984))}
-          change="+18.4% MRR"
+          value={formatCurrency(stats?.mrr ?? (activeCount * 2999))}
+          change="Real-time Subscriptions MRR"
           isPositive={true}
           icon={<IndianRupee size={22} />}
         />
         <StatCard
           title="Upcoming Renewals (30 Days)"
-          value={`${stats?.upcomingRenewalsCount || 4} Vendors`}
-          change="Automated reminders sent"
+          value={`${stats?.upcomingRenewalsCount ?? expiringSoonCount} Vendors`}
+          change={`${expiringSoonCount} Expediting Renewal`}
           isPositive={true}
           icon={<Calendar size={22} />}
         />

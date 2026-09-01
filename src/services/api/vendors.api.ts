@@ -1,6 +1,6 @@
 import { axiosInstance } from './axiosInstance';
 import type { Vendor, VendorApprovalResponse } from '../../types/vendor.types';
-import { mapVendorDTOToDomain } from '../mappers/vendor.mapper';
+import { mapVendorDTOToDomain, setVendorStatusOverride } from '../mappers/vendor.mapper';
 import { cleanQueryParams } from '../../utils/api.utils';
 import { ENV } from '../../constants/env.constants';
 
@@ -15,240 +15,18 @@ export interface VendorListParams {
 const LOCAL_VENDORS_KEY = 'digilocal_admin_vendors_list';
 const LOCAL_PENDING_VENDORS_KEY = 'digilocal_admin_pending_vendors_list';
 
-const INITIAL_FALLBACK_VENDORS: Vendor[] = [
-  {
-    id: 'v-101',
-    storeName: 'FreshBites Daily Grocery',
-    ownerName: 'Rajesh Sharma',
-    email: 'rajesh.freshbites@gmail.com',
-    phone: '+91 98765 43210',
-    address: 'Shop #12, Greenwood Commercial Block',
-    societyName: 'Greenwood Heights Society',
-    gstin: '07AAAAA0000A1Z5',
-    panNumber: 'ABCDE1234F',
-    locationArea: 'Greenwood Sector 62',
-    submissionTimestamp: '2026-08-31 09:30:00',
-    category: 'Grocery & Staples',
-    status: 'active',
-    subscriptionTier: 'pro',
-    subscriptionRenewalDate: new Date(Date.now() + 30 * 86400000).toISOString(),
-    totalEarnings: 245000,
-    totalOrdersCount: 1420,
-    avatarUrl: '',
-    createdAt: new Date(Date.now() - 3600000 * 24 * 30).toISOString(),
-    updatedAt: new Date().toISOString(),
-    payments: [],
-  },
-  {
-    id: 'v-102',
-    storeName: 'FreshMart Grocery & Organic',
-    ownerName: 'Priya Verma',
-    email: 'priya.organic@gmail.com',
-    phone: '+91 98111 22334',
-    address: 'Block B, Palm Meadows Market',
-    societyName: 'Anupam Society',
-    gstin: '07BBBBB1111B1Z6',
-    category: 'Fresh Vegetables & Organic',
-    status: 'active',
-    subscriptionTier: 'enterprise',
-    subscriptionRenewalDate: new Date(Date.now() + 60 * 86400000).toISOString(),
-    totalEarnings: 489000,
-    totalOrdersCount: 2890,
-    avatarUrl: '',
-    createdAt: new Date(Date.now() - 3600000 * 24 * 60).toISOString(),
-    updatedAt: new Date().toISOString(),
-    payments: [],
-  },
-  {
-    id: 'v-103',
-    storeName: 'Apex Electronics & Appliances',
-    ownerName: 'Aarav Gupta',
-    email: 'aarav.retail@gmail.com',
-    phone: '+91 99887 76655',
-    address: 'Ground Floor, Silver Oaks Plaza',
-    societyName: 'Silver Oaks Society',
-    gstin: '07CCCCC2222C1Z7',
-    category: 'Electronics & Repairs',
-    status: 'active',
-    subscriptionTier: 'free',
-    subscriptionRenewalDate: new Date(Date.now() + 15 * 86400000).toISOString(),
-    totalEarnings: 120000,
-    totalOrdersCount: 640,
-    avatarUrl: '',
-    createdAt: new Date(Date.now() - 3600000 * 24 * 15).toISOString(),
-    updatedAt: new Date().toISOString(),
-    payments: [],
-  },
-  {
-    id: 'v-104',
-    storeName: 'Rohan Electronics & Supplies',
-    ownerName: 'Rohan Mehta',
-    email: 'rohan.m@gmail.com',
-    phone: '+91 97888 33445',
-    address: 'Shop 5, Prestige Commercial Tower',
-    societyName: 'Prestige Heights',
-    gstin: '07DDDDD4444D1Z8',
-    category: 'Home Electronics',
-    status: 'suspended',
-    subscriptionTier: 'pro',
-    subscriptionRenewalDate: new Date(Date.now() - 5 * 86400000).toISOString(),
-    totalEarnings: 84000,
-    totalOrdersCount: 310,
-    avatarUrl: '',
-    createdAt: new Date(Date.now() - 3600000 * 24 * 90).toISOString(),
-    updatedAt: new Date().toISOString(),
-    payments: [],
-  },
-];
-
-const INITIAL_PENDING_VENDORS: Vendor[] = [
-  {
-    id: 'v-107',
-    storeName: 'Sunrise Dairy & Provisions',
-    ownerName: 'Harish Chandra',
-    email: 'harish.sunrisedairy@gmail.com',
-    phone: '+91 98999 11223',
-    address: 'Shop #9, Sector 62 Main Market',
-    locationArea: 'Sector 62 Noida Enclave',
-    societyName: 'Sunrise Residency',
-    gstin: '07GGGGG7777G1Z1',
-    panNumber: 'GHIJK5678L',
-    fssaiNumber: 'FSSAI-2026-8841',
-    category: 'Dairy & Beverages',
-    status: 'on_hold',
-    submissionTimestamp: '2026-08-31 11:15:00',
-    holdReason: 'Clear copy of FSSAI Food License and store front photo required.',
-    holdTimestamp: '2026-08-31 12:00:00',
-    hasVendorUpdate: true,
-    vendorUpdateTimestamp: '2026-08-31 14:10:00',
-    comments: [
-      {
-        id: 'c-107-1',
-        author: 'Super Admin',
-        role: 'admin',
-        text: 'Application placed on hold. Reason: Clear copy of FSSAI Food License and store front photo required. Email dispatched to vendor.',
-        createdAt: '2026-08-31 12:00:00',
-      },
-      {
-        id: 'c-107-2',
-        author: 'Harish Chandra (Vendor Portal Settings)',
-        role: 'vendor',
-        text: 'Vendor updated store details in Vendor Portal -> Settings -> Vendor Details: Uploaded renewed FSSAI license certificate (FSSAI-2026-8841) and fresh high-resolution store photo.',
-        createdAt: '2026-08-31 14:10:00',
-        isResubmission: true,
-      },
-    ],
-    documents: [
-      {
-        id: 'doc-v-107-gst',
-        name: 'GST Registration Certificate.pdf',
-        type: 'GST_CERTIFICATE',
-        url: '/docs/gst-cert.pdf',
-        status: 'VERIFIED',
-        uploadedAt: '2026-08-31 11:15:00',
-      },
-      {
-        id: 'doc-v-107-fssai',
-        name: 'Renewed FSSAI Food License 2026.pdf',
-        type: 'BUSINESS_LICENSE',
-        url: '/docs/fssai-license-renewed.pdf',
-        status: 'VERIFIED',
-        uploadedAt: '2026-08-31 14:10:00',
-      },
-      {
-        id: 'doc-v-107-store',
-        name: 'Updated Store Front Photo.jpeg',
-        type: 'STORE_PHOTO',
-        url: 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=300',
-        status: 'VERIFIED',
-        uploadedAt: '2026-08-31 14:10:00',
-      },
-    ],
-    subscriptionTier: 'pro',
-    subscriptionRenewalDate: new Date(Date.now() + 30 * 86400000).toISOString(),
-    totalEarnings: 0,
-    totalOrdersCount: 0,
-    avatarUrl: 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=300',
-    createdAt: '2026-08-31 11:15:00',
-    updatedAt: '2026-08-31 14:10:00',
-    payments: [],
-  },
-  {
-    id: 'v-105',
-    storeName: 'Royal Bakers & Confectionery',
-    ownerName: 'Vikram Singh',
-    email: 'vikram.royalbakers@gmail.com',
-    phone: '+91 98444 55667',
-    address: 'Shop 4, Sunrise Commercial Complex',
-    locationArea: 'Sunrise Enclave Area',
-    societyName: 'Sunrise Apartments',
-    gstin: '07EEEEE5555E1Z9',
-    fssaiNumber: 'FSSAI-2026-5540',
-    category: 'Bakery & Desserts',
-    status: 'pending',
-    submissionTimestamp: '2026-08-31 13:40:00',
-    documents: [
-      {
-        id: 'doc-v-105-gst',
-        name: 'GST Registration Certificate.pdf',
-        type: 'GST_CERTIFICATE',
-        url: '/docs/gst-cert.pdf',
-        status: 'VERIFIED',
-        uploadedAt: '2026-08-31 13:40:00',
-      },
-      {
-        id: 'doc-v-105-id',
-        name: 'Owner Govt Aadhaar Card.pdf',
-        type: 'GOVT_ID',
-        url: '/docs/owner-id.pdf',
-        status: 'VERIFIED',
-        uploadedAt: '2026-08-31 13:40:00',
-      },
-    ],
-    subscriptionTier: 'pro',
-    subscriptionRenewalDate: new Date(Date.now() + 30 * 86400000).toISOString(),
-    totalEarnings: 0,
-    totalOrdersCount: 0,
-    avatarUrl: '',
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-    payments: [],
-  },
-  {
-    id: 'v-106',
-    storeName: 'Green Leaf Organic Vegetables',
-    ownerName: 'Ananya Sharma',
-    email: 'ananya.greenleaf@gmail.com',
-    phone: '+91 97222 33445',
-    address: 'Stall 2, Anupam Gate Market',
-    locationArea: 'Anupam Market Sector',
-    societyName: 'Anupam Society',
-    gstin: '07FFFFF6666F1Z0',
-    fssaiNumber: 'FSSAI-2026-7730',
-    category: 'Organic Fruits & Vegetables',
-    status: 'pending',
-    submissionTimestamp: '2026-08-31 14:05:00',
-    documents: [],
-    subscriptionTier: 'enterprise',
-    subscriptionRenewalDate: new Date(Date.now() + 60 * 86400000).toISOString(),
-    totalEarnings: 0,
-    totalOrdersCount: 0,
-    avatarUrl: '',
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-    payments: [],
-  },
-];
+const INITIAL_FALLBACK_VENDORS: Vendor[] = [];
+const INITIAL_PENDING_VENDORS: Vendor[] = [];
 
 export const getLocalVendors = (): Vendor[] => {
   try {
     const raw = localStorage.getItem(LOCAL_VENDORS_KEY);
     if (raw) {
       const parsed = JSON.parse(raw);
-      if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      if (Array.isArray(parsed)) return parsed;
     }
   } catch {}
-  return INITIAL_FALLBACK_VENDORS;
+  return [];
 };
 
 export const saveLocalVendors = (vendors: Vendor[]) => {
@@ -265,7 +43,7 @@ export const getLocalPendingVendors = (): Vendor[] => {
       if (Array.isArray(parsed)) return parsed;
     }
   } catch {}
-  return INITIAL_PENDING_VENDORS;
+  return [];
 };
 
 export const saveLocalPendingVendors = (vendors: Vendor[]) => {
@@ -276,58 +54,42 @@ export const saveLocalPendingVendors = (vendors: Vendor[]) => {
 
 export const vendorsApi = {
   /**
-   * GET /api/admin/vendors
+   * GET /api/vendors (All Vendors across backend)
    */
   getAllVendors: async (params?: VendorListParams): Promise<Vendor[]> => {
     const rawCleaned = cleanQueryParams(params);
     const cleaned: Record<string, any> = rawCleaned ? { ...rawCleaned } : {};
 
-    const isRenderCloud =
-      String(ENV.API_BASE_URL || '').includes('onrender.com') ||
-      String(axiosInstance.defaults.baseURL || '').includes('onrender.com');
-
-    // Ensure all vendors across all pages are returned from backend
-    if (!cleaned.limit) {
-      cleaned.limit = 1000;
-    }
-
-    // Render cloud backend expects status parameter to be passed for /vendors
-    if (!cleaned.status && !cleaned.search) {
-      cleaned.status = 'all';
-    }
-
-    const primaryEndpoint = isRenderCloud ? '/vendors' : '/admin/vendors';
-    const fallbackEndpoint = isRenderCloud ? '/admin/vendors' : '/vendors';
-
+    const endpoints = ['/vendors', '/admin/vendors', '/vendors/all', '/admin/requests'];
     let rawData: any = null;
-    try {
-      const response = await axiosInstance.get<any>(primaryEndpoint, { params: cleaned });
-      rawData = response.data?.data || response.data?.vendors || response.data;
-    } catch {
+
+    for (const ep of endpoints) {
       try {
-        const response = await axiosInstance.get<any>(fallbackEndpoint, { params: cleaned });
-        rawData = response.data?.data || response.data?.vendors || response.data;
-      } catch (err) {
-        console.warn('Backend vendors fetch failed, using fallback vendors:', err);
+        const response = await axiosInstance.get<any>(ep, { params: cleaned });
+        const resData = response.data?.data || response.data?.vendors || response.data?.requests || response.data;
+        if (Array.isArray(resData)) {
+          rawData = resData;
+          break;
+        }
+      } catch {
+        try {
+          // Retry endpoint without query parameters if params format differed
+          const response = await axiosInstance.get<any>(ep);
+          const resData = response.data?.data || response.data?.vendors || response.data?.requests || response.data;
+          if (Array.isArray(resData)) {
+            rawData = resData;
+            break;
+          }
+        } catch {}
       }
     }
 
-    if (Array.isArray(rawData) && rawData.length > 0) {
+    if (Array.isArray(rawData)) {
       const uniqueMap = new Map<string, Vendor>();
       for (const rawItem of rawData) {
         const domainVendor = mapVendorDTOToDomain(rawItem);
         if (!uniqueMap.has(domainVendor.id)) {
           uniqueMap.set(domainVendor.id, domainVendor);
-        } else {
-          const existing = uniqueMap.get(domainVendor.id)!;
-          if (domainVendor.payments && domainVendor.payments.length > 0) {
-            const existingTxnIds = new Set(existing.payments.map((p) => p.transaction_id));
-            for (const p of domainVendor.payments) {
-              if (!existingTxnIds.has(p.transaction_id)) {
-                existing.payments.push(p);
-              }
-            }
-          }
         }
       }
       const domainList = Array.from(uniqueMap.values());
@@ -352,7 +114,7 @@ export const vendorsApi = {
         rawData = response.data?.data || response.data?.requests || response.data;
       }
 
-      if (Array.isArray(rawData) && rawData.length > 0) {
+      if (Array.isArray(rawData)) {
         const uniqueMap = new Map<string, Vendor>();
         for (const rawItem of rawData) {
           const domainVendor = mapVendorDTOToDomain(rawItem);
@@ -365,7 +127,7 @@ export const vendorsApi = {
         return domainList;
       }
     } catch (err) {
-      console.warn('Backend pending requests fetch failed, using fallback pending vendors:', err);
+      console.warn('Backend pending requests fetch failed:', err);
     }
     return getLocalPendingVendors();
   },
@@ -428,12 +190,12 @@ export const vendorsApi = {
         rawData = response.data?.data || response.data?.requests || response.data;
       }
 
-      if (Array.isArray(rawData) && rawData.length > 0) {
+      if (Array.isArray(rawData)) {
         const domainList = rawData.map(mapVendorDTOToDomain);
         return domainList.sort((a, b) => (b.hasResubmitted ? 1 : 0) - (a.hasResubmitted ? 1 : 0));
       }
     } catch (err) {
-      console.warn('Backend on-hold fetch failed, fallback to local storage:', err);
+      console.warn('Backend on-hold fetch failed:', err);
     }
 
     const pending = getLocalPendingVendors();
@@ -571,29 +333,51 @@ export const vendorsApi = {
   },
 
   /**
-   * POST /api/admin/vendors/:vendorId/status
+   * POST /api/admin/vendors/:vendorId/status (Block / Unblock Vendor)
    */
   toggleVendorStatus: async (
     vendorId: string | number,
     status: 'active' | 'suspended'
   ): Promise<VendorApprovalResponse> => {
     const sId = String(vendorId);
-    try {
-      const response = await axiosInstance.post<VendorApprovalResponse>(
-        `/admin/vendors/${vendorId}/status`,
-        { status }
-      );
-      return response.data;
-    } catch {
-      const vendors = getLocalVendors();
-      const updated = vendors.map((v) => {
-        if (v.id === sId) {
-          return { ...v, status, updatedAt: new Date().toISOString() };
-        }
-        return v;
-      });
-      saveLocalVendors(updated);
 
+    // Save override locally for instant UI responsiveness and persistent fallback
+    setVendorStatusOverride(sId, status);
+
+    const vendors = getLocalVendors();
+    const updatedLocal = vendors.map((v) => {
+      if (v.id === sId) {
+        return { ...v, status, updatedAt: new Date().toISOString() };
+      }
+      return v;
+    });
+    saveLocalVendors(updatedLocal);
+
+    const targetBackendStatus = status === 'suspended' ? 'SUSPENDED' : 'ACTIVE';
+
+    try {
+      try {
+        const response = await axiosInstance.post<VendorApprovalResponse>(
+          `/admin/vendors/${vendorId}/status`,
+          { status }
+        );
+        return response.data;
+      } catch {
+        try {
+          const response = await axiosInstance.patch<VendorApprovalResponse>(
+            `/admin/vendors/${vendorId}`,
+            { status: targetBackendStatus }
+          );
+          return response.data;
+        } catch {
+          const response = await axiosInstance.put<VendorApprovalResponse>(
+            `/vendors/${vendorId}/status`,
+            { status: targetBackendStatus }
+          );
+          return response.data;
+        }
+      }
+    } catch {
       return {
         message: `Vendor status updated to ${status.toUpperCase()}`,
         vendor_id: vendorId,

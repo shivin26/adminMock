@@ -7,7 +7,7 @@ export interface MenuItem {
   iconName: string;
   badge?: string;
   badgeVariant?: 'primary' | 'success' | 'warning' | 'danger';
-  requiredPower?: PowerSection;
+  requiredPower?: PowerSection | 'OVERVIEW' | 'USERS';
 }
 
 export const MAIN_MENU_CONFIG: MenuItem[] = [
@@ -16,12 +16,13 @@ export const MAIN_MENU_CONFIG: MenuItem[] = [
     label: 'Dashboard',
     path: '/dashboard/overview',
     iconName: 'LayoutDashboard',
+    requiredPower: 'OVERVIEW',
   },
   {
     id: 'societies',
-    label: 'Societies',
+    label: 'Areas',
     path: '/dashboard/societies',
-    iconName: 'Building2',
+    iconName: 'MapPin',
     requiredPower: 'SOCIETIES',
   },
   {
@@ -36,6 +37,7 @@ export const MAIN_MENU_CONFIG: MenuItem[] = [
     label: 'Users',
     path: '/dashboard/users',
     iconName: 'UserCheck',
+    requiredPower: 'USERS',
   },
   {
     id: 'subscriptions',

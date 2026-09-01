@@ -20,7 +20,8 @@ export const useTickets = (filters?: TicketFilterParams) => {
   return useQuery({
     queryKey: CACHE_KEYS.support.list(filters),
     queryFn: () => supportApi.getTickets(filters),
-    staleTime: 2 * 60 * 1000,
+    staleTime: 0,
+    refetchOnWindowFocus: true,
   });
 };
 

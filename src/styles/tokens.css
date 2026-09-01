@@ -23,8 +23,8 @@
   --status-danger: #E11D48;
 
   /* Typography Variables */
-  --font-serif: 'Playfair Display', 'Cormorant Garamond', Georgia, serif;
-  --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  --font-serif: 'Inter', 'Playfair Display', Georgia, serif;
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
 
   /* Mapped Design Tokens */
   --color-bg-primary: var(--background);

@@ -38,7 +38,7 @@ export const PeopleAnalyticsHeader: React.FC<PeopleAnalyticsHeaderProps> = ({
         value={totalPeopleCount.toLocaleString()}
         subtitle="Registered resident & dual-role accounts"
         icon={<Users size={22} className="text-[#C4A066]" />}
-        change="+12.4%"
+        change={`${totalPeopleCount} Total Accounts`}
         isPositive={true}
         onClick={() => onSelectCategory?.('all')}
       />
@@ -48,7 +48,7 @@ export const PeopleAnalyticsHeader: React.FC<PeopleAnalyticsHeaderProps> = ({
         value={usersCount.toLocaleString()}
         subtitle="Active consumer accounts on Website"
         icon={<Activity size={22} className="text-[#D97706]" />}
-        change="+8.5%"
+        change={`${usersCount} Residents`}
         isPositive={true}
         onClick={() => onSelectCategory?.('user')}
       />
@@ -58,7 +58,7 @@ export const PeopleAnalyticsHeader: React.FC<PeopleAnalyticsHeaderProps> = ({
         value={dualRoleCount.toLocaleString()}
         subtitle="Dual role customer & store owners"
         icon={<Store size={22} className="text-[#18281F]" />}
-        change="+5.2%"
+        change={`${dualRoleCount} Dual Role Stores`}
         isPositive={true}
         onClick={() => onSelectCategory?.('user_vendor')}
       />
@@ -68,7 +68,7 @@ export const PeopleAnalyticsHeader: React.FC<PeopleAnalyticsHeaderProps> = ({
         value={(warnedCount + bannedCount).toLocaleString()}
         subtitle={`${bannedCount} accounts auto-banned via 3-strike meter`}
         icon={<ShieldAlert size={22} className="text-rose-500" />}
-        change="+2.1%"
+        change={`${warnedCount + bannedCount} Flagged Records`}
         isPositive={false}
         onClick={() => onSelectCategory?.('flagged')}
       />

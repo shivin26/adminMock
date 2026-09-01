@@ -253,12 +253,12 @@ export const subscriptionsApi = {
       const raw = response.data?.data || response.data;
       if (raw && (raw.mrr !== undefined || raw.totalActiveSubscriptions !== undefined)) {
         return {
-          totalActiveSubscriptions: Number(raw.totalActiveSubscriptions ?? raw.active_subscriptions ?? 16),
-          mrr: Number(raw.mrr ?? 47984),
-          upcomingRenewalsCount: Number(raw.upcomingRenewalsCount ?? raw.expiring_soon_count ?? 4),
+          totalActiveSubscriptions: Number(raw.totalActiveSubscriptions ?? raw.active_subscriptions ?? 0),
+          mrr: Number(raw.mrr ?? 0),
+          upcomingRenewalsCount: Number(raw.upcomingRenewalsCount ?? raw.expiring_soon_count ?? 0),
           tierBreakdown: raw.tierBreakdown || raw.tier_breakdown || {
             free: 0,
-            pro: 16,
+            pro: 0,
             enterprise: 0,
           },
         };
@@ -273,11 +273,11 @@ export const subscriptionsApi = {
 
     try {
       const vendors = await vendorsApi.getAllVendors();
-      const activeCount = vendors.filter((v) => v.status === 'active').length || 16;
+      const activeCount = vendors.filter((v) => v.status === 'active').length;
       return {
         totalActiveSubscriptions: activeCount,
         mrr: activeCount * 2999,
-        upcomingRenewalsCount: 4,
+        upcomingRenewalsCount: 0,
         tierBreakdown: {
           free: 0,
           pro: activeCount,
@@ -287,12 +287,12 @@ export const subscriptionsApi = {
     } catch {}
 
     return {
-      totalActiveSubscriptions: 16,
-      mrr: 47984,
-      upcomingRenewalsCount: 4,
+      totalActiveSubscriptions: 0,
+      mrr: 0,
+      upcomingRenewalsCount: 0,
       tierBreakdown: {
         free: 0,
-        pro: 16,
+        pro: 0,
         enterprise: 0,
       },
     };

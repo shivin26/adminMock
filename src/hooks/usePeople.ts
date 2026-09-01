@@ -10,7 +10,8 @@ export const usePeopleList = (filters?: PeopleFilterOptions) => {
   return useQuery({
     queryKey: ['people', 'list', filters],
     queryFn: () => peopleApi.getPeople(filters),
-    staleTime: 30000,
+    staleTime: 0,
+    refetchOnWindowFocus: true,
   });
 };
 
@@ -26,7 +27,8 @@ export const usePeopleAnalytics = () => {
   return useQuery({
     queryKey: ['people', 'analytics'],
     queryFn: () => peopleApi.getPeopleAnalytics(),
-    staleTime: 60000,
+    staleTime: 0,
+    refetchOnWindowFocus: true,
   });
 };
 

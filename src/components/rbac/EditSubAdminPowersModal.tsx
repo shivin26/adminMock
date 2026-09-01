@@ -5,6 +5,8 @@ import { PowerSectionCheckboxGrid } from './PowerSectionCheckboxGrid';
 import type { SubAdminUser, PowerSection } from '../../types/rbac.types';
 import { ShieldCheck } from 'lucide-react';
 
+import { usePermission } from '../../hooks/usePermission';
+
 export interface EditSubAdminPowersModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -20,6 +22,7 @@ export const EditSubAdminPowersModal: React.FC<EditSubAdminPowersModalProps> = (
   subAdmin,
   isLoading = false,
 }) => {
+  const { isSuperAdmin } = usePermission();
   const [selectedPowers, setSelectedPowers] = useState<PowerSection[]>([]);
 
   useEffect(() => {
@@ -29,6 +32,13 @@ export const EditSubAdminPowersModal: React.FC<EditSubAdminPowersModalProps> = (
   }, [subAdmin]);
 
   if (!subAdmin) return null;
+
+  const handleConfirm = () => {
+    const sanitized = isSuperAdmin
+      ? selectedPowers
+      : selectedPowers.filter((p) => p !== 'SUB_ADMINS');
+    onConfirm(subAdmin.id, sanitized);
+  };
 
   return (
     <Modal
@@ -52,7 +62,7 @@ export const EditSubAdminPowersModal: React.FC<EditSubAdminPowersModalProps> = (
             variant="primary"
             leftIcon={<ShieldCheck size={16} />}
             isLoading={isLoading}
-            onClick={() => onConfirm(subAdmin.id, selectedPowers)}
+            onClick={handleConfirm}
           >
             Update Power Permissions
           </Button>

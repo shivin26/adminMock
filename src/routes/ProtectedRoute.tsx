@@ -8,17 +8,18 @@ import type { PowerSection } from '../types/rbac.types';
 export interface ProtectedRouteProps {
   children?: React.ReactNode;
   allowedRoles?: string[];
-  requiredPower?: PowerSection;
+  requiredPower?: PowerSection | 'OVERVIEW' | 'USERS';
 }
 
-const getFallbackRoute = (hasPower: (p?: PowerSection) => boolean): string => {
+const getFallbackRoute = (hasPower: (p?: PowerSection | 'OVERVIEW' | 'USERS') => boolean): string => {
+  if (hasPower('SUB_ADMINS')) return '/dashboard/sub-admins';
   if (hasPower('SOCIETIES')) return '/dashboard/societies';
   if (hasPower('VENDORS')) return '/dashboard/vendors';
   if (hasPower('SUBSCRIPTIONS')) return '/dashboard/subscriptions';
   if (hasPower('SUPPORT')) return '/dashboard/support';
   if (hasPower('SETTINGS')) return '/dashboard/settings';
-  if (hasPower('SUB_ADMINS')) return '/dashboard/sub-admins';
-  return '/dashboard/overview';
+  if (hasPower('OVERVIEW')) return '/dashboard/overview';
+  return '/auth/login';
 };
 
 export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({

@@ -57,8 +57,9 @@ export const AppRoutes: React.FC = () => {
         {/* Protected Dashboard Shell Routes */}
         <Route element={<ProtectedRoute />}>
           <Route path="/" element={<MainDashboardLayout />}>
-            <Route index element={<Navigate to="/dashboard/overview" replace />} />
-            <Route path="dashboard/overview" element={<OverviewPage />} />
+            <Route element={<ProtectedRoute requiredPower="OVERVIEW" />}>
+              <Route path="dashboard/overview" element={<OverviewPage />} />
+            </Route>
 
             <Route element={<ProtectedRoute requiredPower="SOCIETIES" />}>
               <Route path="dashboard/societies" element={<SocietiesPage />} />
@@ -68,7 +69,9 @@ export const AppRoutes: React.FC = () => {
               <Route path="dashboard/vendors" element={<VendorsPage />} />
             </Route>
 
-            <Route path="dashboard/users" element={<UsersPage />} />
+            <Route element={<ProtectedRoute requiredPower="USERS" />}>
+              <Route path="dashboard/users" element={<UsersPage />} />
+            </Route>
             <Route path="dashboard/people" element={<Navigate to="/dashboard/users" replace />} />
 
             <Route element={<ProtectedRoute requiredPower="SUBSCRIPTIONS" />}>

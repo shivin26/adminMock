@@ -29,15 +29,6 @@ import {
   ResponsiveContainer,
 } from 'recharts';
 
-const REVENUE_ANALYTICS_DATA = [
-  { month: 'Jan', revenue: 140000, vendors: 12 },
-  { month: 'Feb', revenue: 185000, vendors: 15 },
-  { month: 'Mar', revenue: 210000, vendors: 18 },
-  { month: 'Apr', revenue: 260000, vendors: 22 },
-  { month: 'May', revenue: 310000, vendors: 28 },
-  { month: 'Jun', revenue: 420000, vendors: 35 },
-];
-
 export const OverviewPage: React.FC = () => {
   const navigate = useNavigate();
   const { data: rawSocieties } = useSocieties();
@@ -69,7 +60,30 @@ export const OverviewPage: React.FC = () => {
     }
   };
 
-  const totalPlatformRevenue = vendors.reduce((sum, v) => sum + (v.totalEarnings || 0), 0) || 1663000;
+  const totalPlatformRevenue = vendors.reduce((sum, v) => sum + (v.totalEarnings || 0), 0);
+
+  const revenueChartData = React.useMemo(() => {
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'];
+    const map: Record<string, { revenue: number; vendors: number }> = {};
+    months.forEach((m) => {
+      map[m] = { revenue: 0, vendors: 0 };
+    });
+
+    vendors.forEach((v) => {
+      const date = new Date(v.createdAt || Date.now());
+      const monthStr = date.toLocaleString('en-US', { month: 'short' });
+      if (map[monthStr]) {
+        map[monthStr].revenue += v.totalEarnings || 0;
+        map[monthStr].vendors += 1;
+      }
+    });
+
+    return months.map((m) => ({
+      month: m,
+      revenue: map[m].revenue,
+      vendors: map[m].vendors,
+    }));
+  }, [vendors]);
 
   return (
     <div className="overview-page">
@@ -94,7 +108,7 @@ export const OverviewPage: React.FC = () => {
           <StatCard
             title="Total Platform Revenue"
             value={formatCurrency(totalPlatformRevenue)}
-            change="+24.8% vs last month"
+            change={`${activeVendorsCount} Active Monetized Merchants`}
             isPositive={true}
             icon={<IndianRupee size={22} />}
             onClick={() => navigate('/dashboard/subscriptions')}
@@ -104,7 +118,7 @@ export const OverviewPage: React.FC = () => {
           <StatCard
             title="Active Vendors"
             value={activeVendorsCount}
-            change="+12 onboarding"
+            change={`${pendingVendors.length} Onboarding Pending`}
             isPositive={true}
             icon={<Store size={22} />}
             onClick={() => navigate('/dashboard/vendors')}
@@ -114,7 +128,7 @@ export const OverviewPage: React.FC = () => {
           <StatCard
             title="Active Societies"
             value={activeSocietiesCount}
-            change="+3 this month"
+            change={`${societies.length} Total Coverage Areas`}
             isPositive={true}
             icon={<CreditCard size={22} />}
             onClick={() => navigate('/dashboard/societies')}
@@ -123,8 +137,8 @@ export const OverviewPage: React.FC = () => {
         {hasPower('SUBSCRIPTIONS') && (
           <StatCard
             title="Platform Growth Rate"
-            value="34.2%"
-            change="+5.1% acceleration"
+            value={`${totalVendors > 0 ? Math.round((activeVendorsCount / totalVendors) * 100) : 0}%`}
+            change="Active Merchant Ratio"
             isPositive={true}
             icon={<TrendingUp size={22} />}
             onClick={() => navigate('/dashboard/subscriptions')}
@@ -141,11 +155,11 @@ export const OverviewPage: React.FC = () => {
                 <h3 className="chart-title">Monthly Revenue Trend (₹)</h3>
                 <p className="chart-subtitle">Gross subscription revenue collected</p>
               </div>
-              <Badge variant="success">+32.4% YoY</Badge>
+              <Badge variant="success">Live API Sync</Badge>
             </div>
             <div className="chart-wrapper">
               <ResponsiveContainer width="100%" height={260}>
-                <AreaChart data={REVENUE_ANALYTICS_DATA}>
+                <AreaChart data={revenueChartData}>
                   <defs>
                     <linearGradient id="colorRev" x1="0" y1="0" x2="0" y2="1">
                       <stop offset="5%" stopColor="#C4A066" stopOpacity={0.4} />
@@ -189,7 +203,7 @@ export const OverviewPage: React.FC = () => {
             </div>
             <div className="chart-wrapper">
               <ResponsiveContainer width="100%" height={260}>
-                <BarChart data={REVENUE_ANALYTICS_DATA}>
+                <BarChart data={revenueChartData}>
                   <CartesianGrid strokeDasharray="3 3" stroke="#E4DCC9" />
                   <XAxis dataKey="month" stroke="#6B7C70" fontSize={12} />
                   <YAxis stroke="#6B7C70" fontSize={12} />

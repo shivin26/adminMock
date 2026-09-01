@@ -7,18 +7,30 @@ export const usePermission = () => {
   const rawRole = String(user?.role || '').toLowerCase();
   const isSuperAdmin =
     rawRole === 'super_admin' ||
-    rawRole === 'admin' ||
     rawRole === 'superadmin' ||
     rawRole === 'super';
 
   const userPowers: PowerSection[] = isSuperAdmin
     ? ['SOCIETIES', 'VENDORS', 'SUBSCRIPTIONS', 'SUPPORT', 'SETTINGS', 'SUB_ADMINS']
-    : (user as any)?.powers || [];
+    : Array.isArray((user as any)?.powers)
+    ? (user as any).powers
+    : [];
 
-  const hasPower = (section?: PowerSection): boolean => {
-    if (!section) return true;
+  const hasPower = (section?: PowerSection | 'OVERVIEW' | 'USERS'): boolean => {
     if (isSuperAdmin) return true;
-    return userPowers.includes(section);
+    if (!section) return userPowers.length > 0;
+
+    if (section === 'OVERVIEW') {
+      // Dashboard overview is visible if sub-admin has core operational powers (Societies, Vendors, Subscriptions, Support)
+      return userPowers.some((p) => ['SOCIETIES', 'VENDORS', 'SUBSCRIPTIONS', 'SUPPORT'].includes(p));
+    }
+
+    if (section === 'USERS') {
+      // Users directory is visible if sub-admin has Vendors or Societies power
+      return userPowers.some((p) => ['SOCIETIES', 'VENDORS'].includes(p));
+    }
+
+    return userPowers.includes(section as PowerSection);
   };
 
   return {

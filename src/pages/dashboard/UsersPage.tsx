@@ -7,10 +7,12 @@ import { PeopleAnalyticsHeader } from '../../components/people/PeopleAnalyticsHe
 import { PeopleEnterpriseDataTable } from '../../components/people/PeopleEnterpriseDataTable';
 import { PeopleFilterModal } from '../../components/people/PeopleFilterModal';
 import { PeopleDetailsDrawer } from '../../components/people/PeopleDetailsDrawer';
+import { VendorDetailsDrawer } from '../../components/vendors/VendorDetailsDrawer';
 import { AddPersonModal } from '../../components/people/AddPersonModal';
 import { usePeopleList, useFlagPerson } from '../../hooks/usePeople';
 import { useToast } from '../../context/ToastContext';
 import type { PeopleFilterOptions } from '../../types/people.types';
+import type { Vendor } from '../../types/vendor.types';
 import { Search, Filter, UserPlus, RefreshCw, Users } from 'lucide-react';
 
 export const UsersPage: React.FC = () => {
@@ -30,6 +32,7 @@ export const UsersPage: React.FC = () => {
   const peopleList = Array.isArray(rawPeopleList) ? rawPeopleList : [];
 
   const [selectedPersonId, setSelectedPersonId] = useState<string | null>(null);
+  const [selectedVendorForDrawer, setSelectedVendorForDrawer] = useState<Vendor | null>(null);
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 
@@ -214,6 +217,14 @@ export const UsersPage: React.FC = () => {
         isOpen={Boolean(selectedPersonId)}
         onClose={() => setSelectedPersonId(null)}
         personId={selectedPersonId}
+        onSelectVendor={(vendor) => setSelectedVendorForDrawer(vendor)}
+      />
+
+      {/* Vendor Details Drawer */}
+      <VendorDetailsDrawer
+        isOpen={Boolean(selectedVendorForDrawer)}
+        onClose={() => setSelectedVendorForDrawer(null)}
+        vendor={selectedVendorForDrawer}
       />
 
       {/* Add User Profile Modal */}

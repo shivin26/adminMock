@@ -15,9 +15,23 @@ const INITIAL_SUB_ADMINS: SubAdminUser[] = [
     email: 'vikram.admin@digilocal.com',
     password: 'password123',
     role: 'sub_admin',
-    powers: ['SOCIETIES', 'VENDORS'],
+    powers: ['SOCIETIES', 'VENDORS', 'SUB_ADMINS'],
     status: 'active',
     createdAt: '2026-08-01T10:00:00Z',
+    createdBy: 'Super Admin',
+    createdRole: 'super_admin',
+  },
+  {
+    id: 'sub-aarushi',
+    name: 'Aarushi Verma',
+    email: 'aarushi.admin@digilocal.com',
+    password: 'password123',
+    role: 'sub_admin',
+    powers: ['SOCIETIES', 'VENDORS', 'SUB_ADMINS'],
+    status: 'active',
+    createdAt: '2026-08-01T11:00:00Z',
+    createdBy: 'Super Admin',
+    createdRole: 'super_admin',
   },
   {
     id: 'sub-2',
@@ -28,13 +42,63 @@ const INITIAL_SUB_ADMINS: SubAdminUser[] = [
     powers: ['SUBSCRIPTIONS'],
     status: 'active',
     createdAt: '2026-08-02T14:30:00Z',
+    createdBy: 'Sub-Admin Vikram Mehta',
+    createdRole: 'sub_admin',
+  },
+  {
+    id: 'sub-raj',
+    name: 'Raj Kumar',
+    email: 'raj.admin@digilocal.com',
+    password: 'password123',
+    role: 'sub_admin',
+    powers: ['SOCIETIES', 'VENDORS'],
+    status: 'active',
+    createdAt: '2026-08-15T12:00:00Z',
+    createdBy: 'Sub-Admin Aarushi Verma',
+    createdRole: 'sub_admin',
+  },
+  {
+    id: 'sub-jenga',
+    name: 'Jenga Roy',
+    email: 'jenga.admin@digilocal.com',
+    password: 'password123',
+    role: 'sub_admin',
+    powers: ['SUBSCRIPTIONS', 'SUPPORT'],
+    status: 'active',
+    createdAt: '2026-08-16T15:00:00Z',
+    createdBy: 'Sub-Admin Aarushi Verma',
+    createdRole: 'sub_admin',
   },
 ];
 
-const getLocalSubAdmins = (): SubAdminUser[] => {
+export const getLocalSubAdmins = (): SubAdminUser[] => {
   try {
     const raw = localStorage.getItem(LOCAL_STORAGE_KEY);
-    if (raw) return JSON.parse(raw);
+    if (raw) {
+      const list: SubAdminUser[] = JSON.parse(raw);
+      let modified = false;
+      const updated = list.map((item) => {
+        const nameLower = (item.name || '').toLowerCase();
+        if (
+          (nameLower.includes('raj') || nameLower.includes('jenga')) &&
+          (!item.createdBy || item.createdBy === 'Super Admin' || item.createdRole === 'super_admin')
+        ) {
+          modified = true;
+          return {
+            ...item,
+            createdBy: 'Sub-Admin Aarushi Verma',
+            createdRole: 'sub_admin' as const,
+          };
+        }
+        return item;
+      });
+
+      if (modified) {
+        localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(updated));
+        return updated;
+      }
+      return list;
+    }
   } catch {}
   return INITIAL_SUB_ADMINS;
 };
@@ -63,6 +127,8 @@ export const mapSubAdminDTOToDomain = (raw: any): SubAdminUser => {
         ? 'suspended'
         : 'active',
     createdAt: raw.created_at || raw.createdAt || new Date().toISOString(),
+    createdBy: raw.created_by || raw.createdBy || 'Super Admin',
+    createdRole: raw.created_role || raw.createdRole || 'super_admin',
   };
 };
 
@@ -104,6 +170,9 @@ export const subAdminsApi = {
         response = await axiosInstance.post<SubAdminUser>('/admin/sub-admins', payload);
       }
       const data = mapSubAdminDTOToDomain(response.data?.data || response.data);
+      if (payload.createdBy) data.createdBy = payload.createdBy;
+      if (payload.createdRole) data.createdRole = payload.createdRole;
+
       const current = getLocalSubAdmins();
       saveLocalSubAdmins([data, ...current]);
       return data;
@@ -117,6 +186,8 @@ export const subAdminsApi = {
         powers: payload.powers,
         status: 'active',
         createdAt: new Date().toISOString(),
+        createdBy: payload.createdBy || 'Super Admin',
+        createdRole: payload.createdRole || 'super_admin',
       };
       const current = getLocalSubAdmins();
       const updated = [newSubAdmin, ...current];
@@ -163,20 +234,52 @@ export const subAdminsApi = {
   ): Promise<SubAdminUser> => {
     try {
       const response = await axiosInstance.put<any>(`/admin/subadmins/${id}`, payload);
-      return response.data?.data || response.data;
+      const updatedBackend = response.data?.data || response.data;
+      const current = getLocalSubAdmins();
+      const updatedList = current.map((sub) => (sub.id === id ? { ...sub, powers: payload.powers } : sub));
+      saveLocalSubAdmins(updatedList);
+      
+      // Update active session user data if logged in
+      try {
+        const activeUserRaw = localStorage.getItem('digilocal_user_data');
+        if (activeUserRaw) {
+          const activeUser = JSON.parse(activeUserRaw);
+          if (activeUser.id === id || activeUser.email === updatedBackend?.email) {
+            activeUser.powers = payload.powers;
+            localStorage.setItem('digilocal_user_data', JSON.stringify(activeUser));
+          }
+        }
+      } catch {}
+
+      return updatedBackend;
     } catch {
       const current = getLocalSubAdmins();
+      let updatedTarget: SubAdminUser | null = null;
       const updatedList = current.map((sub) => {
         if (sub.id === id) {
-          return {
+          updatedTarget = {
             ...sub,
             powers: payload.powers,
             status: payload.status || sub.status,
           };
+          return updatedTarget;
         }
         return sub;
       });
       saveLocalSubAdmins(updatedList);
+
+      // Update active session user data if logged in
+      try {
+        const activeUserRaw = localStorage.getItem('digilocal_user_data');
+        if (activeUserRaw && updatedTarget) {
+          const activeUser = JSON.parse(activeUserRaw);
+          if (activeUser.id === id || activeUser.email === (updatedTarget as SubAdminUser).email) {
+            activeUser.powers = payload.powers;
+            localStorage.setItem('digilocal_user_data', JSON.stringify(activeUser));
+          }
+        }
+      } catch {}
+
       const updated = updatedList.find((s) => s.id === id);
       if (!updated) throw new Error('Sub-admin not found');
       return updated;

@@ -3,6 +3,7 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import {
   LayoutDashboard,
   Building2,
+  MapPin,
   Users,
   UserCheck,
   CreditCard,
@@ -28,6 +29,7 @@ export interface SidebarProps {
 const ICON_MAP: Record<string, React.ReactNode> = {
   LayoutDashboard: <LayoutDashboard size={20} />,
   Building2: <Building2 size={20} />,
+  MapPin: <MapPin size={20} />,
   Users: <Users size={20} />,
   UserCheck: <UserCheck size={20} />,
   CreditCard: <CreditCard size={20} />,

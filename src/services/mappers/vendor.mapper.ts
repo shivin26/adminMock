@@ -1,5 +1,23 @@
 import type { Vendor, RawVendorDTO, VendorStatus } from '../../types/vendor.types';
 
+const OVERRIDES_STORAGE_KEY = 'digilocal_vendor_status_overrides';
+
+export const getVendorStatusOverrides = (): Record<string, VendorStatus> => {
+  try {
+    const raw = localStorage.getItem(OVERRIDES_STORAGE_KEY);
+    if (raw) return JSON.parse(raw);
+  } catch {}
+  return {};
+};
+
+export const setVendorStatusOverride = (vendorId: string, status: VendorStatus) => {
+  try {
+    const overrides = getVendorStatusOverrides();
+    overrides[vendorId] = status;
+    localStorage.setItem(OVERRIDES_STORAGE_KEY, JSON.stringify(overrides));
+  } catch {}
+};
+
 export const mapVendorDTOToDomain = (raw: any): Vendor => {
   const vId = raw.vendor_id || raw.id || '1';
   const statusLower = String(raw.status || 'ACTIVE').toLowerCase();
@@ -18,6 +36,12 @@ export const mapVendorDTOToDomain = (raw: any): Vendor => {
     normalizedStatus = 'expired';
   } else {
     normalizedStatus = 'active';
+  }
+
+  // Check persistent admin status overrides
+  const overrides = getVendorStatusOverrides();
+  if (overrides[String(vId)]) {
+    normalizedStatus = overrides[String(vId)];
   }
 
   const ordersCount = Number(raw.total_orders ?? raw.total_orders_count ?? raw.totalOrdersCount ?? raw.totalOrders ?? 0);

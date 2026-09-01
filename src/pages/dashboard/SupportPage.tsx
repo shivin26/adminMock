@@ -192,7 +192,7 @@ export const SupportPage: React.FC = () => {
             <StatCard
               title="Total Support Inquiries"
               value={counts.all}
-              change="Real-time ticket volume"
+              change={`${counts.all} Total Tickets`}
               isPositive={true}
               icon={<Headphones size={22} />}
               onClick={() => setActiveTab('all')}
@@ -200,15 +200,15 @@ export const SupportPage: React.FC = () => {
             <StatCard
               title="Open Tickets"
               value={counts.open}
-              change="Awaiting staff action"
-              isPositive={false}
+              change={`${counts.open} Awaiting Staff Action`}
+              isPositive={counts.open === 0}
               icon={<AlertTriangle size={22} />}
               onClick={() => setActiveTab('open')}
             />
             <StatCard
               title="In Progress"
               value={counts.in_progress}
-              change="Under investigation"
+              change={`${counts.in_progress} Under Active Review`}
               isPositive={true}
               icon={<Clock size={22} />}
               onClick={() => setActiveTab('in_progress')}
@@ -216,7 +216,7 @@ export const SupportPage: React.FC = () => {
             <StatCard
               title="Resolved Tickets"
               value={counts.resolved}
-              change="SLA compliant"
+              change={`${counts.resolved} Resolved Items`}
               isPositive={true}
               icon={<CheckCircle2 size={22} />}
               onClick={() => setActiveTab('resolved')}

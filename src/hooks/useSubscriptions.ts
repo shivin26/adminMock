@@ -10,7 +10,8 @@ export const useSubscriptions = (params?: SubscriptionListParams) => {
   return useQuery({
     queryKey: CACHE_KEYS.subscriptions.list(params),
     queryFn: () => subscriptionsApi.getSubscriptions(params),
-    staleTime: 3 * 60 * 1000,
+    staleTime: 0,
+    refetchOnWindowFocus: true,
   });
 };
 
@@ -18,7 +19,8 @@ export const useSubscriptionStats = () => {
   return useQuery({
     queryKey: CACHE_KEYS.subscriptions.stats,
     queryFn: () => subscriptionsApi.getStats(),
-    staleTime: 5 * 60 * 1000,
+    staleTime: 0,
+    refetchOnWindowFocus: true,
   });
 };
 

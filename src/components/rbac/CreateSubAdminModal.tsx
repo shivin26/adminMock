@@ -6,6 +6,9 @@ import { PowerSectionCheckboxGrid } from './PowerSectionCheckboxGrid';
 import type { CreateSubAdminRequest, PowerSection } from '../../types/rbac.types';
 import { User, Mail, Key, ShieldCheck } from 'lucide-react';
 
+import { useAuth } from '../../hooks/useAuth';
+import { usePermission } from '../../hooks/usePermission';
+
 export interface CreateSubAdminModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -19,6 +22,9 @@ export const CreateSubAdminModal: React.FC<CreateSubAdminModalProps> = ({
   onSubmit,
   isLoading = false,
 }) => {
+  const { user } = useAuth();
+  const { isSuperAdmin } = usePermission();
+
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -31,11 +37,22 @@ export const CreateSubAdminModal: React.FC<CreateSubAdminModalProps> = ({
     e.preventDefault();
     if (!name.trim() || !email.trim() || !password.trim()) return;
 
+    // Sub-admins can never delegate SUB_ADMINS power section
+    const sanitizedPowers = isSuperAdmin
+      ? selectedPowers
+      : selectedPowers.filter((p) => p !== 'SUB_ADMINS');
+
+    const creatorName = isSuperAdmin
+      ? 'Super Admin'
+      : `Sub-Admin ${user?.firstName || ''} ${user?.lastName || ''}`.trim() || 'Sub-Admin Staff';
+
     onSubmit({
       name,
       email,
       password,
-      powers: selectedPowers,
+      powers: sanitizedPowers,
+      createdBy: creatorName,
+      createdRole: isSuperAdmin ? 'super_admin' : 'sub_admin',
     });
     setName('');
     setEmail('');

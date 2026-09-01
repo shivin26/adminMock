@@ -536,6 +536,7 @@ export const VendorsPage: React.FC = () => {
         isOpen={!!selectedOwnerId}
         onClose={() => setSelectedOwnerId(null)}
         personId={selectedOwnerId}
+        onSelectVendor={(v) => setSelectedDrawerVendor(v)}
       />
 
       {/* Image Preview Lightbox Modal */}

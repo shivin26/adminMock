@@ -16,14 +16,14 @@ export interface PowerSectionMetadata {
 export const POWER_SECTIONS_LIST: PowerSectionMetadata[] = [
   {
     id: 'SOCIETIES',
-    label: 'Societies Management',
+    label: 'Societies & Area Management',
     description: 'Register, edit, delete residential societies and view society active vendors.',
     iconName: 'Building2',
   },
   {
     id: 'VENDORS',
-    label: 'Vendors',
-    description: 'Review vendor onboarding requests, approve or reject applications.',
+    label: 'User & Vendor',
+    description: 'Review vendor onboarding requests, approve or reject applications, and manage platform users.',
     iconName: 'Users',
   },
   {
@@ -61,6 +61,8 @@ export interface SubAdminUser {
   powers: PowerSection[];
   status: 'active' | 'suspended';
   createdAt: string;
+  createdBy?: string;
+  createdRole?: 'super_admin' | 'sub_admin';
 }
 
 export interface CreateSubAdminRequest {
@@ -68,6 +70,8 @@ export interface CreateSubAdminRequest {
   email: string;
   password?: string;
   powers: PowerSection[];
+  createdBy?: string;
+  createdRole?: 'super_admin' | 'sub_admin';
 }
 
 export interface UpdateSubAdminPowersRequest {

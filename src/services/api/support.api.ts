@@ -12,276 +12,9 @@ import { mapRawTicketToDomain, mapRawMessageToDomain } from '../mappers/support.
 const LOCAL_TICKETS_KEY = 'digilocal_support_tickets_store';
 const LOCAL_MESSAGES_KEY = 'digilocal_support_messages_store';
 
-const INITIAL_MOCK_TICKETS: SupportTicket[] = [
-  {
-    id: 't-201',
-    ticketNumber: 'TICK-9101',
-    subject: 'Vendor Complaint against Resident: Refusal of Payment for Delivered Order',
-    description: 'Vendor FreshBites Daily Grocery reported that resident customer refused payment after accepting full grocery delivery.',
-    category: 'vendor_vs_user',
-    priority: 'urgent',
-    status: 'open',
-    userType: 'user_vendor',
-    complainantRole: 'vendor_and_resident',
-    reportedPartyType: 'user_resident',
-    reportedPartyName: 'Commander V.K. Nair (Resident Customer)',
-    source: 'vendor_portal',
-    reporterName: 'Rajesh Sharma (FreshBites Grocery)',
-    reporterEmail: 'rajesh.freshbites@gmail.com',
-    entityName: 'FreshBites Daily Grocery',
-    orderId: 'ORD-9849',
-    orderAmount: 2450.0,
-    assignedTo: 'Super Admin',
-    slaMinutesRemaining: 15,
-    createdAt: new Date(Date.now() - 3600000 * 1.5).toISOString(),
-    updatedAt: new Date(Date.now() - 3600000 * 1.5).toISOString(),
-  },
-  {
-    id: 't-202',
-    ticketNumber: 'TICK-9102',
-    subject: 'Vendor B2B Purchase Complaint: Damaged Bulk Supplies Received from Vendor Store',
-    description: 'Vendor Priya Verma (ordering in resident buyer role) placed a bulk supply order with Green Leaf Organics, but received spoiled crates.',
-    category: 'vendor_vs_vendor',
-    priority: 'high',
-    status: 'in_progress',
-    userType: 'user_vendor',
-    complainantRole: 'vendor_and_resident',
-    reportedPartyType: 'vendor',
-    reportedPartyName: 'Green Leaf Organic Vegetables (Vendor)',
-    source: 'vendor_portal',
-    reporterName: 'Priya Verma (Priya Organic Mart)',
-    reporterEmail: 'priya.organic@gmail.com',
-    entityName: 'Priya Organic Mart',
-    targetVendor: 'Green Leaf Organic Vegetables',
-    orderId: 'ORD-9852',
-    orderAmount: 5800.0,
-    assignedTo: 'Vikram Mehta',
-    slaMinutesRemaining: 45,
-    createdAt: new Date(Date.now() - 3600000 * 4).toISOString(),
-    updatedAt: new Date(Date.now() - 3600000 * 2).toISOString(),
-  },
-  {
-    id: 't-203',
-    ticketNumber: 'TICK-9103',
-    subject: 'Resident Complaint against Vendor: Spoiled Confectionery Delivered',
-    description: 'Resident customer filed a complaint against Royal Bakers for delivering expired items.',
-    category: 'user_vs_vendor',
-    priority: 'high',
-    status: 'open',
-    userType: 'user',
-    complainantRole: 'resident',
-    reportedPartyType: 'vendor',
-    reportedPartyName: 'Royal Bakers & Confectionery',
-    source: 'mobile_app',
-    reporterName: 'Ananya Sharma',
-    reporterEmail: 'ananya.resident@gmail.com',
-    entityName: 'Sunrise Apartments Resident',
-    targetVendor: 'Royal Bakers & Confectionery',
-    orderId: 'ORD-9855',
-    orderAmount: 920.0,
-    assignedTo: 'Super Admin',
-    slaMinutesRemaining: 60,
-    createdAt: new Date(Date.now() - 3600000 * 5).toISOString(),
-    updatedAt: new Date(Date.now() - 3600000 * 5).toISOString(),
-  },
-  {
-    id: 't-101',
-    ticketNumber: 'TICK-9081',
-    subject: 'Razorpay Payment Settlement Delay for July Billing Cycle',
-    description: 'We processed 42 orders via Razorpay UPI yesterday but the settlement amount is still pending verification on our vendor dashboard.',
-    category: 'billing',
-    priority: 'high',
-    status: 'open',
-    userType: 'vendor',
-    complainantRole: 'vendor',
-    source: 'vendor_portal',
-    reporterName: 'Rajesh Sharma',
-    reporterEmail: 'rajesh.freshbites@gmail.com',
-    entityName: 'FreshBites Daily Grocery',
-    orderId: 'ORD-9841',
-    orderAmount: 1850.0,
-    assignedTo: 'Vikram Mehta',
-    slaMinutesRemaining: 45,
-    createdAt: new Date(Date.now() - 3600000 * 3).toISOString(),
-    updatedAt: new Date(Date.now() - 3600000 * 3).toISOString(),
-  },
-  {
-    id: 't-102',
-    ticketNumber: 'TICK-9082',
-    subject: 'Resident Mobile App Delivery Tracking Location Not Updating',
-    description: 'Resident reported that real-time delivery rider location stops refreshing after order dispatched.',
-    category: 'technical',
-    priority: 'urgent',
-    status: 'in_progress',
-    userType: 'user',
-    complainantRole: 'resident',
-    source: 'landing_website',
-    reporterName: 'Commander V.K. Nair',
-    reporterEmail: 'vknair.resident@gmail.com',
-    entityName: 'Resident Customer',
-    targetVendor: 'FreshMart Grocery & Organic',
-    orderId: 'ORD-9842',
-    orderAmount: 640.0,
-    assignedTo: 'Super Admin',
-    slaMinutesRemaining: 15,
-    createdAt: new Date(Date.now() - 3600000 * 6).toISOString(),
-    updatedAt: new Date(Date.now() - 3600000 * 1).toISOString(),
-  },
-  {
-    id: 't-105',
-    ticketNumber: 'TICK-9085',
-    subject: 'Landing Website Inquiry: Partner Store Onboarding & API Integration',
-    description: 'Submitted via DigiLocal Public Landing Page. Prospective vendor requesting detailed catalog API integration docs and onboarding pricing tier.',
-    category: 'onboarding',
-    priority: 'high',
-    status: 'open',
-    userType: 'vendor',
-    source: 'landing_website',
-    reporterName: 'Aarav Gupta',
-    reporterEmail: 'aarav.retail@gmail.com',
-    entityName: 'Apex Electronics & Appliances',
-    orderId: 'ORD-9845',
-    orderAmount: 3200.0,
-    assignedTo: 'Super Admin',
-    slaMinutesRemaining: 90,
-    createdAt: new Date(Date.now() - 3600000 * 0.5).toISOString(),
-    updatedAt: new Date(Date.now() - 3600000 * 0.5).toISOString(),
-  },
-  {
-    id: 't-103',
-    ticketNumber: 'TICK-9083',
-    subject: 'Request to Update GSTIN & Store Category for Organic Fruits',
-    description: 'We have updated our GST certificate to 07ABCDE1234F1Z5. Please review the documentation attached and update our vendor profile tier.',
-    category: 'onboarding',
-    priority: 'medium',
-    status: 'open',
-    userType: 'user_vendor',
-    source: 'vendor_portal',
-    reporterName: 'Anita Roy',
-    reporterEmail: 'anita.organic@gmail.com',
-    entityName: 'Nature Fresh Organic Store',
-    assignedTo: 'Ananya Sharma',
-    slaMinutesRemaining: 180,
-    createdAt: new Date(Date.now() - 3600000 * 12).toISOString(),
-    updatedAt: new Date(Date.now() - 3600000 * 12).toISOString(),
-  },
-  {
-    id: 't-104',
-    ticketNumber: 'TICK-9084',
-    subject: 'Inquiry Regarding Vendor Annual Subscription Plan Renewal Discount',
-    description: 'Our vendor annual pro plan expires next month. We would like to inquire about multi-store annual renewal pricing.',
-    category: 'billing',
-    priority: 'low',
-    status: 'resolved',
-    userType: 'vendor',
-    source: 'landing_website',
-    reporterName: 'Sunil Malhotra',
-    reporterEmail: 'sunil.vendor@royalpalms.com',
-    entityName: 'Royal Palms Grocery Store',
-    assignedTo: 'Super Admin',
-    slaMinutesRemaining: 0,
-    createdAt: new Date(Date.now() - 3600000 * 48).toISOString(),
-    updatedAt: new Date(Date.now() - 3600000 * 24).toISOString(),
-  },
-  {
-    id: 't-106',
-    ticketNumber: 'TICK-9086',
-    subject: 'Organic Milk Delivery Delay & Packaging Issue',
-    description: 'Resident customer reported delay in morning fresh organic milk shipment.',
-    category: 'technical',
-    priority: 'high',
-    status: 'in_progress',
-    userType: 'user_vendor',
-    source: 'landing_website',
-    reporterName: 'Priya Verma',
-    reporterEmail: 'priya.organic@gmail.com',
-    entityName: 'Priya Organic Mart',
-    orderId: 'ORD-9842',
-    orderAmount: 1250.0,
-    assignedTo: 'Vikram Mehta',
-    slaMinutesRemaining: 30,
-    createdAt: new Date(Date.now() - 3600000 * 5).toISOString(),
-    updatedAt: new Date(Date.now() - 3600000 * 2).toISOString(),
-  },
-  {
-    id: 't-107',
-    ticketNumber: 'TICK-9087',
-    subject: 'Store Catalog Item Price Refund Request',
-    description: 'Customer requested price adjustment for damaged snack boxes during transport.',
-    category: 'billing',
-    priority: 'medium',
-    status: 'resolved',
-    userType: 'user_vendor',
-    source: 'vendor_portal',
-    reporterName: 'Priya Verma',
-    reporterEmail: 'priya.organic@gmail.com',
-    entityName: 'Priya Organic Mart',
-    orderId: 'ORD-9841',
-    orderAmount: 890.0,
-    assignedTo: 'Super Admin',
-    slaMinutesRemaining: 0,
-    createdAt: new Date(Date.now() - 3600000 * 24).toISOString(),
-    updatedAt: new Date(Date.now() - 3600000 * 12).toISOString(),
-  },
-  {
-    id: 't-108',
-    ticketNumber: 'TICK-9088',
-    subject: 'UPI Settlement Status Query for Dual Role Account',
-    description: 'Inquiry regarding dual-role store wallet settlement timing.',
-    category: 'billing',
-    priority: 'low',
-    status: 'closed',
-    userType: 'user_vendor',
-    source: 'vendor_portal',
-    reporterName: 'Priya Verma',
-    reporterEmail: 'priya.organic@gmail.com',
-    entityName: 'Priya Organic Mart',
-    assignedTo: 'Ananya Sharma',
-    slaMinutesRemaining: 0,
-    createdAt: new Date(Date.now() - 3600000 * 72).toISOString(),
-    updatedAt: new Date(Date.now() - 3600000 * 48).toISOString(),
-  },
-];
+const INITIAL_MOCK_TICKETS: SupportTicket[] = [];
 
-const INITIAL_MOCK_MESSAGES: Record<string, TicketMessage[]> = {
-  't-101': [
-    {
-      id: 'm-101-1',
-      ticketId: 't-101',
-      senderName: 'Rajesh Sharma',
-      senderRole: 'vendor',
-      message: 'We processed 42 orders via Razorpay UPI yesterday but the settlement amount is still pending verification on our vendor dashboard.',
-      createdAt: new Date(Date.now() - 3600000 * 3).toISOString(),
-    },
-    {
-      id: 'm-101-2',
-      ticketId: 't-101',
-      senderName: 'Vikram Mehta',
-      senderRole: 'sub_admin',
-      message: 'Hello Rajesh, we have flagged transaction batch TXN9871 with Razorpay finance team. Expecting settlement clearance by 4 PM today.',
-      createdAt: new Date(Date.now() - 3600000 * 2).toISOString(),
-    },
-  ],
-  't-102': [
-    {
-      id: 'm-102-1',
-      ticketId: 't-102',
-      senderName: 'Commander V.K. Nair',
-      senderRole: 'user',
-      message: 'Resident reported that real-time delivery rider location stops refreshing after order dispatched.',
-      createdAt: new Date(Date.now() - 3600000 * 6).toISOString(),
-    },
-    {
-      id: 'm-102-2',
-      ticketId: 't-102',
-      senderName: 'Super Admin',
-      senderRole: 'admin',
-      message: 'Investigating API gate controller endpoint. Pushed token re-sync patch.',
-      isInternalNote: true,
-      createdAt: new Date(Date.now() - 3600000 * 1).toISOString(),
-    },
-  ],
-};
+const INITIAL_MOCK_MESSAGES: Record<string, TicketMessage[]> = {};
 
 const getLocalTickets = (): SupportTicket[] => {
   try {
@@ -294,7 +27,7 @@ const getLocalTickets = (): SupportTicket[] => {
       }));
     }
   } catch {}
-  return INITIAL_MOCK_TICKETS;
+  return [];
 };
 
 const saveLocalTickets = (tickets: SupportTicket[]) => {
@@ -329,7 +62,7 @@ export const supportApi = {
     try {
       const response = await axiosInstance.get('/support/tickets', { params: filters });
       const rawData = response.data?.data || response.data?.tickets || response.data;
-      if (Array.isArray(rawData) && rawData.length > 0) {
+      if (Array.isArray(rawData)) {
         const mapped = rawData.map(mapRawTicketToDomain);
         saveLocalTickets(mapped);
         return mapped;
@@ -364,19 +97,22 @@ export const supportApi = {
    * GET /api/support/tickets/:ticketId
    */
   getTicketById: async (ticketId: string | number): Promise<SupportTicket> => {
+    try {
+      const endpoints = [`/support/tickets/${ticketId}`, `/admin/support/tickets/${ticketId}`, `/tickets/${ticketId}`];
+      for (const ep of endpoints) {
+        try {
+          const res = await axiosInstance.get(ep);
+          const raw = res.data?.data || res.data?.ticket || res.data;
+          if (raw) return mapRawTicketToDomain(raw);
+        } catch {}
+      }
+    } catch (e) {
+      console.warn('Backend ticket fetch failed, falling back to local dataset:', e);
+    }
+
     const tickets = getLocalTickets();
     const found = tickets.find((t) => t.id === String(ticketId) || t.ticketNumber === String(ticketId));
     if (found) return found;
-
-    const mockFound = INITIAL_MOCK_TICKETS.find((t) => t.id === String(ticketId) || t.ticketNumber === String(ticketId));
-    if (mockFound) return mockFound;
-
-    try {
-      const res = await axiosInstance.get(`/support/tickets/${ticketId}`);
-      if (res.data) return mapRawTicketToDomain(res.data);
-    } catch (e) {
-      console.warn('Backend ticket fetch failed, using fallback mock ticket:', e);
-    }
 
     return {
       id: String(ticketId),

@@ -5,6 +5,8 @@ import { Button } from '../common/Button/Button';
 import { LoadingSpinner } from '../ui/LoadingSpinner';
 import { usePersonDetails, useFlagPerson, useUpdatePersonStatus } from '../../hooks/usePeople';
 import { useTickets } from '../../hooks/useSupport';
+import { useVendors } from '../../hooks/useVendors';
+import type { Vendor } from '../../types/vendor.types';
 import { useToast } from '../../context/ToastContext';
 import { SupportTicketStatusBadge } from '../support/SupportTicketStatusBadge';
 import { formatDate, formatDateTime } from '../../utils/formatters.utils';
@@ -23,22 +25,47 @@ import {
   ShieldAlert,
   Package,
   Clock,
+  ExternalLink,
 } from 'lucide-react';
 
 export interface PeopleDetailsDrawerProps {
   isOpen: boolean;
   onClose: () => void;
   personId?: string | null;
+  onSelectVendor?: (vendor: Vendor) => void;
 }
 
 export const PeopleDetailsDrawer: React.FC<PeopleDetailsDrawerProps> = ({
   isOpen,
   onClose,
   personId,
+  onSelectVendor,
 }) => {
   const { addToast } = useToast();
   const { data: person, isLoading, refetch } = usePersonDetails(personId);
   const { data: allTickets = [] } = useTickets();
+  const { data: allVendors = [] } = useVendors();
+
+  const linkedVendor = useMemo(() => {
+    if (!person) return null;
+    const pEmail = (person.email || '').toLowerCase();
+    const pName = (person.name || '').toLowerCase();
+    const pStore = (person.storeName || '').toLowerCase();
+
+    return (
+      allVendors.find((v) => {
+        const vEmail = (v.email || '').toLowerCase();
+        const vOwner = (v.ownerName || '').toLowerCase();
+        const vStore = (v.storeName || '').toLowerCase();
+
+        return (
+          (pStore && vStore === pStore) ||
+          (pEmail && vEmail === pEmail) ||
+          (pName && vOwner === pName)
+        );
+      }) || null
+    );
+  }, [person, allVendors]);
   const flagMutation = useFlagPerson();
   const updateStatusMutation = useUpdatePersonStatus();
 
@@ -331,29 +358,63 @@ export const PeopleDetailsDrawer: React.FC<PeopleDetailsDrawerProps> = ({
               </div>
 
               {/* Dual Role Vendor Store Section */}
-              {(person.personType === 'user_vendor' || person.storeName) && (
-                <div className="p-3.5 bg-[#EFE8D8]/70 border border-[#C4A066]/40 rounded-2xl flex flex-col gap-2 shadow-xs text-xs">
-                  <div className="flex items-center justify-between">
-                    <span className="font-bold text-[#18281F] flex items-center gap-1.5 font-serif text-sm">
-                      <Store size={16} className="text-[#C4A066]" /> {person.storeName || 'Partner Store'}
-                    </span>
+              {(person.personType === 'user_vendor' || person.storeName || linkedVendor) && (
+                <div className="p-4 bg-[#EFE8D8] border border-[#C4A066]/50 rounded-2xl flex flex-col gap-3 shadow-xs text-xs">
+                  <div className="flex items-center justify-between flex-wrap gap-2">
+                    <div>
+                      <span className="text-[10px] font-bold text-[#6B7C70] uppercase tracking-wider block">
+                        Linked Merchant Account (Dual Role)
+                      </span>
+                      <span className="font-bold text-[#18281F] flex items-center gap-1.5 font-serif text-base mt-0.5">
+                        <Store size={18} className="text-[#C4A066]" /> {linkedVendor?.storeName || person.storeName || 'Partner Merchant Store'}
+                      </span>
+                    </div>
                     <Badge variant="warning">USER &amp; VENDOR DUAL ROLE</Badge>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-2 text-[11px] text-[#6B7C70] pt-1 border-t border-[#C4A066]/30">
+                  <div className="grid grid-cols-2 gap-2 text-xs text-[#6B7C70] pt-2 border-t border-[#C4A066]/30">
                     <div>
-                      <span className="block font-bold text-[#18281F]">Store Category:</span>
-                      <span>{person.category || 'Organic Fruits & Snacks'}</span>
+                      <span className="block font-bold text-[#18281F]">Merchant Category:</span>
+                      <span>{linkedVendor?.category || person.category || 'Local Merchant'}</span>
                     </div>
                     <div>
-                      <span className="block font-bold text-[#18281F]">Store Rating:</span>
-                      <span className="font-mono font-bold text-amber-700">{person.rating || 4.6} / 5.0 ⭐</span>
+                      <span className="block font-bold text-[#18281F]">Merchant Account Status:</span>
+                      <span className="font-bold text-[#18281F] uppercase">{linkedVendor?.status || 'Active'}</span>
                     </div>
                   </div>
 
-                  <div className="p-2 bg-white rounded-xl border border-[#C4A066]/30 text-[10px] text-[#18281F] font-semibold flex items-center justify-between">
-                    <span>Unified Purchasing Privilege:</span>
-                    <span className="text-[#D97706] font-bold">SINGLE LOGIN ACCESS</span>
+                  <div className="flex items-center justify-between pt-1">
+                    <span className="text-[11px] text-[#6B7C70] italic">
+                      This user account is linked to a registered vendor store.
+                    </span>
+                    <Button
+                      type="button"
+                      variant="primary"
+                      size="sm"
+                      leftIcon={<ExternalLink size={13} />}
+                      onClick={() => {
+                        const targetVendor: Vendor = linkedVendor || {
+                          id: person.id,
+                          storeName: person.storeName || `${person.name}'s Store`,
+                          ownerName: person.name,
+                          category: person.category || 'General Merchant',
+                          vendorType: 'product',
+                          status: 'active',
+                          email: person.email,
+                          phone: person.phone,
+                          address: person.societyName,
+                          totalEarnings: 0,
+                          totalOrdersCount: 0,
+                          subscriptionTier: 'PRO',
+                          createdAt: person.createdAt,
+                          updatedAt: new Date().toISOString(),
+                        };
+                        onClose();
+                        onSelectVendor?.(targetVendor);
+                      }}
+                    >
+                      View Vendor Account Details ↗
+                    </Button>
                   </div>
                 </div>
               )}
