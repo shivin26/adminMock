@@ -49,6 +49,9 @@ export interface Vendor {
   vendorType?: string;
   email: string;
   phone: string;
+  countryCode?: string;
+  phoneNumber?: string;
+  whatsappNumber?: string;
   address: string;
   shopNumber?: string;
   area?: string;
@@ -63,6 +66,7 @@ export interface Vendor {
   fssaiNumber?: string;
   submissionTimestamp: string;
   createdAtReadable?: string;
+  createdAtIst?: string;
   createdAtTime?: string;
   holdEmailSubject?: string;
   holdReason?: string;
@@ -112,6 +116,7 @@ export interface RawVendorDTO {
   category?: string;
   vendor_type?: string;
   shop_number?: string;
+  shop_no?: string;
   area?: string;
   city?: string;
   state?: string;

@@ -343,15 +343,6 @@ export const SubAdminDetailsDrawer: React.FC<SubAdminDetailsDrawerProps> = ({
 
             <div className="flex items-center gap-2">
               <Button
-                variant={subAdmin.status === 'active' ? 'warning' : 'success'}
-                size="sm"
-                disabled={isSelf}
-                onClick={() => !isSelf && onToggleStatus(subAdmin)}
-              >
-                {subAdmin.status === 'active' ? 'Suspend Account' : 'Activate Account'}
-              </Button>
-
-              <Button
                 variant="danger"
                 size="sm"
                 leftIcon={canRevoke ? <Trash2 size={14} /> : <Lock size={14} />}

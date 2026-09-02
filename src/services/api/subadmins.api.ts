@@ -7,74 +7,8 @@ import type {
 
 const LOCAL_STORAGE_KEY = 'digilocal_sub_admins_store';
 
-// Mock initial dataset for Sub-Admins
-const INITIAL_SUB_ADMINS: SubAdminUser[] = [
-  {
-    id: 'sub-1',
-    name: 'Vikram Mehta',
-    email: 'vikram.admin@digilocal.com',
-    password: 'password123',
-    role: 'sub_admin',
-    powers: ['SOCIETIES', 'VENDORS', 'SUB_ADMINS'],
-    status: 'active',
-    createdAt: '2026-08-01T10:00:00Z',
-    createdBy: 'Super Admin',
-    creatorId: 'super-admin',
-    createdRole: 'super_admin',
-  },
-  {
-    id: 'sub-aarushi',
-    name: 'Aarushi Verma',
-    email: 'aarushi.admin@digilocal.com',
-    password: 'password123',
-    role: 'sub_admin',
-    powers: ['SOCIETIES', 'VENDORS', 'SUB_ADMINS'],
-    status: 'active',
-    createdAt: '2026-08-01T11:00:00Z',
-    createdBy: 'Super Admin',
-    creatorId: 'super-admin',
-    createdRole: 'super_admin',
-  },
-  {
-    id: 'sub-2',
-    name: 'Ananya Sharma',
-    email: 'ananya.finance@digilocal.com',
-    password: 'password123',
-    role: 'sub_admin',
-    powers: ['SUBSCRIPTIONS'],
-    status: 'active',
-    createdAt: '2026-08-02T14:30:00Z',
-    createdBy: 'Sub-Admin Vikram Mehta',
-    creatorId: 'sub-1',
-    createdRole: 'sub_admin',
-  },
-  {
-    id: 'sub-raj',
-    name: 'Raj Kumar',
-    email: 'raj.admin@digilocal.com',
-    password: 'password123',
-    role: 'sub_admin',
-    powers: ['SOCIETIES', 'VENDORS'],
-    status: 'active',
-    createdAt: '2026-08-15T12:00:00Z',
-    createdBy: 'Sub-Admin Aarushi Verma',
-    creatorId: 'sub-aarushi',
-    createdRole: 'sub_admin',
-  },
-  {
-    id: 'sub-jenga',
-    name: 'Jenga Roy',
-    email: 'jenga.admin@digilocal.com',
-    password: 'password123',
-    role: 'sub_admin',
-    powers: ['SUBSCRIPTIONS', 'SUPPORT'],
-    status: 'active',
-    createdAt: '2026-08-16T15:00:00Z',
-    createdBy: 'Sub-Admin Aarushi Verma',
-    creatorId: 'sub-aarushi',
-    createdRole: 'sub_admin',
-  },
-];
+// Initial dataset for Sub-Admins
+const INITIAL_SUB_ADMINS: SubAdminUser[] = [];
 
 export const getLocalSubAdmins = (): SubAdminUser[] => {
   try {

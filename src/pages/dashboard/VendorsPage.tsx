@@ -342,7 +342,7 @@ export const VendorsPage: React.FC = () => {
                 leftIcon={<ShieldCheck size={15} />}
                 title="Approve Vendor Application"
                 aria-label="Approve Vendor Application"
-                onClick={() => setApprovingVendor(vendor)}
+                onClick={() => setSelectedDrawerVendor(vendor)}
               >
                 Approve
               </Button>

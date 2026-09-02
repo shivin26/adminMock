@@ -157,11 +157,18 @@ export const VendorApprovalModal: React.FC<VendorApprovalModalProps> = ({
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-1">
               {(vendor.resubmittedChanges && vendor.resubmittedChanges.length > 0
                 ? vendor.resubmittedChanges
-                : [
-                    { field: 'gstin', label: '1. GSTIN Tax Code', oldValue: '07AAAAA0000A1Z5 (Original)', newValue: vendor.gstin || '07BBBBB9999B2Z9' },
-                    { field: 'storeName', label: '4. Business / Store Name', oldValue: 'Original Store Name', newValue: vendor.storeName },
-                    { field: 'address', label: '5. Complete Detailed Address', oldValue: 'Old Block A, Sector 62', newValue: vendor.address },
-                  ]
+                : (vendor.updatedFieldKeys && vendor.updatedFieldKeys.length > 0
+                    ? vendor.updatedFieldKeys.map((key) => {
+                        const match = fieldsConfig.find((f) => f.key === key);
+                        return {
+                          field: key,
+                          label: match?.label || key,
+                          oldValue: undefined,
+                          newValue: (vendor as any)[key] || '',
+                        };
+                      })
+                    : (vendor.gstin ? [{ field: 'gstin', label: '1. GSTIN Tax Code', oldValue: undefined, newValue: vendor.gstin }] : [])
+                  )
               ).map((change, idx) => (
                 <div key={idx} className={`p-2.5 bg-white rounded-xl border border-emerald-200 text-xs flex flex-col gap-1 ${change.field === 'address' ? 'sm:col-span-2' : ''}`}>
                   <div className="flex items-center justify-between">
@@ -213,9 +220,11 @@ export const VendorApprovalModal: React.FC<VendorApprovalModalProps> = ({
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
             {fieldsConfig.map((field) => {
               const isChecked = Boolean(checkedFields[field.key]);
-              const updatedKeys = vendor.updatedFieldKeys || (
-                (vendor.hasResubmitted || vendor.hasVendorUpdate) ? ['gstin', 'storeName', 'address'] : []
-              );
+              const updatedKeys = (vendor.updatedFieldKeys && vendor.updatedFieldKeys.length > 0)
+                ? vendor.updatedFieldKeys
+                : (vendor.resubmittedChanges && vendor.resubmittedChanges.length > 0)
+                ? vendor.resubmittedChanges.map((c) => c.field)
+                : ['gstin'];
               const isFieldUpdated = updatedKeys.includes(field.key);
 
               return (

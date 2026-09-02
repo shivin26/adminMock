@@ -7,6 +7,54 @@
   pointer-events: auto;
 }
 
+@keyframes drawerFadeIn {
+  from {
+    opacity: 0;
+    backdrop-filter: blur(0px);
+    -webkit-backdrop-filter: blur(0px);
+  }
+  to {
+    opacity: 1;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+}
+
+@keyframes drawerFadeOut {
+  from {
+    opacity: 1;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+  to {
+    opacity: 0;
+    backdrop-filter: blur(0px);
+    -webkit-backdrop-filter: blur(0px);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0.8;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideOutRight {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+}
+
 .drawer-backdrop {
   position: fixed;
   inset: 0;
@@ -14,7 +62,11 @@
   background-color: rgba(15, 25, 20, 0.65);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-  transition: opacity 0.2s ease;
+  animation: drawerFadeIn 0.28s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.drawer-backdrop-closing {
+  animation: drawerFadeOut 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
 }
 
 .drawer-panel {
@@ -34,6 +86,11 @@
   flex-direction: column;
   z-index: 100000;
   animation: slideInRight 0.28s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  will-change: transform, opacity;
+}
+
+.drawer-panel-closing {
+  animation: slideOutRight 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
 }
 
 .drawer-xl {
@@ -46,11 +103,6 @@
 
 .drawer-md {
   max-width: 620px;
-}
-
-@keyframes slideInRight {
-  from { transform: translateX(100%); }
-  to { transform: translateX(0); }
 }
 
 .drawer-header {
@@ -98,34 +150,25 @@
 
 .drawer-close-btn:hover {
   color: #211A19 !important;
-  background-color: #A88B58 !important;
-  border-color: #A88B58 !important;
+  background: #C8A878 !important;
+  border-color: #C8A878 !important;
+  transform: rotate(90deg);
 }
 
 .drawer-body {
-  padding: 1.75rem;
-  overflow-y: auto;
   flex: 1;
+  overflow-y: auto;
+  padding: 1.75rem;
   background-color: #FAF8F5 !important;
-  color: #211A19 !important;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: thin;
-  scrollbar-color: #C8A878 #E7DFD5;
 }
 
-.drawer-body::-webkit-scrollbar {
-  width: 7px;
-}
-
-.drawer-body::-webkit-scrollbar-track {
-  background: #EEE5DA;
-}
-
-.drawer-body::-webkit-scrollbar-thumb {
-  background: #C8A878;
-  border-radius: var(--radius-full);
-}
-
-.drawer-body::-webkit-scrollbar-thumb:hover {
-  background: #211A19;
+.drawer-footer {
+  padding: 1.25rem 1.75rem;
+  border-top: 1px solid #E7DFD5;
+  background-color: #FAF8F5 !important;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-3);
+  flex-shrink: 0;
 }

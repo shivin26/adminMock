@@ -137,16 +137,32 @@ export const PeopleEnterpriseDataTable: React.FC<PeopleEnterpriseDataTableProps>
     },
     {
       header: 'Registered Timestamp',
-      cell: (p) => (
-        <div className="flex flex-col text-xs font-mono">
-          <span className="font-bold text-[#211A19] flex items-center gap-1">
-            <Clock size={11} className="text-[#C8A878]" /> {formatDate(p.createdAt)}
-          </span>
-          <span className="text-[10px] text-[#78716C] pl-4">
-            {formatTime(p.createdAt) || '10:30:00 AM'}
-          </span>
-        </div>
-      ),
+      cell: (p) => {
+        if (p.createdAtReadable) {
+          const parts = p.createdAtReadable.split(',');
+          return (
+            <div className="flex flex-col text-xs font-mono">
+              <span className="font-bold text-[#211A19] flex items-center gap-1">
+                <Clock size={11} className="text-[#C8A878]" /> {parts[0] ? parts[0].trim() : p.createdAtReadable}
+              </span>
+              <span className="text-[10px] text-[#78716C] pl-4">
+                {parts[1] ? parts[1].trim() : ''}
+              </span>
+            </div>
+          );
+        }
+        const ts = p.createdAtIst || p.createdAt;
+        return (
+          <div className="flex flex-col text-xs font-mono">
+            <span className="font-bold text-[#211A19] flex items-center gap-1">
+              <Clock size={11} className="text-[#C8A878]" /> {formatDate(ts)}
+            </span>
+            <span className="text-[10px] text-[#78716C] pl-4">
+              {formatTime(ts) || '10:30 am'}
+            </span>
+          </div>
+        );
+      },
     },
     {
       header: 'Actions',

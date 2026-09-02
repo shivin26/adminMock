@@ -4,7 +4,7 @@ import { Modal } from '../common/Modal/Modal';
 import { Badge } from '../common/Badge/Badge';
 import { Button } from '../common/Button/Button';
 import { LoadingSpinner } from '../ui/LoadingSpinner';
-import { usePersonDetails, useFlagPerson, useUpdatePersonStatus } from '../../hooks/usePeople';
+import { usePersonDetails, useFlagPerson, useUpdatePersonStatus, useResetPersonStrikes } from '../../hooks/usePeople';
 import { useUserOrders, useUpdateUser } from '../../hooks/useUsers';
 import { useTickets } from '../../hooks/useSupport';
 import { useVendors } from '../../hooks/useVendors';
@@ -79,6 +79,9 @@ export const PeopleDetailsDrawer: React.FC<PeopleDetailsDrawerProps> = ({
 
   const flagMutation = useFlagPerson();
   const updateStatusMutation = useUpdatePersonStatus();
+  const resetStrikesMutation = useResetPersonStrikes();
+
+  const currentStrikesCount = person ? Math.max(person.strikes ?? 0, person.flagsCount ?? 0) : 0;
 
   const [activeTab, setActiveTab] = useState<'overview' | 'activity' | 'tickets'>('overview');
   const [isEditMode, setIsEditMode] = useState(false);
@@ -189,6 +192,8 @@ export const PeopleDetailsDrawer: React.FC<PeopleDetailsDrawerProps> = ({
   }, [person, apiOrders]);
 
   const [showStrikePrompt, setShowStrikePrompt] = useState(false);
+  const [showResetStrikePrompt, setShowResetStrikePrompt] = useState(false);
+  const [showBanPrompt, setShowBanPrompt] = useState(false);
 
   const confirmIssueStrike = () => {
     if (!person) return;
@@ -224,18 +229,52 @@ export const PeopleDetailsDrawer: React.FC<PeopleDetailsDrawerProps> = ({
     );
   };
 
-  const handleToggleBan = () => {
+  const confirmResetStrikes = () => {
     if (!person) return;
-    const newStatus = person.status === 'banned' || person.status === 'blocked' ? 'active' : 'banned';
+    resetStrikesMutation.mutate(person.id, {
+      onSuccess: () => {
+        setShowResetStrikePrompt(false);
+        refetch();
+        addToast({
+          type: 'success',
+          title: 'Strikes Reset Successfully',
+          description: `All warning strikes for ${person.name} have been cleared and account status is ACTIVE.`,
+        });
+      },
+      onError: () => {
+        setShowResetStrikePrompt(false);
+        addToast({
+          type: 'error',
+          title: 'Reset Failed',
+          description: 'Failed to reset warning strikes. Please try again.',
+        });
+      },
+    });
+  };
+
+  const confirmToggleBan = () => {
+    if (!person) return;
+    const isCurrentlyBanned = person.status === 'banned' || person.status === 'blocked' || person.isBlocked;
+    const newStatus = isCurrentlyBanned ? 'active' : 'banned';
+
     updateStatusMutation.mutate(
       { id: person.id, status: newStatus },
       {
         onSuccess: () => {
+          setShowBanPrompt(false);
           refetch();
           addToast({
             type: newStatus === 'banned' ? 'error' : 'success',
-            title: newStatus === 'banned' ? 'Account Banned' : 'Account Re-Activated',
+            title: newStatus === 'banned' ? 'Account Banned ⛔' : 'Account Re-Activated ⚡',
             description: `${person.name} is now ${newStatus.toUpperCase()}.`,
+          });
+        },
+        onError: () => {
+          setShowBanPrompt(false);
+          addToast({
+            type: 'error',
+            title: 'Action Failed',
+            description: 'Failed to update account status. Please try again.',
           });
         },
       }
@@ -337,20 +376,20 @@ export const PeopleDetailsDrawer: React.FC<PeopleDetailsDrawerProps> = ({
                     <Flag size={14} className="text-[#D97706]" /> Dispute Flags &amp; Strike Meter
                   </span>
                   <span className="text-xs font-mono font-bold text-[#211A19]">
-                    {person.flagsCount} / 3 Strikes
+                    {currentStrikesCount} / 3 Strikes
                   </span>
                 </div>
 
                 <div className="grid grid-cols-3 gap-2">
-                  <div className={`h-2.5 rounded-full ${person.flagsCount >= 1 ? 'bg-amber-400' : 'bg-gray-200'}`} />
-                  <div className={`h-2.5 rounded-full ${person.flagsCount >= 2 ? 'bg-orange-500' : 'bg-gray-200'}`} />
-                  <div className={`h-2.5 rounded-full ${person.flagsCount >= 3 ? 'bg-rose-600 animate-pulse' : 'bg-gray-200'}`} />
+                  <div className={`h-2.5 rounded-full ${currentStrikesCount >= 1 ? 'bg-amber-400' : 'bg-gray-200'}`} />
+                  <div className={`h-2.5 rounded-full ${currentStrikesCount >= 2 ? 'bg-orange-500' : 'bg-gray-200'}`} />
+                  <div className={`h-2.5 rounded-full ${currentStrikesCount >= 3 ? 'bg-rose-600 animate-pulse' : 'bg-gray-200'}`} />
                 </div>
 
                 <span className="text-[11px] text-[#78716C]">
-                  {person.flagsCount >= 3
-                    ? 'CRITICAL: Account reached 3 strikes limit and is automatically BANNED from platform access.'
-                    : `Account has ${person.flagsCount} flag(s). If 3 flags are reached, the system auto-bans this account.`}
+                  {currentStrikesCount >= 3
+                    ? 'CRITICAL: Account reached 3 strikes limit and is automatically BANNED / BLOCKED from platform access.'
+                    : `Account has ${currentStrikesCount} flag(s). If 3 flags are reached, the system auto-bans this account.`}
                 </span>
               </div>
 
@@ -456,7 +495,7 @@ export const PeopleDetailsDrawer: React.FC<PeopleDetailsDrawerProps> = ({
                   <div>
                     <span className="text-[#78716C] block text-[10px] uppercase font-bold">Registration Timestamp (Account Created)</span>
                     <span className="font-bold text-[#211A19] font-mono">
-                      {formatDateTime(person.createdAt)}
+                      {person.createdAtReadable || formatDateTime(person.createdAtIst || person.createdAt)}
                     </span>
                   </div>
                 </div>
@@ -558,21 +597,31 @@ export const PeopleDetailsDrawer: React.FC<PeopleDetailsDrawerProps> = ({
                       leftIcon={<Flag size={14} className="text-rose-500" />}
                       onClick={() => setShowStrikePrompt(true)}
                       isLoading={flagMutation.isPending}
-                      disabled={person.flagsCount >= 3 || (person.strikes !== undefined && person.strikes >= 3) || person.isBlocked}
+                      disabled={currentStrikesCount >= 3 || person.isBlocked}
                     >
-                      {(person.flagsCount >= 3 || (person.strikes !== undefined && person.strikes >= 3) || person.isBlocked)
+                      {(currentStrikesCount >= 3 || person.isBlocked)
                         ? 'Blocked (3/3 Strikes)'
-                        : `Issue Strike 🚩 (${person.strikes ?? person.flagsCount ?? 0}/3)`}
+                        : `Issue Strike 🚩 (${currentStrikesCount}/3)`}
                     </Button>
 
                     <Button
                       variant="outline"
                       size="sm"
-                      leftIcon={person.status === 'banned' ? <CheckCircle2 size={14} className="text-emerald-600" /> : <Ban size={14} className="text-rose-500" />}
-                      onClick={handleToggleBan}
+                      leftIcon={<CheckCircle2 size={14} className="text-emerald-600" />}
+                      onClick={() => setShowResetStrikePrompt(true)}
+                      isLoading={resetStrikesMutation.isPending}
+                    >
+                      Reset Strikes ⚡
+                    </Button>
+
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      leftIcon={person.status === 'banned' || person.status === 'blocked' || person.isBlocked ? <CheckCircle2 size={14} className="text-emerald-600" /> : <Ban size={14} className="text-rose-500" />}
+                      onClick={() => setShowBanPrompt(true)}
                       isLoading={updateStatusMutation.isPending}
                     >
-                      {person.status === 'banned' || person.status === 'blocked' ? 'Unban' : 'Ban Account ⛔'}
+                      {person.status === 'banned' || person.status === 'blocked' || person.isBlocked ? 'Unban Account' : 'Ban Account ⛔'}
                     </Button>
                   </>
                 )}
@@ -790,8 +839,8 @@ export const PeopleDetailsDrawer: React.FC<PeopleDetailsDrawerProps> = ({
                 Warning: You are about to issue a formal strike flag to {person?.name}.
               </span>
               <span>
-                Current Strike Meter: <strong>{person?.flagsCount || 0} / 3 Strikes</strong>.
-                If an account reaches 3 strikes, it will be automatically BANNED from platform access.
+                Current Strike Meter: <strong>{currentStrikesCount} / 3 Strikes</strong>.
+                If an account reaches 3 strikes, it will be automatically BANNED / BLOCKED from platform access.
               </span>
             </div>
           </div>
@@ -813,6 +862,96 @@ export const PeopleDetailsDrawer: React.FC<PeopleDetailsDrawerProps> = ({
               onClick={confirmIssueStrike}
             >
               Yes, Issue Strike 🚩
+            </Button>
+          </div>
+        </div>
+      </Modal>
+
+      {/* Reset Strikes Warning Confirmation Modal */}
+      <Modal
+        isOpen={showResetStrikePrompt}
+        onClose={() => setShowResetStrikePrompt(false)}
+        title="⚡ Confirm Reset Warning Strikes"
+        subtitle={person ? `Target Account: ${person.name} (${person.id})` : ''}
+        size="sm"
+      >
+        <div className="flex flex-col gap-4 p-4 text-xs font-sans">
+          <div className="p-3.5 bg-amber-50 border border-amber-200 rounded-xl text-amber-950 flex items-start gap-2.5">
+            <AlertTriangle size={18} className="text-amber-600 shrink-0 mt-0.5" />
+            <div className="flex flex-col gap-1 leading-relaxed">
+              <span className="font-bold text-amber-900">
+                Warning: Are you sure you want to reset all warning strikes for {person?.name}?
+              </span>
+              <span>
+                This action will reset the strike count from <strong>{currentStrikesCount} / 3 Strikes</strong> to <strong>0 / 3 Strikes</strong> and reactivate the account.
+              </span>
+            </div>
+          </div>
+
+          <div className="flex items-center justify-end gap-2 pt-3 border-t border-[#E7DFD5]">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setShowResetStrikePrompt(false)}
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="primary"
+              size="sm"
+              leftIcon={<CheckCircle2 size={14} className="text-white" />}
+              className="bg-emerald-700 hover:bg-emerald-800 text-white border-emerald-800"
+              isLoading={resetStrikesMutation.isPending}
+              onClick={confirmResetStrikes}
+            >
+              Yes, Reset Strikes ⚡
+            </Button>
+          </div>
+        </div>
+      </Modal>
+
+      {/* Ban / Unban Account Warning Confirmation Modal */}
+      <Modal
+        isOpen={showBanPrompt}
+        onClose={() => setShowBanPrompt(false)}
+        title={person?.status === 'banned' || person?.status === 'blocked' || person?.isBlocked ? '⚡ Confirm Account Unban' : '⛔ Confirm Account Ban / Suspension'}
+        subtitle={person ? `Target Account: ${person.name} (${person.id})` : ''}
+        size="sm"
+      >
+        <div className="flex flex-col gap-4 p-4 text-xs font-sans">
+          <div className={`p-3.5 border rounded-xl flex items-start gap-2.5 ${person?.status === 'banned' || person?.status === 'blocked' || person?.isBlocked ? 'bg-emerald-50 border-emerald-200 text-emerald-950' : 'bg-rose-50 border-rose-200 text-rose-950'}`}>
+            <AlertTriangle size={18} className={`shrink-0 mt-0.5 ${person?.status === 'banned' || person?.status === 'blocked' || person?.isBlocked ? 'text-emerald-600' : 'text-rose-600'}`} />
+            <div className="flex flex-col gap-1 leading-relaxed">
+              <span className="font-bold">
+                {person?.status === 'banned' || person?.status === 'blocked' || person?.isBlocked
+                  ? `Are you sure you want to unban ${person?.name}?`
+                  : `Warning: Are you sure you want to BAN ${person?.name}?`}
+              </span>
+              <span>
+                {person?.status === 'banned' || person?.status === 'blocked' || person?.isBlocked
+                  ? 'This will restore user access to place orders across the platform.'
+                  : 'Banning will immediately revoke user access, invalidate active login sessions, and block order placement.'}
+              </span>
+            </div>
+          </div>
+
+          <div className="flex items-center justify-end gap-2 pt-3 border-t border-[#E7DFD5]">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setShowBanPrompt(false)}
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="primary"
+              size="sm"
+              leftIcon={person?.status === 'banned' || person?.status === 'blocked' || person?.isBlocked ? <CheckCircle2 size={14} className="text-white" /> : <Ban size={14} className="text-white" />}
+              className={person?.status === 'banned' || person?.status === 'blocked' || person?.isBlocked ? 'bg-emerald-700 hover:bg-emerald-800 text-white border-emerald-800' : 'bg-rose-700 hover:bg-rose-800 text-white border-rose-800'}
+              isLoading={updateStatusMutation.isPending}
+              onClick={confirmToggleBan}
+            >
+              {person?.status === 'banned' || person?.status === 'blocked' || person?.isBlocked ? 'Yes, Unban Account ⚡' : 'Yes, Ban Account ⛔'}
             </Button>
           </div>
         </div>

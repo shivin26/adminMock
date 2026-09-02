@@ -40,6 +40,8 @@ import { useUpdateVendorDetails, useVendorOrders } from '../../hooks/useVendors'
 import { SupportTicketStatusBadge } from '../support/SupportTicketStatusBadge';
 import { formatDateTime } from '../../utils/formatters.utils';
 
+import { Bell } from 'lucide-react';
+
 export interface VendorDetailsDrawerProps {
   isOpen: boolean;
   onClose: () => void;
@@ -47,6 +49,7 @@ export interface VendorDetailsDrawerProps {
   onSelectOwner?: (ownerName: string, vendor: Vendor) => void;
   onApprove?: (vendor: Vendor) => void;
   onConfirmApprove?: (vendorId: string | number) => void;
+  onMarkViewed?: (vendorId: string | number) => void;
   onHold?: (vendor: Vendor) => void;
   onReject?: (vendor: Vendor) => void;
   vendor?: Vendor | null;
@@ -59,6 +62,7 @@ export const VendorDetailsDrawer: React.FC<VendorDetailsDrawerProps> = ({
   onSelectOwner,
   onApprove,
   onConfirmApprove,
+  onMarkViewed,
   onHold,
   onReject,
   vendor,
@@ -247,6 +251,19 @@ export const VendorDetailsDrawer: React.FC<VendorDetailsDrawerProps> = ({
     { key: 'phone', label: '7. Contact Phone Number', value: vendor.phone || 'N/A' },
   ];
 
+  const updatedKeys = vendor.status === 'active'
+    ? []
+    : (vendor.updatedFieldKeys && vendor.updatedFieldKeys.length > 0)
+    ? vendor.updatedFieldKeys
+    : (vendor.resubmittedChanges && vendor.resubmittedChanges.length > 0)
+    ? vendor.resubmittedChanges.map((c) => c.field)
+    : (vendor.hasResubmitted || vendor.hasVendorUpdate) ? ['gstin'] : [];
+
+  const getResubmittedChange = (fieldKey: string) => {
+    if (!vendor.resubmittedChanges) return null;
+    return vendor.resubmittedChanges.find((c) => c.field === fieldKey);
+  };
+
   const currentAvatar = formData.avatarUrl || vendor.avatarUrl || 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=300';
 
   return (
@@ -327,6 +344,12 @@ export const VendorDetailsDrawer: React.FC<VendorDetailsDrawerProps> = ({
               {vendor.status.replace('_', ' ').toUpperCase()}
             </Badge>
 
+            {(vendor.hasResubmitted || vendor.hasVendorUpdate || vendor.resubmittedAt || vendor.resubmittedAtReadable) && (
+              <Badge variant="success" className="text-[11px] font-mono font-bold bg-emerald-100 text-emerald-900 border border-emerald-300">
+                RESUBMITTED
+              </Badge>
+            )}
+
             {onToggleBlock && vendor.status !== 'pending' && vendor.status !== 'on_hold' && vendor.status !== 'rejected' && (
               <Button
                 size="sm"
@@ -379,6 +402,77 @@ export const VendorDetailsDrawer: React.FC<VendorDetailsDrawerProps> = ({
         {activeTab === 'profile' && (
           <div className="flex flex-col gap-6 animate-fadeIn">
 
+        {/* Resubmitted Vendor Setting Changes Highlight Card (ONLY WHEN NOT YET APPROVED) */}
+        {vendor.status !== 'active' && (vendor.hasResubmitted || vendor.hasVendorUpdate) && !vendor.isUpdateViewed && (
+          <div className="p-4 bg-emerald-50/90 border border-emerald-300 rounded-2xl shadow-xs flex flex-col gap-2.5 font-sans">
+            <div className="flex items-center justify-between border-b border-emerald-200 pb-2 flex-wrap gap-2">
+              <h5 className="text-xs font-bold text-emerald-950 uppercase tracking-wider flex items-center gap-1.5 font-mono">
+                <Bell size={15} className="text-emerald-600 animate-bounce shrink-0" />
+                NEW VENDOR RESUBMISSION &amp; UPDATED DETAILS
+              </h5>
+              <div className="flex items-center gap-2">
+                <span className="px-2.5 py-1 bg-emerald-700 text-white font-mono text-[10px] font-bold rounded-full">
+                  {vendor.resubmittedAtReadable || (vendor.resubmittedAt ? `Resubmitted at ${vendor.resubmittedAt}` : 'Updated in Settings')}
+                </span>
+                {onMarkViewed && (
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="outline"
+                    onClick={() => onMarkViewed(vendor.id)}
+                    className="bg-white text-emerald-900 border-emerald-300 hover:bg-emerald-100 text-[11px] font-bold font-mono py-1 px-2.5 shadow-xs"
+                    title="Click to mark update as viewed and remove the green notification badge"
+                  >
+                    <CheckCircle2 size={13} className="text-emerald-700 shrink-0" /> Mark as Viewed
+                  </Button>
+                )}
+              </div>
+            </div>
+
+            <p className="text-xs text-emerald-900 leading-relaxed font-medium">
+              The vendor updated their store settings in response to your hold request. Below are the specific field(s) modified:
+            </p>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-1">
+              {(vendor.resubmittedChanges && vendor.resubmittedChanges.length > 0
+                ? vendor.resubmittedChanges
+                : (vendor.updatedFieldKeys && vendor.updatedFieldKeys.length > 0
+                    ? vendor.updatedFieldKeys.map((key) => {
+                        const match = fieldsConfig.find((f) => f.key === key);
+                        return {
+                          field: key,
+                          label: match?.label || key,
+                          oldValue: undefined,
+                          newValue: (vendor as any)[key] || '',
+                        };
+                      })
+                    : (vendor.gstin ? [{ field: 'gstin', label: '1. GSTIN Tax Code', oldValue: undefined, newValue: vendor.gstin }] : [])
+                  )
+              ).map((change, idx) => (
+                <div key={idx} className={`p-2.5 bg-white rounded-xl border border-emerald-200 text-xs flex flex-col gap-1 ${change.field === 'address' ? 'sm:col-span-2' : ''}`}>
+                  <div className="flex items-center justify-between">
+                    <span className="font-bold text-[#211A19] uppercase text-[11px] flex items-center gap-1">
+                      <span className="w-2 h-2 rounded-full bg-emerald-600 inline-block shrink-0" />
+                      {change.label}
+                    </span>
+                    <Badge variant="success" className="text-[10px]">UPDATED BY VENDOR</Badge>
+                  </div>
+                  <div className="flex items-center justify-between gap-2 font-mono text-xs mt-0.5">
+                    {change.oldValue && (
+                      <span className="text-gray-400 line-through truncate max-w-[45%]" title={change.oldValue}>
+                        Original: {change.oldValue}
+                      </span>
+                    )}
+                    <span className="font-bold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200 truncate" title={change.newValue}>
+                      New: {change.newValue}
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* On Hold Reason Banner */}
         {vendor.status === 'on_hold' && vendor.holdReason && (
           <div className="p-4 bg-amber-50 border border-amber-200 rounded-2xl flex flex-col gap-1 text-amber-900 text-xs">
@@ -403,7 +497,7 @@ export const VendorDetailsDrawer: React.FC<VendorDetailsDrawerProps> = ({
           </div>
         )}
 
-        {/* Complete Combined Address Section */}
+        {/* Complete Address Section */}
         {(() => {
           const fullAddressString = [
             formData.shopNumber || vendor.shopNumber,
@@ -414,25 +508,25 @@ export const VendorDetailsDrawer: React.FC<VendorDetailsDrawerProps> = ({
           ].filter(Boolean).join(', ');
 
           return (
-            <div className="p-5 bg-emerald-50/80 border border-emerald-200 rounded-2xl flex flex-col gap-3 font-sans shadow-xs">
-              <div className="flex items-center justify-between flex-wrap gap-2 border-b border-emerald-200/80 pb-2">
-                <span className="text-xs font-bold text-emerald-950 uppercase tracking-wider font-serif flex items-center gap-1.5">
-                  <MapPin size={16} className="text-emerald-700 shrink-0" /> Complete Combined Registered Address
+            <div className="p-5 bg-white border border-[#E7DFD5] rounded-2xl flex flex-col gap-3 font-sans shadow-xs">
+              <div className="flex items-center justify-between flex-wrap gap-2 border-b border-[#E7DFD5] pb-2.5">
+                <span className="text-xs font-bold text-[#211A19] uppercase tracking-wider font-serif flex items-center gap-1.5">
+                  <MapPin size={16} className="text-[#C8A878] shrink-0" /> Complete Address
                 </span>
-                <Badge variant="success" className="text-[10px] font-mono">
+                <Badge variant="outline" className="text-[10px] font-mono border-[#E7DFD5] text-[#78716C] bg-[#FAF8F5]">
                   ALL ADDRESS API FIELDS COMBINED
                 </Badge>
               </div>
 
-              <div className="p-3.5 bg-white border border-emerald-200 rounded-xl flex items-start gap-3 shadow-2xs">
-                <div className="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-800 flex items-center justify-center shrink-0 mt-0.5">
-                  <MapPin size={18} />
+              <div className="p-3.5 bg-[#FAF8F5] border border-[#E7DFD5] rounded-xl flex items-start gap-3 shadow-2xs">
+                <div className="w-8 h-8 rounded-lg bg-white text-[#541D26] border border-[#E7DFD5] flex items-center justify-center shrink-0 mt-0.5 shadow-2xs">
+                  <MapPin size={18} className="text-[#C8A878]" />
                 </div>
                 <div className="flex flex-col gap-1 min-w-0 flex-1">
                   <span className="font-bold text-sm text-[#211A19] leading-snug">
                     {fullAddressString || vendor.address || 'No complete address parameters provided'}
                   </span>
-                  <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-[#78716C] font-mono mt-1 pt-1.5 border-t border-slate-100">
+                  <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-[#78716C] font-mono mt-1 pt-1.5 border-t border-[#E7DFD5]/60">
                     <span>shop_number: <strong className="text-[#211A19]">{formData.shopNumber || vendor.shopNumber || '(Empty)'}</strong></span>
                     <span>area: <strong className="text-[#C8A878]">{formData.area || vendor.area || vendor.locationArea || 'N/A'}</strong></span>
                     <span>city: <strong className="text-[#211A19]">{formData.city || vendor.city || 'N/A'}</strong></span>
@@ -480,101 +574,233 @@ export const VendorDetailsDrawer: React.FC<VendorDetailsDrawerProps> = ({
             </div>
 
             {/* 2. vendor_name */}
-            <div className="p-3 bg-[#FAF8F5] border border-[#E7DFD5] rounded-xl flex flex-col gap-1">
-              <span className="text-[10px] font-bold text-[#78716C] uppercase tracking-wider font-mono">
-                2. vendor_name (Owner Name)
-              </span>
-              {isEditMode ? (
-                <Input
-                  value={formData.ownerName}
-                  onChange={(e) => handleInputChange('ownerName', e.target.value)}
-                  placeholder="Lovely"
-                />
-              ) : (
-                <span className="font-bold text-[#211A19]">{vendor.ownerName || 'N/A'}</span>
-              )}
-            </div>
+            {(() => {
+              const isUpdated = updatedKeys.includes('ownerName') || updatedKeys.includes('vendor_name');
+              const change = getResubmittedChange('ownerName') || getResubmittedChange('vendor_name');
+              return (
+                <div className={`p-3 rounded-xl border flex flex-col gap-1 transition-all ${
+                  isUpdated ? 'bg-emerald-50/90 border-emerald-300 shadow-2xs' : 'bg-[#FAF8F5] border-[#E7DFD5]'
+                }`}>
+                  <div className="flex items-center justify-between">
+                    <span className={`text-[10px] font-bold uppercase tracking-wider font-mono ${
+                      isUpdated ? 'text-emerald-950' : 'text-[#78716C]'
+                    }`}>
+                      2. vendor_name (Owner Name)
+                    </span>
+                    {isUpdated && <Badge variant="success" className="text-[9px]">UPDATED BY VENDOR</Badge>}
+                  </div>
+                  {isEditMode ? (
+                    <Input
+                      value={formData.ownerName}
+                      onChange={(e) => handleInputChange('ownerName', e.target.value)}
+                      placeholder="Lovely"
+                    />
+                  ) : (
+                    <div className="flex flex-col gap-0.5">
+                      {change?.oldValue && (
+                        <span className="text-[11px] text-gray-400 line-through font-mono truncate" title={`Original: ${change.oldValue}`}>
+                          Original: {change.oldValue}
+                        </span>
+                      )}
+                      <span className={`font-bold ${isUpdated ? 'text-emerald-900' : 'text-[#211A19]'}`}>
+                        {vendor.ownerName || 'N/A'}
+                      </span>
+                    </div>
+                  )}
+                </div>
+              );
+            })()}
 
             {/* 3. shop_name */}
-            <div className="p-3 bg-[#FAF8F5] border border-[#E7DFD5] rounded-xl flex flex-col gap-1">
-              <span className="text-[10px] font-bold text-[#78716C] uppercase tracking-wider font-mono">
-                3. shop_name (Store Name)
-              </span>
-              {isEditMode ? (
-                <Input
-                  value={formData.storeName}
-                  onChange={(e) => handleInputChange('storeName', e.target.value)}
-                  placeholder="freshmart"
-                />
-              ) : (
-                <span className="font-bold text-[#211A19]">{vendor.storeName || 'N/A'}</span>
-              )}
-            </div>
+            {(() => {
+              const isUpdated = updatedKeys.includes('storeName') || updatedKeys.includes('shop_name');
+              const change = getResubmittedChange('storeName') || getResubmittedChange('shop_name');
+              return (
+                <div className={`p-3 rounded-xl border flex flex-col gap-1 transition-all ${
+                  isUpdated ? 'bg-emerald-50/90 border-emerald-300 shadow-2xs' : 'bg-[#FAF8F5] border-[#E7DFD5]'
+                }`}>
+                  <div className="flex items-center justify-between">
+                    <span className={`text-[10px] font-bold uppercase tracking-wider font-mono ${
+                      isUpdated ? 'text-emerald-950' : 'text-[#78716C]'
+                    }`}>
+                      3. shop_name (Store Name)
+                    </span>
+                    {isUpdated && <Badge variant="success" className="text-[9px]">UPDATED BY VENDOR</Badge>}
+                  </div>
+                  {isEditMode ? (
+                    <Input
+                      value={formData.storeName}
+                      onChange={(e) => handleInputChange('storeName', e.target.value)}
+                      placeholder="freshmart"
+                    />
+                  ) : (
+                    <div className="flex flex-col gap-0.5">
+                      {change?.oldValue && (
+                        <span className="text-[11px] text-gray-400 line-through font-mono truncate" title={`Original: ${change.oldValue}`}>
+                          Original: {change.oldValue}
+                        </span>
+                      )}
+                      <span className={`font-bold ${isUpdated ? 'text-emerald-900' : 'text-[#211A19]'}`}>
+                        {vendor.storeName || 'N/A'}
+                      </span>
+                    </div>
+                  )}
+                </div>
+              );
+            })()}
 
             {/* 4. email */}
-            <div className="p-3 bg-[#FAF8F5] border border-[#E7DFD5] rounded-xl flex flex-col gap-1">
-              <span className="text-[10px] font-bold text-[#78716C] uppercase tracking-wider font-mono">
-                4. email
-              </span>
-              {isEditMode ? (
-                <Input
-                  type="email"
-                  value={formData.email}
-                  onChange={(e) => handleInputChange('email', e.target.value)}
-                  placeholder="freshmart@gmail.com"
-                />
-              ) : (
-                <span className="font-mono text-[#211A19] truncate">{vendor.email || 'N/A'}</span>
-              )}
-            </div>
+            {(() => {
+              const isUpdated = updatedKeys.includes('email');
+              const change = getResubmittedChange('email');
+              return (
+                <div className={`p-3 rounded-xl border flex flex-col gap-1 transition-all ${
+                  isUpdated ? 'bg-emerald-50/90 border-emerald-300 shadow-2xs' : 'bg-[#FAF8F5] border-[#E7DFD5]'
+                }`}>
+                  <div className="flex items-center justify-between">
+                    <span className={`text-[10px] font-bold uppercase tracking-wider font-mono ${
+                      isUpdated ? 'text-emerald-950' : 'text-[#78716C]'
+                    }`}>
+                      4. email
+                    </span>
+                    {isUpdated && <Badge variant="success" className="text-[9px]">UPDATED BY VENDOR</Badge>}
+                  </div>
+                  {isEditMode ? (
+                    <Input
+                      type="email"
+                      value={formData.email}
+                      onChange={(e) => handleInputChange('email', e.target.value)}
+                      placeholder="freshmart@gmail.com"
+                    />
+                  ) : (
+                    <div className="flex flex-col gap-0.5 font-mono">
+                      {change?.oldValue && (
+                        <span className="text-[11px] text-gray-400 line-through truncate" title={`Original: ${change.oldValue}`}>
+                          Original: {change.oldValue}
+                        </span>
+                      )}
+                      <span className={`truncate ${isUpdated ? 'font-bold text-emerald-900' : 'text-[#211A19]'}`}>
+                        {vendor.email || 'N/A'}
+                      </span>
+                    </div>
+                  )}
+                </div>
+              );
+            })()}
 
             {/* 5. phone_number */}
-            <div className="p-3 bg-[#FAF8F5] border border-[#E7DFD5] rounded-xl flex flex-col gap-1">
-              <span className="text-[10px] font-bold text-[#78716C] uppercase tracking-wider font-mono">
-                5. phone_number
-              </span>
-              {isEditMode ? (
-                <Input
-                  value={formData.phone}
-                  onChange={(e) => handleInputChange('phone', e.target.value)}
-                  placeholder="9509512187"
-                />
-              ) : (
-                <span className="font-mono text-[#211A19]">{vendor.phone || 'N/A'}</span>
-              )}
-            </div>
+            {(() => {
+              const isUpdated = updatedKeys.includes('phone') || updatedKeys.includes('phone_number');
+              const change = getResubmittedChange('phone') || getResubmittedChange('phone_number');
+              return (
+                <div className={`p-3 rounded-xl border flex flex-col gap-1 transition-all ${
+                  isUpdated ? 'bg-emerald-50/90 border-emerald-300 shadow-2xs' : 'bg-[#FAF8F5] border-[#E7DFD5]'
+                }`}>
+                  <div className="flex items-center justify-between">
+                    <span className={`text-[10px] font-bold uppercase tracking-wider font-mono ${
+                      isUpdated ? 'text-emerald-950' : 'text-[#78716C]'
+                    }`}>
+                      5. phone_number
+                    </span>
+                    {isUpdated && <Badge variant="success" className="text-[9px]">UPDATED BY VENDOR</Badge>}
+                  </div>
+                  {isEditMode ? (
+                    <Input
+                      value={formData.phone}
+                      onChange={(e) => handleInputChange('phone', e.target.value)}
+                      placeholder="9509512187"
+                    />
+                  ) : (
+                    <div className="flex flex-col gap-0.5 font-mono">
+                      {change?.oldValue && (
+                        <span className="text-[11px] text-gray-400 line-through truncate" title={`Original: ${change.oldValue}`}>
+                          Original: {change.oldValue}
+                        </span>
+                      )}
+                      <span className={`${isUpdated ? 'font-bold text-emerald-900' : 'text-[#211A19]'}`}>
+                        {vendor.phone || 'N/A'}
+                      </span>
+                    </div>
+                  )}
+                </div>
+              );
+            })()}
 
             {/* 6. gstin */}
-            <div className="p-3 bg-[#FAF8F5] border border-[#E7DFD5] rounded-xl flex flex-col gap-1">
-              <span className="text-[10px] font-bold text-[#78716C] uppercase tracking-wider font-mono">
-                6. gstin
-              </span>
-              {isEditMode ? (
-                <Input
-                  value={formData.gstin}
-                  onChange={(e) => handleInputChange('gstin', e.target.value)}
-                  placeholder="ASDFG1234F"
-                />
-              ) : (
-                <span className="font-mono font-bold text-[#211A19]">{vendor.gstin || 'N/A'}</span>
-              )}
-            </div>
+            {(() => {
+              const isUpdated = updatedKeys.includes('gstin');
+              const change = getResubmittedChange('gstin');
+              return (
+                <div className={`p-3 rounded-xl border flex flex-col gap-1 transition-all ${
+                  isUpdated ? 'bg-emerald-50/90 border-emerald-300 shadow-2xs' : 'bg-[#FAF8F5] border-[#E7DFD5]'
+                }`}>
+                  <div className="flex items-center justify-between">
+                    <span className={`text-[10px] font-bold uppercase tracking-wider font-mono ${
+                      isUpdated ? 'text-emerald-950' : 'text-[#78716C]'
+                    }`}>
+                      6. gstin
+                    </span>
+                    {isUpdated && <Badge variant="success" className="text-[9px]">UPDATED BY VENDOR</Badge>}
+                  </div>
+                  {isEditMode ? (
+                    <Input
+                      value={formData.gstin}
+                      onChange={(e) => handleInputChange('gstin', e.target.value)}
+                      placeholder="ASDFG1234F"
+                    />
+                  ) : (
+                    <div className="flex flex-col gap-0.5 font-mono">
+                      {change?.oldValue && (
+                        <span className="text-[11px] text-gray-400 line-through truncate" title={`Original: ${change.oldValue}`}>
+                          Original: {change.oldValue}
+                        </span>
+                      )}
+                      <span className={`font-bold ${isUpdated ? 'font-bold text-emerald-900' : 'text-[#211A19]'}`}>
+                        {vendor.gstin || 'N/A'}
+                      </span>
+                    </div>
+                  )}
+                </div>
+              );
+            })()}
 
             {/* 7. pan_number */}
-            <div className="p-3 bg-[#FAF8F5] border border-[#E7DFD5] rounded-xl flex flex-col gap-1">
-              <span className="text-[10px] font-bold text-[#78716C] uppercase tracking-wider font-mono">
-                7. pan_number
-              </span>
-              {isEditMode ? (
-                <Input
-                  value={formData.panNumber}
-                  onChange={(e) => handleInputChange('panNumber', e.target.value)}
-                  placeholder="ASDFG1234F"
-                />
-              ) : (
-                <span className="font-mono font-bold text-[#211A19]">{vendor.panNumber || 'N/A'}</span>
-              )}
-            </div>
+            {(() => {
+              const isUpdated = updatedKeys.includes('panNumber') || updatedKeys.includes('pan_number');
+              const change = getResubmittedChange('panNumber') || getResubmittedChange('pan_number');
+              return (
+                <div className={`p-3 rounded-xl border flex flex-col gap-1 transition-all ${
+                  isUpdated ? 'bg-emerald-50/90 border-emerald-300 shadow-2xs' : 'bg-[#FAF8F5] border-[#E7DFD5]'
+                }`}>
+                  <div className="flex items-center justify-between">
+                    <span className={`text-[10px] font-bold uppercase tracking-wider font-mono ${
+                      isUpdated ? 'text-emerald-950' : 'text-[#78716C]'
+                    }`}>
+                      7. pan_number
+                    </span>
+                    {isUpdated && <Badge variant="success" className="text-[9px]">UPDATED BY VENDOR</Badge>}
+                  </div>
+                  {isEditMode ? (
+                    <Input
+                      value={formData.panNumber}
+                      onChange={(e) => handleInputChange('panNumber', e.target.value)}
+                      placeholder="ASDFG1234F"
+                    />
+                  ) : (
+                    <div className="flex flex-col gap-0.5 font-mono">
+                      {change?.oldValue && (
+                        <span className="text-[11px] text-gray-400 line-through truncate" title={`Original: ${change.oldValue}`}>
+                          Original: {change.oldValue}
+                        </span>
+                      )}
+                      <span className={`font-bold ${isUpdated ? 'text-emerald-900' : 'text-[#211A19]'}`}>
+                        {vendor.panNumber || 'N/A'}
+                      </span>
+                    </div>
+                  )}
+                </div>
+              );
+            })()}
 
             {/* 8. category */}
             <div className="p-3 bg-[#FAF8F5] border border-[#E7DFD5] rounded-xl flex flex-col gap-1">
@@ -612,21 +838,44 @@ export const VendorDetailsDrawer: React.FC<VendorDetailsDrawerProps> = ({
               )}
             </div>
 
-            {/* 10. shop_number */}
-            <div className="p-3 bg-[#FAF8F5] border border-[#E7DFD5] rounded-xl flex flex-col gap-1">
-              <span className="text-[10px] font-bold text-[#78716C] uppercase tracking-wider font-mono">
-                10. shop_number
-              </span>
-              {isEditMode ? (
-                <Input
-                  value={formData.shopNumber}
-                  onChange={(e) => handleInputChange('shopNumber', e.target.value)}
-                  placeholder="Shop # G-12"
-                />
-              ) : (
-                <span className="font-semibold text-[#211A19]">{vendor.shopNumber || 'N/A (Empty)'}</span>
-              )}
-            </div>
+            {/* 10. shop_number / shop_no */}
+            {(() => {
+              const isUpdated = updatedKeys.includes('shopNumber') || updatedKeys.includes('shop_number') || updatedKeys.includes('shop_no');
+              const change = getResubmittedChange('shopNumber') || getResubmittedChange('shop_number') || getResubmittedChange('shop_no');
+              const currentShopNo = vendor.shopNumber || (vendor as any).shop_no || 'N/A (Empty)';
+              return (
+                <div className={`p-3 rounded-xl border flex flex-col gap-1 transition-all ${
+                  isUpdated ? 'bg-emerald-50/90 border-emerald-300 shadow-2xs' : 'bg-[#FAF8F5] border-[#E7DFD5]'
+                }`}>
+                  <div className="flex items-center justify-between">
+                    <span className={`text-[10px] font-bold uppercase tracking-wider font-mono ${
+                      isUpdated ? 'text-emerald-950' : 'text-[#78716C]'
+                    }`}>
+                      10. shop_number / shop_no
+                    </span>
+                    {isUpdated && <Badge variant="success" className="text-[9px]">UPDATED BY VENDOR</Badge>}
+                  </div>
+                  {isEditMode ? (
+                    <Input
+                      value={formData.shopNumber}
+                      onChange={(e) => handleInputChange('shopNumber', e.target.value)}
+                      placeholder="Shop 101"
+                    />
+                  ) : (
+                    <div className="flex flex-col gap-0.5 font-mono">
+                      {change?.oldValue && (
+                        <span className="text-[11px] text-gray-400 line-through truncate" title={`Original: ${change.oldValue}`}>
+                          Original: {change.oldValue}
+                        </span>
+                      )}
+                      <span className={`font-bold ${isUpdated ? 'text-emerald-900' : 'text-[#211A19]'}`}>
+                        {currentShopNo}
+                      </span>
+                    </div>
+                  )}
+                </div>
+              );
+            })()}
 
             {/* 11. area */}
             <div className="p-3 bg-[#FAF8F5] border border-[#E7DFD5] rounded-xl flex flex-col gap-1">

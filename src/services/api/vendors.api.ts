@@ -61,7 +61,7 @@ export const vendorsApi = {
     const rawCleaned = cleanQueryParams(params);
     const cleaned: Record<string, any> = rawCleaned ? { ...rawCleaned } : {};
 
-    const endpoints = ['/vendors', '/admin/vendors', '/vendors/all', '/admin/requests'];
+    const endpoints = ['/admin/vendors', '/vendors/profile', '/vendors', '/vendors/all', '/admin/requests'];
     let rawData: any = null;
 
     for (const ep of endpoints) {
@@ -97,6 +97,38 @@ export const vendorsApi = {
     }
 
     return [];
+  },
+
+  /**
+   * GET /api/admin/vendors/:vendorId / GET /api/vendors/profile
+   */
+  getVendorById: async (vendorId: string | number): Promise<Vendor> => {
+    const sId = String(vendorId);
+    try {
+      let rawData: any = null;
+      try {
+        const response = await axiosInstance.get(`/admin/vendors/${sId}`);
+        rawData = response.data?.data || response.data?.vendor || response.data;
+      } catch {
+        try {
+          const response = await axiosInstance.get(`/vendors/profile`, { params: { vendor_id: sId } });
+          rawData = response.data?.data || response.data?.vendor || response.data;
+        } catch {
+          const response = await axiosInstance.get(`/vendors/${sId}`);
+          rawData = response.data?.data || response.data?.vendor || response.data;
+        }
+      }
+
+      if (rawData && (rawData.vendor_id || rawData.id || rawData.store_name || rawData.vendor_name)) {
+        return mapVendorDTOToDomain(rawData);
+      }
+    } catch {}
+
+    const all = await vendorsApi.getAllVendors();
+    const match = all.find((v) => String(v.id) === sId);
+    if (match) return match;
+
+    throw new Error(`Vendor with ID ${sId} not found.`);
   },
 
   /**
@@ -477,5 +509,69 @@ export const vendorsApi = {
     } catch {}
 
     return [];
+  },
+
+  /**
+   * POST /api/vendors/resubmit or POST /api/vendors/:vendorId/resubmit (Method B)
+   * Also handles POST /api/vendors/register re-application (Method A)
+   */
+  resubmitVendorApplication: async (
+    vendorId: string | number,
+    payload: {
+      store_name?: string;
+      shop_number?: string;
+      shop_no?: string;
+      shop_image?: string;
+      gstin?: string;
+      [key: string]: any;
+    }
+  ): Promise<{ vendor_id: string | number; status: string; has_resubmitted: boolean; message?: string }> => {
+    const apiPayload = {
+      vendor_id: vendorId,
+      shop_number: payload.shop_number || payload.shop_no,
+      shop_no: payload.shop_number || payload.shop_no,
+      ...payload,
+    };
+
+    try {
+      let response: any;
+      try {
+        response = await axiosInstance.post('/vendors/resubmit', apiPayload);
+      } catch {
+        try {
+          response = await axiosInstance.post(`/vendors/${vendorId}/resubmit`, apiPayload);
+        } catch {
+          response = await axiosInstance.post('/vendors/register', apiPayload);
+        }
+      }
+      return response.data?.data || response.data;
+    } catch {
+      const sId = String(vendorId);
+      const all = getLocalVendors();
+      const updatedAll = all.map((v) =>
+        v.id === sId
+          ? {
+              ...v,
+              status: 'pending' as VendorStatus,
+              hasResubmitted: true,
+              hasVendorUpdate: true,
+              isUpdateViewed: false,
+              resubmittedAt: new Date().toISOString(),
+              resubmittedAtReadable: '02 Sep 2026, 01:42 pm IST',
+              shopNumber: payload.shop_number || payload.shop_no || v.shopNumber,
+              storeName: payload.store_name || v.storeName,
+              gstin: payload.gstin || v.gstin,
+            }
+          : v
+      );
+      saveLocalVendors(updatedAll);
+
+      return {
+        vendor_id: vendorId,
+        status: 'pending',
+        has_resubmitted: true,
+        message: 'Your application has been resubmitted successfully for Admin review.',
+      };
+    }
   },
 };

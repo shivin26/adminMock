@@ -1,6 +1,6 @@
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { Modal } from '../common/Modal/Modal';
+import { Drawer } from '../common/Drawer/Drawer';
 import { Button } from '../common/Button/Button';
 import { Badge } from '../common/Badge/Badge';
 import { LoadingSpinner } from '../ui/LoadingSpinner';
@@ -65,7 +65,7 @@ export const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({
   };
 
   return (
-    <Modal
+    <Drawer
       isOpen={isOpen}
       onClose={onClose}
       title={`Order Details #${activeOrderId}`}
@@ -77,7 +77,7 @@ export const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({
           <LoadingSpinner size="md" label="Fetching live order details from backend..." />
         </div>
       ) : (
-        <div className="flex flex-col gap-4 max-h-[75vh] overflow-y-auto pr-1">
+        <div className="flex flex-col gap-4">
           {/* Top Order Status Header */}
           <div className="p-4 bg-[#FAF8F5] border border-[#E7DFD5] rounded-2xl flex items-center justify-between">
             <div className="flex items-center gap-3">
@@ -241,6 +241,6 @@ export const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({
           </div>
         </div>
       )}
-    </Modal>
+    </Drawer>
   );
 };

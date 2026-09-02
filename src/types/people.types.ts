@@ -27,6 +27,8 @@ export interface PersonProfile {
   totalComplaintsCount: number;
   avatarUrl?: string;
   createdAt: string;
+  createdAtIst?: string;
+  createdAtReadable?: string;
   lastActiveAt: string;
 }
 

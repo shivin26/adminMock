@@ -209,3 +209,34 @@ export const useVendorOrders = (vendorId?: string | number) => {
     refetchOnWindowFocus: true,
   });
 };
+
+export const useResubmitVendor = () => {
+  const queryClient = useQueryClient();
+  const { addToast } = useToast();
+
+  return useMutation({
+    mutationFn: ({ vendorId, payload }: { vendorId: string | number; payload: any }) =>
+      vendorsApi.resubmitVendorApplication(vendorId, payload),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: CACHE_KEYS.vendors.all });
+      queryClient.invalidateQueries({ queryKey: CACHE_KEYS.vendors.pending });
+      queryClient.invalidateQueries({ queryKey: ['vendors', 'on_hold'] });
+
+      logBackendMutation('VENDORS', 'RESUBMIT', `Vendor #${data.vendor_id} application resubmitted`, `Status updated to PENDING with shop_number guarantee.`);
+
+      addToast({
+        type: 'success',
+        title: 'Application Resubmitted',
+        description: 'Vendor application status reset to PENDING for Admin review.',
+      });
+    },
+    onError: (error: unknown) => {
+      const appErr = ErrorHandler.handle(error);
+      addToast({
+        type: 'error',
+        title: 'Resubmission Failed',
+        description: appErr.message,
+      });
+    },
+  });
+};

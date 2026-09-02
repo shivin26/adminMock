@@ -11,59 +11,51 @@ import { cleanQueryParams } from '../../utils/api.utils';
 
 const INITIAL_PEOPLE_MOCK: PersonProfile[] = [];
 
-const LOCAL_STORAGE_FLAGS_KEY = 'digilocal_user_strikes_map';
-const LOCAL_STORAGE_STATUS_KEY = 'digilocal_user_status_map';
+const USER_STATUS_MAP = new Map<string, PersonProfile['status']>();
+const USER_FLAGS_MAP = new Map<string, number>();
 
-const getStoredFlagsMap = (): Map<string, number> => {
+const STRIKES_STORAGE_KEY = 'digilocal_user_strikes_persistent';
+const STATUS_STORAGE_KEY = 'digilocal_user_status_persistent';
+
+export const savePersistentStrike = (userId: string, strikes: number, personObj?: Partial<PersonProfile>) => {
   try {
-    const raw = localStorage.getItem(LOCAL_STORAGE_FLAGS_KEY);
-    if (raw) {
-      const parsed = JSON.parse(raw);
-      return new Map(Object.entries(parsed));
+    const raw = localStorage.getItem(STRIKES_STORAGE_KEY);
+    const map = raw ? JSON.parse(raw) : {};
+
+    const uStr = String(userId).trim();
+    map[uStr] = strikes;
+    map[`usr_${uStr}`] = strikes;
+    map[`usr_v_${uStr}`] = strikes;
+    map[uStr.replace(/^usr_v_|^usr_|^user_/, '')] = strikes;
+
+    if (personObj) {
+      if (personObj.email) map[personObj.email.toLowerCase().trim()] = strikes;
+      if (personObj.phone) map[personObj.phone.trim()] = strikes;
+      if (personObj.name) map[personObj.name.toLowerCase().trim()] = strikes;
     }
+
+    localStorage.setItem(STRIKES_STORAGE_KEY, JSON.stringify(map));
   } catch {}
-  return new Map();
 };
 
-const getStoredStatusMap = (): Map<string, PersonProfile['status']> => {
+export const savePersistentStatus = (userId: string, status: PersonProfile['status'], personObj?: Partial<PersonProfile>) => {
   try {
-    const raw = localStorage.getItem(LOCAL_STORAGE_STATUS_KEY);
-    if (raw) {
-      const parsed = JSON.parse(raw);
-      return new Map(Object.entries(parsed));
+    const raw = localStorage.getItem(STATUS_STORAGE_KEY);
+    const map = raw ? JSON.parse(raw) : {};
+
+    const uStr = String(userId).trim();
+    map[uStr] = status;
+    map[`usr_${uStr}`] = status;
+    map[`usr_v_${uStr}`] = status;
+    map[uStr.replace(/^usr_v_|^usr_|^user_/, '')] = status;
+
+    if (personObj) {
+      if (personObj.email) map[personObj.email.toLowerCase().trim()] = status;
+      if (personObj.phone) map[personObj.phone.trim()] = status;
+      if (personObj.name) map[personObj.name.toLowerCase().trim()] = status;
     }
-  } catch {}
-  return new Map();
-};
 
-export const USER_FLAGS_MAP = getStoredFlagsMap();
-export const USER_STATUS_MAP = getStoredStatusMap();
-
-export const setStoredFlag = (id: string, strikes: number) => {
-  const sid = String(id);
-  USER_FLAGS_MAP.set(sid, strikes);
-  if (sid.includes('usr_')) {
-    USER_FLAGS_MAP.set(sid.replace('usr_', ''), strikes);
-  } else {
-    USER_FLAGS_MAP.set(`usr_${sid}`, strikes);
-  }
-  try {
-    const obj = Object.fromEntries(USER_FLAGS_MAP.entries());
-    localStorage.setItem(LOCAL_STORAGE_FLAGS_KEY, JSON.stringify(obj));
-  } catch {}
-};
-
-export const setStoredStatus = (id: string, status: PersonProfile['status']) => {
-  const sid = String(id);
-  USER_STATUS_MAP.set(sid, status);
-  if (sid.includes('usr_')) {
-    USER_STATUS_MAP.set(sid.replace('usr_', ''), status);
-  } else {
-    USER_STATUS_MAP.set(`usr_${sid}`, status);
-  }
-  try {
-    const obj = Object.fromEntries(USER_STATUS_MAP.entries());
-    localStorage.setItem(LOCAL_STORAGE_STATUS_KEY, JSON.stringify(obj));
+    localStorage.setItem(STATUS_STORAGE_KEY, JSON.stringify(map));
   } catch {}
 };
 
@@ -75,38 +67,30 @@ export const peopleApi = {
     try {
       const response = await axiosInstance.get('/admin/users', { params: cleaned });
       const raw = response.data?.data || response.data?.users || response.data;
-      if (Array.isArray(raw)) {
+      if (Array.isArray(raw) && raw.length > 0) {
         userList = raw.map(mapUserDTOToDomain);
       }
     } catch {
       try {
         const response = await axiosInstance.get('/people', { params: cleaned });
         const raw = response.data?.data || response.data;
-        if (Array.isArray(raw)) {
+        if (Array.isArray(raw) && raw.length > 0) {
           userList = raw.map(mapUserDTOToDomain);
         }
       } catch {}
     }
 
+    if (userList.length === 0) {
+      userList = [...INITIAL_PEOPLE_MOCK];
+    }
+
     // Apply persistent status and strike overrides
     for (const p of userList) {
-      if (USER_FLAGS_MAP.has(p.id)) {
-        const s = USER_FLAGS_MAP.get(p.id)!;
-        p.flagsCount = Math.max(p.flagsCount || 0, s);
-        p.strikes = Math.max(p.strikes || 0, s);
-      }
       if (USER_STATUS_MAP.has(p.id)) {
-        const st = USER_STATUS_MAP.get(p.id)!;
-        if (st === 'banned' || st === 'blocked') {
-          p.status = 'banned';
-          p.isBlocked = true;
-          p.isAutoBanned = true;
-        }
+        p.status = USER_STATUS_MAP.get(p.id)!;
       }
-      if ((p.strikes !== undefined && p.strikes >= 3) || p.flagsCount >= 3) {
-        p.status = 'banned';
-        p.isBlocked = true;
-        p.isAutoBanned = true;
+      if (USER_FLAGS_MAP.has(p.id)) {
+        p.flagsCount = USER_FLAGS_MAP.get(p.id)!;
       }
     }
 
@@ -148,30 +132,17 @@ export const peopleApi = {
         const response = await axiosInstance.get(`/admin/users/${id}`);
         raw = response.data?.data || response.data;
       } catch {
-        const response = await axiosInstance.get(`/people/${id}`);
-        raw = response.data?.data || response.data;
+        try {
+          const response = await axiosInstance.get(`/people/${id}`);
+          raw = response.data?.data || response.data;
+        } catch {
+          const response = await axiosInstance.get(`/users/status`, { params: { user_id: id } });
+          raw = response.data?.data || response.data;
+        }
       }
 
       if (raw && (raw.id || raw.user_id || raw.name)) {
         const domain = mapUserDTOToDomain(raw);
-        if (USER_FLAGS_MAP.has(domain.id)) {
-          const s = USER_FLAGS_MAP.get(domain.id)!;
-          domain.flagsCount = Math.max(domain.flagsCount || 0, s);
-          domain.strikes = Math.max(domain.strikes || 0, s);
-        }
-        if (USER_STATUS_MAP.has(domain.id)) {
-          const st = USER_STATUS_MAP.get(domain.id)!;
-          if (st === 'banned' || st === 'blocked') {
-            domain.status = 'banned';
-            domain.isBlocked = true;
-            domain.isAutoBanned = true;
-          }
-        }
-        if ((domain.strikes !== undefined && domain.strikes >= 3) || domain.flagsCount >= 3) {
-          domain.status = 'banned';
-          domain.isBlocked = true;
-          domain.isAutoBanned = true;
-        }
         return domain;
       }
     } catch {}
@@ -200,9 +171,7 @@ export const peopleApi = {
   createPerson: async (data: CreatePersonRequest): Promise<PersonProfile> => {
     try {
       const response = await axiosInstance.post('/people', data);
-      if (response.data) {
-        return mapUserDTOToDomain(response.data?.data || response.data);
-      }
+      if (response.data) return response.data;
     } catch {}
 
     const newPerson: PersonProfile = {
@@ -212,12 +181,11 @@ export const peopleApi = {
       phone: data.phone,
       personType: data.personType === 'user_vendor' ? 'user_vendor' : 'user',
       status: 'active',
-      societyName: data.societyName || 'Greenwood Residency',
-      flatNumber: data.flatNumber || 'Flat 101',
+      societyName: data.societyName || 'Anupam Society',
+      flatNumber: data.flatNumber,
       storeName: data.storeName,
       category: data.category,
       flagsCount: 0,
-      strikes: 0,
       totalOrdersCount: 0,
       totalComplaintsCount: 0,
       createdAt: new Date().toISOString(),
@@ -237,18 +205,21 @@ export const peopleApi = {
         const response = await axiosInstance.put(`/admin/users/${id}/status`, { status });
         if (response.data) {
           USER_STATUS_MAP.set(id, status);
+          savePersistentStatus(id, status);
           return mapUserDTOToDomain(response.data?.data || response.data);
         }
       } catch {
         const response = await axiosInstance.put(`/people/${id}/status`, { status });
         if (response.data) {
           USER_STATUS_MAP.set(id, status);
+          savePersistentStatus(id, status);
           return response.data;
         }
       }
     } catch {}
 
     USER_STATUS_MAP.set(id, status);
+    savePersistentStatus(id, status);
     const target = await peopleApi.getPersonById(id);
     target.status = status;
     return target;
@@ -272,31 +243,45 @@ export const peopleApi = {
 
       if (responseData) {
         const rawObj = responseData?.data || responseData?.person || responseData;
-        const msg = responseData.message || responseData.status || '';
-        
-        const prevCount = USER_FLAGS_MAP.get(id) ?? 0;
-        const backendStrikes = rawObj.strikes ?? responseData.strikes ?? rawObj.flags_count ?? rawObj.flagsCount;
-        const strikesCount = backendStrikes !== undefined ? Number(backendStrikes) : prevCount + 1;
-        
-        const isBlocked = Boolean(
-          rawObj.is_blocked ||
-          rawObj.is_auto_banned ||
-          responseData.is_blocked ||
-          responseData.is_auto_banned ||
-          rawObj.status === 'blocked' ||
-          rawObj.status === 'banned' ||
-          strikesCount >= 3
+        const msg = String(responseData.message || responseData.status || '');
+
+        let strikesCount = Number(
+          rawObj?.strikes ??
+          rawObj?.flags_count ??
+          rawObj?.flagsCount ??
+          rawObj?.strike_count ??
+          rawObj?.strikes_count ??
+          rawObj?.current_strikes ??
+          rawObj?.total_flags ??
+          rawObj?.user_strikes ??
+          responseData?.strikes ??
+          0
         );
+
+        if (!strikesCount && msg) {
+          const match = msg.match(/Strike\s*#?(\d+)/i) || msg.match(/(\d+)\s*strike/i);
+          if (match) strikesCount = Number(match[1]);
+        }
+
+        if (!strikesCount) {
+          const prev = (USER_FLAGS_MAP.get(id) || 0);
+          strikesCount = prev > 0 ? prev + 1 : 1;
+        }
+
+        const isBlocked = Boolean(rawObj?.is_blocked || rawObj?.is_auto_banned || rawObj?.status === 'blocked' || rawObj?.status === 'banned' || strikesCount >= 3);
         
-        setStoredFlag(id, strikesCount);
-        setStoredStatus(id, isBlocked ? 'banned' : (strikesCount > 0 ? 'warned' : 'active'));
+        USER_FLAGS_MAP.set(id, strikesCount);
+        USER_STATUS_MAP.set(id, isBlocked ? 'banned' : 'warned');
 
         const domainPerson = mapUserDTOToDomain(rawObj);
         domainPerson.flagsCount = strikesCount;
         domainPerson.strikes = strikesCount;
-        domainPerson.status = isBlocked ? 'banned' : (strikesCount > 0 ? 'warned' : 'active');
+        domainPerson.status = isBlocked ? 'banned' : 'warned';
         domainPerson.isBlocked = isBlocked;
         domainPerson.isAutoBanned = isBlocked;
+
+        savePersistentStrike(id, strikesCount, domainPerson);
+        savePersistentStatus(id, isBlocked ? 'banned' : 'warned', domainPerson);
 
         return { person: domainPerson, wasBanned: isBlocked, message: msg };
       }
@@ -304,7 +289,7 @@ export const peopleApi = {
 
     const person = await peopleApi.getPersonById(id);
     const currentFlags = (USER_FLAGS_MAP.get(id) ?? person.flagsCount ?? person.strikes ?? 0) + 1;
-    setStoredFlag(id, currentFlags);
+    USER_FLAGS_MAP.set(id, currentFlags);
     person.flagsCount = currentFlags;
     person.strikes = currentFlags;
 
@@ -313,11 +298,15 @@ export const peopleApi = {
       person.status = 'banned';
       person.isBlocked = true;
       person.isAutoBanned = true;
-      setStoredStatus(id, 'banned');
+      USER_STATUS_MAP.set(id, 'banned');
+      savePersistentStrike(id, currentFlags, person);
+      savePersistentStatus(id, 'banned', person);
       wasBanned = true;
     } else {
       person.status = 'warned';
-      setStoredStatus(id, 'warned');
+      USER_STATUS_MAP.set(id, 'warned');
+      savePersistentStrike(id, currentFlags, person);
+      savePersistentStatus(id, 'warned', person);
     }
 
     return {
@@ -345,29 +334,33 @@ export const peopleApi = {
         }
       }
 
-      setStoredFlag(id, 0);
-      setStoredStatus(id, 'active');
-
       if (responseData) {
         const rawObj = responseData?.data || responseData;
+        USER_FLAGS_MAP.set(id, 0);
+        USER_STATUS_MAP.set(id, 'active');
         const domainPerson = mapUserDTOToDomain(rawObj);
         domainPerson.flagsCount = 0;
         domainPerson.strikes = 0;
         domainPerson.status = 'active';
         domainPerson.isBlocked = false;
         domainPerson.isAutoBanned = false;
+
+        savePersistentStrike(id, 0, domainPerson);
+        savePersistentStatus(id, 'active', domainPerson);
         return domainPerson;
       }
     } catch {}
 
-    setStoredFlag(id, 0);
-    setStoredStatus(id, 'active');
+    USER_FLAGS_MAP.set(id, 0);
+    USER_STATUS_MAP.set(id, 'active');
     const person = await peopleApi.getPersonById(id);
     person.flagsCount = 0;
     person.strikes = 0;
     person.status = 'active';
     person.isBlocked = false;
     person.isAutoBanned = false;
+    savePersistentStrike(id, 0, person);
+    savePersistentStatus(id, 'active', person);
     return person;
   },
 
