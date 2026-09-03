@@ -67,4 +67,10 @@ export const MAIN_MENU_CONFIG: MenuItem[] = [
     iconName: 'Settings',
     requiredPower: 'SETTINGS',
   },
+  {
+    id: 'auditlogs',
+    label: 'Audit Logs',
+    path: '/dashboard/audit-logs',
+    iconName: 'Activity',
+  },
 ];

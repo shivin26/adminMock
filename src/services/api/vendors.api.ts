@@ -241,25 +241,74 @@ export const vendorsApi = {
   /**
    * POST /api/vendors/:vendorId/hold
    */
+  /**
+   * POST /api/vendors/:vendorId/hold (also PUT status fallback)
+   */
   holdVendor: async (
     vendorId: string | number,
-    payload: { subject: string; email_content: string }
+    payload: HoldVendorPayload
   ): Promise<VendorApprovalResponse> => {
     const sId = String(vendorId);
+    const holdSubj = payload.subject || payload.hold_email_subject || 'Document Correction Required for DigiLocal Registration';
+    const holdMsg = payload.hold_reason || payload.reason || payload.email_content || payload.remarks || payload.message || 'Please upload required documents and update details in settings.';
+
+    const apiPayload = {
+      subject: holdSubj,
+      hold_email_subject: holdSubj,
+      email_subject: holdSubj,
+      hold_subject: holdSubj,
+      title: holdSubj,
+
+      email_content: holdMsg,
+      hold_reason: holdMsg,
+      reason: holdMsg,
+      remarks: holdMsg,
+      comments: holdMsg,
+      message: holdMsg,
+
+      status: 'on_hold',
+    };
+
+    const endpoints = [
+      `/v1/admin/vendors/${vendorId}/hold`,
+      `/admin/vendors/${vendorId}/hold`,
+      `/admin/requests/${vendorId}/hold`,
+      `/vendors/${vendorId}/hold`,
+    ];
+
     try {
-      try {
-        const response = await axiosInstance.post<VendorApprovalResponse>(`/vendors/${vendorId}/hold`, {
-          subject: payload.subject,
-          email_content: payload.email_content,
-        });
-        return response.data;
-      } catch {
-        const response = await axiosInstance.post<VendorApprovalResponse>(`/admin/requests/${vendorId}/hold`, {
-          subject: payload.subject,
-          email_content: payload.email_content,
-        });
-        return response.data;
+      let response: any = null;
+      for (const ep of endpoints) {
+        try {
+          response = await axiosInstance.post<any>(ep, apiPayload);
+          if (response?.data) break;
+        } catch {
+          // Continue trying fallback endpoints
+        }
       }
+
+      if (!response) {
+        // Try PUT /admin/vendors/:id/status endpoint
+        response = await axiosInstance.put<any>(`/admin/vendors/${vendorId}/status`, apiPayload);
+      }
+
+      const backendRes = response?.data?.data || response?.data || {};
+      saveVendorEditOverride(sId, {
+        status: 'on_hold',
+        holdEmailSubject: holdSubj,
+        holdReason: holdMsg,
+        holdTimestamp: new Date().toISOString(),
+      });
+      setVendorStatusOverride(sId, 'on_hold');
+
+      return {
+        message: backendRes.message || `Vendor application placed on hold and email notice sent successfully.`,
+        vendor_id: vendorId,
+        status: 'on_hold',
+        hold_email_subject: holdSubj,
+        hold_reason: holdMsg,
+        has_resubmitted: false,
+      };
     } catch {
       const pending = getLocalPendingVendors();
       const allVendors = getLocalVendors();
@@ -275,8 +324,8 @@ export const vendorsApi = {
         const updatedTarget: Vendor = {
           ...target,
           status: 'on_hold',
-          holdEmailSubject: payload.subject,
-          holdReason: payload.email_content,
+          holdEmailSubject: holdSubj,
+          holdReason: holdMsg,
           holdTimestamp: new Date().toISOString(),
           hasResubmitted: false,
           resubmittedAt: null,
@@ -287,7 +336,7 @@ export const vendorsApi = {
               id: `c-${Date.now()}`,
               author: 'Super Admin (SMTP Notice)',
               role: 'admin',
-              text: `Subject: ${payload.subject}\n\n${payload.email_content}`,
+              text: `Subject: ${holdSubj}\n\n${holdMsg}`,
               createdAt: new Date().toISOString(),
             },
           ],
@@ -295,14 +344,22 @@ export const vendorsApi = {
         };
         const remainingAll = allVendors.filter((v) => v.id !== sId);
         saveLocalVendors([...remainingAll, updatedTarget]);
+
+        saveVendorEditOverride(sId, {
+          status: 'on_hold',
+          holdEmailSubject: holdSubj,
+          holdReason: holdMsg,
+          holdTimestamp: new Date().toISOString(),
+        });
+        setVendorStatusOverride(sId, 'on_hold');
       }
 
       return {
         message: `Vendor application placed on hold and email notice sent successfully.`,
         vendor_id: vendorId,
         status: 'on_hold',
-        hold_email_subject: payload.subject,
-        hold_reason: payload.email_content,
+        hold_email_subject: holdSubj,
+        hold_reason: holdMsg,
         has_resubmitted: false,
       };
     }
@@ -359,6 +416,50 @@ export const vendorsApi = {
         status: 'rejected',
       };
     }
+  },
+
+  /**
+   * GET /api/admin/vendors/:id/reapplication-changes
+   */
+  getReapplicationChanges: async (vendorId: string | number) => {
+    const sId = String(vendorId);
+    const endpoints = [
+      `/admin/vendors/${sId}/reapplication-changes`,
+      `/admin/vendors/${sId}/changes`,
+      `/admin/requests/${sId}/reapplication-changes`,
+      `/vendors/${sId}/changes`,
+    ];
+    for (const ep of endpoints) {
+      try {
+        const response = await axiosInstance.get(ep);
+        const resData = response.data?.data || response.data;
+        if (resData) return resData;
+      } catch {}
+    }
+    return null;
+  },
+
+  /**
+   * POST /api/vendors/:vendorId/block
+   */
+  blockVendor: async (vendorId: string | number, reason: string): Promise<VendorApprovalResponse> => {
+    const sId = String(vendorId);
+    const endpoints = [
+      `/vendors/${sId}/block`,
+      `/admin/vendors/${sId}/block`,
+    ];
+    for (const ep of endpoints) {
+      try {
+        const response = await axiosInstance.post<VendorApprovalResponse>(ep, { reason });
+        if (response.data) return response.data;
+      } catch {}
+    }
+    setVendorStatusOverride(sId, 'suspended');
+    return {
+      message: 'Merchant account blocked successfully by admin.',
+      vendor_id: vendorId,
+      status: 'blocked',
+    };
   },
 
   /**

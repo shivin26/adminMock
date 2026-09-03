@@ -34,7 +34,11 @@ interface NavGroup {
   items: NavItem[];
 }
 
+import { usePermission } from '../../hooks/usePermission';
+
 export const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggleCollapse }) => {
+  const { isSuperAdmin } = usePermission();
+
   const navigationGroups: NavGroup[] = [
     {
       title: 'Overview',
@@ -82,7 +86,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, onToggleCollapse 
                 DigiLocal
               </span>
               <span className="font-sans text-[10px] uppercase tracking-widest text-[#C8A878] font-semibold mt-1">
-                SUPER ADMIN
+                {isSuperAdmin ? 'SUPER ADMIN' : 'SUB ADMIN'}
               </span>
             </div>
           </div>

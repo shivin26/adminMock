@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import './SupportTagManagementModal.css';
-import { Modal } from '../common/Modal/Modal';
+import { Drawer } from '../common/Drawer/Drawer';
 import { Input } from '../common/Input/Input';
 import { Button } from '../common/Button/Button';
 import {
@@ -144,11 +144,12 @@ export const SupportTagManagementModal: React.FC<SupportTagManagementModalProps>
   };
 
   return (
-    <Modal
+    <Drawer
       isOpen={isOpen}
       onClose={onClose}
       title="Enterprise Tag Management & Taxonomy"
       subtitle="Manage system tags, custom labels, color coding, merge duplicates, and tag analytics."
+      size="xl"
     >
       <div className="flex flex-col gap-5 max-h-[74vh] overflow-y-auto pr-1">
         {/* Top Controls: Search Bar & Merge Toggle */}
@@ -349,6 +350,6 @@ export const SupportTagManagementModal: React.FC<SupportTagManagementModalProps>
           </div>
         </div>
       </div>
-    </Modal>
+    </Drawer>
   );
 };

@@ -61,8 +61,27 @@ export const mapVendorDTOToDomain = (raw: any): Vendor => {
     normalizedStatus = overrides[String(vId)];
   }
 
-  const ordersCount = Number(raw.total_orders ?? raw.total_orders_count ?? raw.totalOrdersCount ?? raw.totalOrders ?? 0);
-  const earnings = Number(raw.total_revenue ?? raw.total_earnings ?? raw.totalEarnings ?? 0);
+  const ordersCount = Number(raw.total_orders ?? raw.total_orders_count ?? raw.totalOrdersCount ?? raw.totalOrders ?? raw.orders_count ?? 0);
+  
+  const rawPayments = Array.isArray(raw.payments) ? raw.payments : [];
+  const paymentsSum = rawPayments.reduce((sum: number, p: any) => sum + Number(p.amount || p.total_amount || 0), 0);
+
+  const rawOrders = Array.isArray(raw.orders) ? raw.orders : [];
+  const ordersSum = rawOrders.reduce((sum: number, o: any) => sum + Number(o.total_amount || o.totalAmount || o.amount || 0), 0);
+
+  let earnings = Number(
+    raw.total_revenue ??
+    raw.total_earnings ??
+    raw.totalEarnings ??
+    raw.revenue ??
+    raw.earnings ??
+    raw.total_amount ??
+    raw.subscription_amount ??
+    (paymentsSum > 0 ? paymentsSum : 0) ??
+    (ordersSum > 0 ? ordersSum : 0) ??
+    0
+  );
+  if (isNaN(earnings) || earnings < 0) earnings = 0;
   const countryCode = raw.country_code || raw.countryCode || '+91';
   const rawPhoneNumber = raw.phone_number || raw.phoneNumber || raw.phone || raw.mobile || '';
   const formattedPhone = rawPhoneNumber
@@ -131,18 +150,9 @@ export const mapVendorDTOToDomain = (raw: any): Vendor => {
     }
   }
 
-  // If no explicit resubmittedChanges or updated_fields array was provided, default ONLY to gstin if gstin is present
-  if (!resubmittedChanges || resubmittedChanges.length === 0) {
-    if (raw.has_resubmitted || raw.hasResubmitted || raw.hasVendorUpdate) {
-      resubmittedChanges = [
-        { field: 'gstin', label: '1. GSTIN Tax Code', oldValue: raw.old_gstin || undefined, newValue: rawGstin || '08ABCPB2536L1Z4' }
-      ];
-    }
-  }
-
   const updatedFieldKeys = Array.isArray(rawUpdatedFields) && rawUpdatedFields.length > 0
     ? rawUpdatedFields
-    : (resubmittedChanges ? resubmittedChanges.map((c: any) => c.field) : ['gstin']);
+    : (resubmittedChanges && resubmittedChanges.length > 0 ? resubmittedChanges.map((c: any) => c.field) : []);
 
   return {
     id: String(vId),
@@ -156,6 +166,7 @@ export const mapVendorDTOToDomain = (raw: any): Vendor => {
     phoneNumber: rawPhoneNumber,
     whatsappNumber: raw.whatsapp_number || raw.whatsappNumber || rawPhoneNumber,
     address: rawAddress,
+    description: raw.description || raw.store_description || raw.storeDescription || raw.about || '',
     shopNumber,
     area,
     city,
@@ -171,10 +182,58 @@ export const mapVendorDTOToDomain = (raw: any): Vendor => {
     createdAtReadable,
     createdAtIst,
     createdAtTime,
-    holdEmailSubject: raw.hold_email_subject || raw.holdEmailSubject || undefined,
-    holdReason: raw.hold_reason || raw.holdReason || undefined,
-    holdTimestamp: raw.hold_timestamp || raw.holdTimestamp || undefined,
-    hasResubmitted: (raw.is_update_viewed || raw.isUpdateViewed) ? false : Boolean(raw.has_resubmitted ?? raw.hasResubmitted ?? (normalizedStatus === 'on_hold' && raw.hasVendorUpdate)),
+    holdEmailSubject:
+      raw.hold_email_subject ||
+      raw.holdEmailSubject ||
+      raw.email_subject ||
+      raw.emailSubject ||
+      raw.subject ||
+      raw.hold_subject ||
+      undefined,
+    holdReason:
+      raw.hold_reason ||
+      raw.holdReason ||
+      raw.email_content ||
+      raw.emailContent ||
+      raw.reason ||
+      raw.remarks ||
+      raw.comments ||
+      raw.message ||
+      raw.hold_message ||
+      undefined,
+    holdTimestamp: raw.hold_timestamp || raw.holdTimestamp || raw.hold_date || undefined,
+    hasResubmitted: (raw.is_update_viewed || raw.isUpdateViewed)
+      ? false
+      : Boolean(
+          raw.has_resubmitted ??
+          raw.hasResubmitted ??
+          raw.has_vendor_update ??
+          raw.hasVendorUpdate ??
+          raw.is_reapplied ??
+          raw.isReapplied ??
+          raw.has_reapplied ??
+          raw.hasReapplied ??
+          raw.is_updated ??
+          raw.isUpdated ??
+          (Array.isArray(resubmittedChanges) && resubmittedChanges.length > 0) ||
+          (Array.isArray(rawUpdatedFields) && rawUpdatedFields.length > 0) ||
+          (raw.changes_list && Array.isArray(raw.changes_list) && raw.changes_list.length > 0) ||
+          (raw.changed_fields && typeof raw.changed_fields === 'object' && Object.keys(raw.changed_fields).length > 0) ||
+          (raw.total_changed_fields && Number(raw.total_changed_fields) > 0)
+        ),
+    hasVendorUpdate: (raw.is_update_viewed || raw.isUpdateViewed)
+      ? false
+      : Boolean(
+          raw.has_vendor_update ??
+          raw.hasVendorUpdate ??
+          raw.has_resubmitted ??
+          raw.hasResubmitted ??
+          (Array.isArray(resubmittedChanges) && resubmittedChanges.length > 0) ||
+          (Array.isArray(rawUpdatedFields) && rawUpdatedFields.length > 0) ||
+          (raw.changes_list && Array.isArray(raw.changes_list) && raw.changes_list.length > 0) ||
+          (raw.changed_fields && typeof raw.changed_fields === 'object' && Object.keys(raw.changed_fields).length > 0) ||
+          (raw.total_changed_fields && Number(raw.total_changed_fields) > 0)
+        ),
     isUpdateViewed: Boolean(raw.is_update_viewed ?? raw.isUpdateViewed ?? false),
     resubmittedAt: raw.resubmitted_at || raw.resubmittedAt || raw.vendorUpdateTimestamp || null,
     resubmittedAtReadable,

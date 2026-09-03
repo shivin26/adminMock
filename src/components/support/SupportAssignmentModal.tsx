@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import './SupportAssignmentModal.css';
-import { Modal } from '../common/Modal/Modal';
+import { Drawer } from '../common/Drawer/Drawer';
 import { Button } from '../common/Button/Button';
 import {
   UserCheck,
@@ -24,7 +24,7 @@ export const SupportAssignmentModal: React.FC<SupportAssignmentModalProps> = ({
   isOpen,
   onClose,
   ticketId: _ticketId,
-  ticketNumber = 'TICK-9081',
+  ticketNumber = '',
   currentAssignee = 'Super Admin',
 }) => {
   const { addToast } = useToast();
@@ -90,11 +90,12 @@ export const SupportAssignmentModal: React.FC<SupportAssignmentModalProps> = ({
   };
 
   return (
-    <Modal
+    <Drawer
       isOpen={isOpen}
       onClose={onClose}
       title={`Reassign Ticket ${ticketNumber}`}
       subtitle={`Currently assigned to: ${currentAssignee}`}
+      size="lg"
     >
       <form onSubmit={handleExecuteAssignment} className="flex flex-col gap-5 max-h-[74vh] overflow-y-auto pr-1">
         {/* Assignment Mode Selector Tabs */}
@@ -269,6 +270,6 @@ export const SupportAssignmentModal: React.FC<SupportAssignmentModalProps> = ({
           </Button>
         </div>
       </form>
-    </Modal>
+    </Drawer>
   );
 };

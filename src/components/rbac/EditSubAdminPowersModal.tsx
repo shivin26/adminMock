@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Modal } from '../common/Modal/Modal';
+import { Drawer } from '../common/Drawer/Drawer';
 import { Button } from '../common/Button/Button';
 import { PowerSectionCheckboxGrid } from './PowerSectionCheckboxGrid';
 import type { SubAdminUser, PowerSection } from '../../types/rbac.types';
@@ -36,9 +36,8 @@ export const EditSubAdminPowersModal: React.FC<EditSubAdminPowersModalProps> = (
     }
   }, [subAdmin]);
 
-  if (!subAdmin) return null;
-
   const handleConfirm = () => {
+    if (!subAdmin) return;
     const sanitized = isSuperAdmin
       ? selectedPowers
       : selectedPowers.filter((p) => p !== 'SUB_ADMINS' && userPowers.includes(p));
@@ -51,14 +50,14 @@ export const EditSubAdminPowersModal: React.FC<EditSubAdminPowersModalProps> = (
   };
 
   return (
-    <Modal
-      isOpen={isOpen}
+    <Drawer
+      isOpen={isOpen && Boolean(subAdmin)}
       onClose={onClose}
       title="Edit Sub-Admin Power Permissions"
-      subtitle={`User: ${subAdmin.name} (${subAdmin.email})`}
-      size="lg"
+      subtitle={subAdmin ? `User: ${subAdmin.name} (${subAdmin.email})` : ''}
+      size="xl"
     >
-      <div className="flex flex-col gap-5 font-sans">
+      <div className="flex flex-col gap-5 p-4 text-xs font-sans">
         <PowerSectionCheckboxGrid
           selectedPowers={selectedPowers}
           onChange={setSelectedPowers}
@@ -117,8 +116,8 @@ export const EditSubAdminPowersModal: React.FC<EditSubAdminPowersModalProps> = (
           </div>
         )}
 
-        <div className="flex justify-end gap-3 pt-4 border-t border-slate-700/50">
-          <Button type="button" variant="secondary" onClick={onClose}>
+        <div className="flex justify-end gap-3 pt-4 border-t border-[#E7DFD5] mt-2">
+          <Button type="button" variant="ghost" onClick={onClose}>
             Cancel
           </Button>
           <Button
@@ -131,6 +130,6 @@ export const EditSubAdminPowersModal: React.FC<EditSubAdminPowersModalProps> = (
           </Button>
         </div>
       </div>
-    </Modal>
+    </Drawer>
   );
 };

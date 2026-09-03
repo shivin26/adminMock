@@ -55,6 +55,66 @@
   }
 }
 
+@keyframes slideInInnerDrawer {
+  from {
+    transform: translateX(100%);
+    opacity: 0.7;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideOutInnerDrawer {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+}
+
+.hold-drawer-panel {
+  animation: slideInInnerDrawer 0.28s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.hold-drawer-panel-closing {
+  animation: slideOutInnerDrawer 0.24s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
+}
+
+@keyframes slideOutFromBehind {
+  from {
+    transform: translateX(100%);
+    opacity: 0.5;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideInBehind {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+}
+
+.hold-drawer-emerge {
+  animation: slideOutFromBehind 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.hold-drawer-emerge-closing {
+  animation: slideInBehind 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
+}
+
 .drawer-backdrop {
   position: fixed;
   inset: 0;
@@ -84,13 +144,18 @@
   box-shadow: -20px 0 50px rgba(0, 0, 0, 0.35);
   display: flex;
   flex-direction: column;
-  z-index: 100000;
+  z-index: 100020;
   animation: slideInRight 0.28s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   will-change: transform, opacity;
+  transition: max-width 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .drawer-panel-closing {
   animation: slideOutRight 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
+}
+
+.drawer-2xl {
+  max-width: 1280px;
 }
 
 .drawer-xl {

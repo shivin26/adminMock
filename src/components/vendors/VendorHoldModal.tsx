@@ -36,6 +36,10 @@ export const VendorHoldModal: React.FC<VendorHoldModalProps> = ({
     onConfirmHold(vendor.id, {
       subject: subject.trim(),
       email_content: emailContent.trim(),
+      hold_email_subject: subject.trim(),
+      hold_reason: emailContent.trim(),
+      reason: emailContent.trim(),
+      remarks: emailContent.trim(),
     });
   };
 

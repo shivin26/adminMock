@@ -15,6 +15,7 @@ import {
   ArrowRight,
   ExternalLink,
   Activity,
+  ChevronDown,
 } from 'lucide-react';
 import './Navbar.css';
 import { useAuth } from '../../../hooks/useAuth';
@@ -47,6 +48,16 @@ export const Navbar: React.FC<NavbarProps> = () => {
   const { user, logout } = useAuth();
   const { isSuperAdmin } = usePermission();
   const navigate = useNavigate();
+
+  const userInitial = user
+    ? (user.firstName?.charAt(0) || (user as any).name?.charAt(0) || user.email?.charAt(0) || 'A').toUpperCase()
+    : 'A';
+
+  const displayName = user
+    ? (user.firstName ? `${user.firstName} ${user.lastName || ''}`.trim() : (user as any).name || user.email)
+    : 'Aarushi Admin';
+
+  const roleBadgeText = isSuperAdmin ? 'SUPER ADMIN' : 'SUB ADMIN';
   const [searchTerm, setSearchTerm] = useState('');
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
@@ -79,7 +90,12 @@ export const Navbar: React.FC<NavbarProps> = () => {
   useEffect(() => {
     if (vendors && vendors.length > 0) {
       const resubmittedVendors = vendors.filter(
-        (v) => (v.hasResubmitted || v.hasVendorUpdate) && !v.isUpdateViewed
+        (v) =>
+          (v.hasResubmitted ||
+            v.hasVendorUpdate ||
+            (v.resubmittedChanges && v.resubmittedChanges.length > 0) ||
+            (v.updatedFieldKeys && v.updatedFieldKeys.length > 0)) &&
+          !v.isUpdateViewed
       );
       if (resubmittedVendors.length > 0) {
         setNotifications((prev) => {
@@ -270,23 +286,23 @@ export const Navbar: React.FC<NavbarProps> = () => {
       </div>
 
       <div className="navbar-right">
-        {/* Super Admin Audit & Backend Mutation Logs Button */}
-        {isSuperAdmin && (
-          <button
-            className="nav-icon-btn text-[#A88B58] hover:text-white hover:bg-[#6B2732] transition-all flex items-center justify-center border border-[#E7DFD5]/20 rounded-xl"
-            onClick={() => setIsAuditDrawerOpen(true)}
-            title="Super Admin Audit & Backend Mutation Logs"
-          >
-            <Activity size={18} />
-          </button>
-        )}
+        {/* System Audit & Mutation Logs Navigation Shortcut Button */}
+        <button
+          type="button"
+          className="nav-icon-btn text-[#A88B58] hover:text-white hover:bg-[#6B2732] transition-all flex items-center justify-center border border-[#E7DFD5] rounded-full"
+          onClick={() => navigate('/dashboard/audit-logs')}
+          title="View Complete Audit Logs & Mutation Trail Section"
+        >
+          <Activity size={18} />
+        </button>
 
         {/* Notifications Button & Popover */}
         <div className="notif-dropdown-wrapper" ref={notifRef}>
           <button
+            type="button"
             className="nav-icon-btn relative"
             onClick={() => setIsNotificationsOpen(!isNotificationsOpen)}
-            title="Notifications"
+            title="System Notifications"
           >
             <Bell size={18} />
             {unreadCount > 0 && <span className="nav-badge-dot" />}
@@ -378,11 +394,11 @@ export const Navbar: React.FC<NavbarProps> = () => {
                 <button
                   className="notif-footer-btn"
                   onClick={() => {
-                    navigate('/dashboard/overview');
+                    navigate('/dashboard/audit-logs');
                     setIsNotificationsOpen(false);
                   }}
                 >
-                  <span>View All System Activity & Reports</span>
+                  <span>View All Audit Logs & System Trail</span>
                   <ExternalLink size={13} />
                 </button>
               </div>
@@ -390,21 +406,29 @@ export const Navbar: React.FC<NavbarProps> = () => {
           )}
         </div>
 
-        {/* User Profile Dropdown */}
+        {/* Logged-In User Profile Capsule Dropdown */}
         <div className="profile-dropdown-wrapper" ref={profileRef}>
           <button
-            className="nav-icon-btn profile-avatar-btn"
+            type="button"
+            className="profile-capsule-btn"
             onClick={() => setIsProfileOpen(!isProfileOpen)}
-            title="User Profile"
+            title="User Account Options"
           >
-            <User size={18} />
+            <div className="profile-capsule-avatar">
+              {userInitial}
+            </div>
+            <div className="profile-capsule-info">
+              <span className="profile-capsule-name">{displayName}</span>
+              <span className="profile-capsule-role">{roleBadgeText}</span>
+            </div>
+            <ChevronDown size={14} className={`profile-capsule-chevron ${isProfileOpen ? 'open' : ''}`} />
           </button>
 
           {isProfileOpen && (
             <div className="profile-popover animate-fade-in">
               <div className="profile-popover-header">
-                <span className="user-name">{(user as any)?.name || user?.email || 'System Admin'}</span>
-                <span className="user-role">{user?.role ? user.role.toUpperCase() : 'SUPER ADMIN'}</span>
+                <span className="user-name">{displayName}</span>
+                <span className="user-role">{roleBadgeText}</span>
               </div>
               <button
                 className="logout-btn"

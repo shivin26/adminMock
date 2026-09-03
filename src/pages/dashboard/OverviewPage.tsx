@@ -61,7 +61,9 @@ export const OverviewPage: React.FC = () => {
     }
   };
 
-  const totalPlatformRevenue = vendors.reduce((sum, v) => sum + (v.totalEarnings || 0), 0);
+  const totalPlatformRevenue = React.useMemo(() => {
+    return vendors.reduce((sum, v) => (v ? sum + Number(v.totalEarnings || 0) : sum), 0);
+  }, [vendors]);
 
   const revenueChartData = React.useMemo(() => {
     const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'];
@@ -71,10 +73,13 @@ export const OverviewPage: React.FC = () => {
     });
 
     vendors.forEach((v) => {
+      if (!v) return;
       const date = new Date(v.createdAt || Date.now());
       const monthStr = date.toLocaleString('en-US', { month: 'short' });
+      const vendorRev = Number(v.totalEarnings || 0);
+
       if (map[monthStr]) {
-        map[monthStr].revenue += v.totalEarnings || 0;
+        map[monthStr].revenue += vendorRev;
         map[monthStr].vendors += 1;
       }
     });

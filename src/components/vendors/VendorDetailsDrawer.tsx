@@ -28,17 +28,24 @@ import {
   ExternalLink,
   CreditCard,
   Store,
+  Send,
 } from 'lucide-react';
 
 import { ImagePreviewModal } from '../common/Modal/ImagePreviewModal';
+import { VendorReapplicationDiffCard } from './VendorReapplicationDiffCard';
 import { Modal } from '../common/Modal/Modal';
 import { OrderDetailsModal } from '../support/OrderDetailsModal';
+import { VendorHoldDrawer } from './VendorHoldDrawer';
+import { VendorRejectDrawer } from './VendorRejectDrawer';
 import { LoadingSpinner } from '../ui/LoadingSpinner';
+import { isPhoneMatch } from '../../utils/phone.utils';
 import { useToast } from '../../context/ToastContext';
 import { useTickets } from '../../hooks/useSupport';
-import { useUpdateVendorDetails, useVendorOrders } from '../../hooks/useVendors';
+import { useUpdateVendorDetails, useVendorOrders, useHoldVendor } from '../../hooks/useVendors';
 import { SupportTicketStatusBadge } from '../support/SupportTicketStatusBadge';
+import { axiosInstance } from '../../services/api/axiosInstance';
 import { formatDateTime } from '../../utils/formatters.utils';
+import type { HoldVendorPayload } from '../../types/vendor.types';
 
 import { Bell } from 'lucide-react';
 
@@ -49,10 +56,12 @@ export interface VendorDetailsDrawerProps {
   onSelectOwner?: (ownerName: string, vendor: Vendor) => void;
   onApprove?: (vendor: Vendor) => void;
   onConfirmApprove?: (vendorId: string | number) => void;
+  onConfirmHold?: (vendorId: string | number, payload: HoldVendorPayload) => void;
   onMarkViewed?: (vendorId: string | number) => void;
   onHold?: (vendor: Vendor) => void;
   onReject?: (vendor: Vendor) => void;
   vendor?: Vendor | null;
+  initialOpenHoldForm?: boolean;
 }
 
 export const VendorDetailsDrawer: React.FC<VendorDetailsDrawerProps> = ({
@@ -62,15 +71,54 @@ export const VendorDetailsDrawer: React.FC<VendorDetailsDrawerProps> = ({
   onSelectOwner,
   onApprove,
   onConfirmApprove,
+  onConfirmHold,
   onMarkViewed,
   onHold,
   onReject,
   vendor,
+  initialOpenHoldForm = false,
 }) => {
   const { addToast } = useToast();
   const { data: allTickets = [] } = useTickets();
   const updateVendorMutation = useUpdateVendorDetails();
   const { data: vendorOrders = [], isLoading: isOrdersLoading } = useVendorOrders(vendor?.id);
+
+  const DEFAULT_VENDOR_CATEGORIES = [
+    'Fresh Flowers, Bouquets & Puja Floral Supplies',
+    'Grocery & Supermarket',
+    'Organic Fruits & Vegetables',
+    'Bakery, Sweets & Snacks',
+    'Home & Living Essentials',
+    'Dairy & Milk Products',
+    'Pharmacy & Health Care',
+    'Services & Repairs',
+    'General Store & Provisions',
+    'Fashion & Apparel',
+    'Electronics & Mobile Accessories',
+  ];
+
+  const [categoriesList, setCategoriesList] = useState<string[]>(DEFAULT_VENDOR_CATEGORIES);
+
+  useEffect(() => {
+    let isMounted = true;
+    axiosInstance
+      .get('/categories')
+      .then((res) => {
+        const raw = res.data?.data || res.data?.categories || res.data;
+        if (Array.isArray(raw) && raw.length > 0 && isMounted) {
+          const fetchedNames = raw
+            .map((c: any) => (typeof c === 'string' ? c : c.name || c.category_name || c.title))
+            .filter(Boolean);
+          if (fetchedNames.length > 0) {
+            setCategoriesList(Array.from(new Set([...fetchedNames, ...DEFAULT_VENDOR_CATEGORIES])));
+          }
+        }
+      })
+      .catch(() => {});
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   const [activeTab, setActiveTab] = useState<'profile' | 'orders' | 'tickets'>('profile');
   const [selectedOrderIdForModal, setSelectedOrderIdForModal] = useState<string | null>(null);
@@ -112,6 +160,36 @@ export const VendorDetailsDrawer: React.FC<VendorDetailsDrawerProps> = ({
     phone: false,
   });
 
+  const holdVendorMutation = useHoldVendor();
+  const [isHoldFormOpen, setIsHoldFormOpen] = useState(initialOpenHoldForm);
+  const [holdSubject, setHoldSubject] = useState(
+    'Document Correction Required for DigiLocal Registration'
+  );
+  const [holdContent, setHoldContent] = useState('');
+  const [isHoldSubmitting, setIsHoldSubmitting] = useState(false);
+
+  const [isRejectFormOpen, setIsRejectFormOpen] = useState(false);
+  const [isRejectSubmitting, setIsRejectSubmitting] = useState(false);
+
+  const handleRejectFormSubmit = async (vendorId: string | number, reason: string) => {
+    if (!vendor) return;
+    setIsRejectSubmitting(true);
+    try {
+      if (onReject) {
+        onReject(vendor);
+      }
+      setIsRejectFormOpen(false);
+    } catch (err: any) {
+      addToast({
+        type: 'error',
+        title: 'Rejection Failed',
+        description: err?.message || 'Failed to process application rejection.',
+      });
+    } finally {
+      setIsRejectSubmitting(false);
+    }
+  };
+
   useEffect(() => {
     if (vendor) {
       setFormData({
@@ -129,7 +207,7 @@ export const VendorDetailsDrawer: React.FC<VendorDetailsDrawerProps> = ({
         state: vendor.state || '',
         pincode: vendor.pincode || '',
         avatarUrl: vendor.avatarUrl || '',
-        description: (vendor as any).description || 'Grocery & Supermarket daily essentials sourced for DigiLocal residents.',
+        description: vendor.description || '',
         status: vendor.status || 'active',
         holdReason: vendor.holdReason || '',
         holdEmailSubject: vendor.holdEmailSubject || '',
@@ -137,6 +215,9 @@ export const VendorDetailsDrawer: React.FC<VendorDetailsDrawerProps> = ({
         resubmittedAtReadable: vendor.resubmittedAtReadable || '',
       });
       setIsEditMode(false);
+      setIsHoldFormOpen(initialOpenHoldForm);
+      setHoldSubject(vendor.holdEmailSubject || 'Document Correction Required for DigiLocal Registration');
+      setHoldContent(vendor.holdReason || 'Please upload a clearer GST Certificate and update your shop address details in settings.');
       setCheckedFields({
         gstin: false,
         panNumber: false,
@@ -147,13 +228,61 @@ export const VendorDetailsDrawer: React.FC<VendorDetailsDrawerProps> = ({
         phone: false,
       });
     }
-  }, [vendor?.id, isOpen]);
+  }, [vendor?.id, isOpen, initialOpenHoldForm]);
+
+  const handleHoldFormSubmit = async () => {
+    if (!vendor) return;
+    if (!holdSubject.trim() || !holdContent.trim()) {
+      addToast({
+        type: 'error',
+        title: 'Missing Required Fields',
+        description: 'Please enter both email subject line and hold reason content.',
+      });
+      return;
+    }
+
+    setIsHoldSubmitting(true);
+    try {
+      const payload = {
+        subject: holdSubject.trim(),
+        email_content: holdContent.trim(),
+        hold_email_subject: holdSubject.trim(),
+        hold_reason: holdContent.trim(),
+        reason: holdContent.trim(),
+        remarks: holdContent.trim(),
+      };
+      if (onConfirmHold) {
+        await onConfirmHold(vendor.id, payload);
+      } else {
+        await holdVendorMutation.mutateAsync({
+          vendorId: vendor.id,
+          ...payload,
+        });
+      }
+      addToast({
+        type: 'warning',
+        title: 'Vendor Application On Hold',
+        description: `SMTP notice dispatched to ${vendor.email}. Status set to ON_HOLD.`,
+      });
+      setIsHoldFormOpen(false);
+    } catch (err: any) {
+      addToast({
+        type: 'error',
+        title: 'Hold Action Failed',
+        description: err?.message || 'Failed to dispatch hold email notice.',
+      });
+    } finally {
+      setIsHoldSubmitting(false);
+    }
+  };
 
   const vendorTickets = React.useMemo(() => {
     if (!vendor) return [];
     const sName = (vendor.storeName || '').toLowerCase();
     const oName = (vendor.ownerName || '').toLowerCase();
     const vEmail = (vendor.email || '').toLowerCase();
+    const vPhone = vendor.phone || vendor.phoneNumber || vendor.mobile;
+    const vWhatsapp = vendor.whatsappNumber || vendor.whatsapp_number;
 
     return allTickets.filter((t) => {
       const tEmail = (t.reporterEmail || '').toLowerCase();
@@ -161,9 +290,15 @@ export const VendorDetailsDrawer: React.FC<VendorDetailsDrawerProps> = ({
       const tEntity = (t.entityName || '').toLowerCase();
       const tSubj = (t.subject || '').toLowerCase();
       const tTarget = (t.targetVendor || '').toLowerCase();
+      const tPhone = t.reporterPhone;
 
-      const isByVendor = (vEmail && tEmail === vEmail) || (oName && tName.includes(oName));
-      const isOnVendor = (sName && (tEntity.includes(sName) || tTarget.includes(sName) || tSubj.includes(sName)));
+      // Primary Identification: Strict Phone & WhatsApp matching
+      const isPhoneBy = isPhoneMatch(vPhone, tPhone) || isPhoneMatch(vWhatsapp, tPhone);
+      const isPhoneOn = isPhoneMatch(vPhone, t.targetVendor) || isPhoneMatch(vWhatsapp, t.targetVendor);
+
+      // Secondary Identification: Email & Name / Store Name matching
+      const isByVendor = isPhoneBy || (vEmail && tEmail === vEmail) || (oName && tName.includes(oName));
+      const isOnVendor = isPhoneOn || (sName && (tEntity.includes(sName) || tTarget.includes(sName) || tSubj.includes(sName)));
 
       return isByVendor || isOnVendor;
     });
@@ -257,7 +392,7 @@ export const VendorDetailsDrawer: React.FC<VendorDetailsDrawerProps> = ({
     ? vendor.updatedFieldKeys
     : (vendor.resubmittedChanges && vendor.resubmittedChanges.length > 0)
     ? vendor.resubmittedChanges.map((c) => c.field)
-    : (vendor.hasResubmitted || vendor.hasVendorUpdate) ? ['gstin'] : [];
+    : [];
 
   const getResubmittedChange = (fieldKey: string) => {
     if (!vendor.resubmittedChanges) return null;
@@ -286,7 +421,7 @@ export const VendorDetailsDrawer: React.FC<VendorDetailsDrawerProps> = ({
         </span>
       }
     >
-      <div className="flex flex-col gap-6 p-1 font-sans">
+      <div className="relative flex flex-col gap-6 p-1 font-sans">
         {/* Profile Card & Admin Actions */}
         <div className="flex items-center gap-4 p-4 bg-white border border-[#E7DFD5] rounded-2xl shadow-xs flex-wrap">
           <img
@@ -344,7 +479,7 @@ export const VendorDetailsDrawer: React.FC<VendorDetailsDrawerProps> = ({
               {vendor.status.replace('_', ' ').toUpperCase()}
             </Badge>
 
-            {(vendor.hasResubmitted || vendor.hasVendorUpdate || vendor.resubmittedAt || vendor.resubmittedAtReadable) && (
+            {Boolean(vendor.hasResubmitted) && !vendor.isUpdateViewed && (
               <Badge variant="success" className="text-[11px] font-mono font-bold bg-emerald-100 text-emerald-900 border border-emerald-300">
                 RESUBMITTED
               </Badge>
@@ -403,84 +538,32 @@ export const VendorDetailsDrawer: React.FC<VendorDetailsDrawerProps> = ({
           <div className="flex flex-col gap-6 animate-fadeIn">
 
         {/* Resubmitted Vendor Setting Changes Highlight Card (ONLY WHEN NOT YET APPROVED) */}
-        {vendor.status !== 'active' && (vendor.hasResubmitted || vendor.hasVendorUpdate) && !vendor.isUpdateViewed && (
-          <div className="p-4 bg-emerald-50/90 border border-emerald-300 rounded-2xl shadow-xs flex flex-col gap-2.5 font-sans">
-            <div className="flex items-center justify-between border-b border-emerald-200 pb-2 flex-wrap gap-2">
-              <h5 className="text-xs font-bold text-emerald-950 uppercase tracking-wider flex items-center gap-1.5 font-mono">
-                <Bell size={15} className="text-emerald-600 animate-bounce shrink-0" />
-                NEW VENDOR RESUBMISSION &amp; UPDATED DETAILS
-              </h5>
-              <div className="flex items-center gap-2">
-                <span className="px-2.5 py-1 bg-emerald-700 text-white font-mono text-[10px] font-bold rounded-full">
-                  {vendor.resubmittedAtReadable || (vendor.resubmittedAt ? `Resubmitted at ${vendor.resubmittedAt}` : 'Updated in Settings')}
-                </span>
-                {onMarkViewed && (
-                  <Button
-                    type="button"
-                    size="sm"
-                    variant="outline"
-                    onClick={() => onMarkViewed(vendor.id)}
-                    className="bg-white text-emerald-900 border-emerald-300 hover:bg-emerald-100 text-[11px] font-bold font-mono py-1 px-2.5 shadow-xs"
-                    title="Click to mark update as viewed and remove the green notification badge"
-                  >
-                    <CheckCircle2 size={13} className="text-emerald-700 shrink-0" /> Mark as Viewed
-                  </Button>
-                )}
-              </div>
-            </div>
-
-            <p className="text-xs text-emerald-900 leading-relaxed font-medium">
-              The vendor updated their store settings in response to your hold request. Below are the specific field(s) modified:
-            </p>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-1">
-              {(vendor.resubmittedChanges && vendor.resubmittedChanges.length > 0
-                ? vendor.resubmittedChanges
-                : (vendor.updatedFieldKeys && vendor.updatedFieldKeys.length > 0
-                    ? vendor.updatedFieldKeys.map((key) => {
-                        const match = fieldsConfig.find((f) => f.key === key);
-                        return {
-                          field: key,
-                          label: match?.label || key,
-                          oldValue: undefined,
-                          newValue: (vendor as any)[key] || '',
-                        };
-                      })
-                    : (vendor.gstin ? [{ field: 'gstin', label: '1. GSTIN Tax Code', oldValue: undefined, newValue: vendor.gstin }] : [])
-                  )
-              ).map((change, idx) => (
-                <div key={idx} className={`p-2.5 bg-white rounded-xl border border-emerald-200 text-xs flex flex-col gap-1 ${change.field === 'address' ? 'sm:col-span-2' : ''}`}>
-                  <div className="flex items-center justify-between">
-                    <span className="font-bold text-[#211A19] uppercase text-[11px] flex items-center gap-1">
-                      <span className="w-2 h-2 rounded-full bg-emerald-600 inline-block shrink-0" />
-                      {change.label}
-                    </span>
-                    <Badge variant="success" className="text-[10px]">UPDATED BY VENDOR</Badge>
-                  </div>
-                  <div className="flex items-center justify-between gap-2 font-mono text-xs mt-0.5">
-                    {change.oldValue && (
-                      <span className="text-gray-400 line-through truncate max-w-[45%]" title={change.oldValue}>
-                        Original: {change.oldValue}
-                      </span>
-                    )}
-                    <span className="font-bold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200 truncate" title={change.newValue}>
-                      New: {change.newValue}
-                    </span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
+        {vendor.status !== 'active' && (vendor.hasResubmitted || vendor.hasVendorUpdate || vendor.status === 'on_hold') && (
+          <VendorReapplicationDiffCard
+            vendorId={vendor.id}
+            fallbackChanges={vendor.resubmittedChanges}
+            fallbackHoldReason={vendor.holdReason}
+          />
         )}
 
-        {/* On Hold Reason Banner */}
-        {vendor.status === 'on_hold' && vendor.holdReason && (
-          <div className="p-4 bg-amber-50 border border-amber-200 rounded-2xl flex flex-col gap-1 text-amber-900 text-xs">
-            <span className="font-bold flex items-center gap-1 text-amber-950 uppercase tracking-wider font-mono">
-              <AlertTriangle size={14} className="text-amber-600" /> Hold Notice &amp; Subject Dispatched to Vendor:
-            </span>
-            <p className="font-serif italic text-[#211A19] text-sm bg-white p-2.5 rounded-xl border border-amber-200 mt-1">
-              "{vendor.holdReason}"
+        {/* On Hold Reason Banner (Shown below update section and above fields section) */}
+        {(vendor.holdReason || vendor.status === 'on_hold') && (
+          <div className="p-4 bg-amber-50/90 border border-amber-300 rounded-2xl flex flex-col gap-2 text-amber-900 text-xs shadow-2xs font-sans">
+            <div className="flex items-center justify-between border-b border-amber-200/80 pb-2 flex-wrap gap-1">
+              <span className="font-bold flex items-center gap-1.5 text-amber-950 uppercase tracking-wider font-mono text-[11px]">
+                <AlertTriangle size={15} className="text-amber-600 shrink-0" /> Hold Reason &amp; Dispatched Notice:
+              </span>
+              <Badge variant="warning" className="text-[10px] font-mono bg-amber-200/70 text-amber-950 border border-amber-300">
+                HOLD REASON
+              </Badge>
+            </div>
+            {vendor.holdEmailSubject && (
+              <span className="font-bold text-[#211A19] text-xs mt-0.5">
+                Email Subject: <span className="font-medium text-[#541D26]">{vendor.holdEmailSubject}</span>
+              </span>
+            )}
+            <p className="font-serif italic text-[#211A19] text-sm bg-white p-3 rounded-xl border border-amber-200 mt-1 shadow-2xs leading-relaxed">
+              "{vendor.holdReason || vendor.comments?.[vendor.comments.length - 1]?.text || 'Documentation correction or updated proof required.'}"
             </p>
           </div>
         )}
@@ -808,11 +891,18 @@ export const VendorDetailsDrawer: React.FC<VendorDetailsDrawerProps> = ({
                 8. category
               </span>
               {isEditMode ? (
-                <Input
+                <select
                   value={formData.category}
                   onChange={(e) => handleInputChange('category', e.target.value)}
-                  placeholder="Grocery & Supermarket"
-                />
+                  className="w-full p-2 text-xs border border-[#E7DFD5] rounded-lg bg-white font-medium text-[#211A19]"
+                >
+                  <option value="">Select Category...</option>
+                  {Array.from(new Set([...(formData.category ? [formData.category] : []), ...categoriesList])).map((cat) => (
+                    <option key={cat} value={cat}>
+                      {cat}
+                    </option>
+                  ))}
+                </select>
               ) : (
                 <span className="font-semibold text-[#211A19]">{vendor.category || 'N/A'}</span>
               )}
@@ -918,7 +1008,7 @@ export const VendorDetailsDrawer: React.FC<VendorDetailsDrawerProps> = ({
                 <Input
                   value={formData.state}
                   onChange={(e) => handleInputChange('state', e.target.value)}
-                  placeholder="Delhi"
+                  placeholder="Rajasthan"
                 />
               ) : (
                 <span className="font-semibold text-[#211A19]">{vendor.state || 'N/A'}</span>
@@ -934,7 +1024,7 @@ export const VendorDetailsDrawer: React.FC<VendorDetailsDrawerProps> = ({
                 <Input
                   value={formData.pincode}
                   onChange={(e) => handleInputChange('pincode', e.target.value)}
-                  placeholder="110017"
+                  placeholder="302022"
                 />
               ) : (
                 <span className="font-mono font-semibold text-[#211A19]">{vendor.pincode || 'N/A'}</span>
@@ -973,7 +1063,7 @@ export const VendorDetailsDrawer: React.FC<VendorDetailsDrawerProps> = ({
                   placeholder="Vendor store description..."
                 />
               ) : (
-                <span className="font-medium text-[#211A19]">{formData.description}</span>
+                <span className="font-medium text-[#211A19]">{formData.description || vendor.description || 'N/A (Not Provided)'}</span>
               )}
             </div>
 
@@ -982,21 +1072,7 @@ export const VendorDetailsDrawer: React.FC<VendorDetailsDrawerProps> = ({
               <span className="text-[10px] font-bold text-[#78716C] uppercase tracking-wider font-mono">
                 17. status
               </span>
-              {isEditMode ? (
-                <select
-                  value={formData.status}
-                  onChange={(e) => handleInputChange('status', e.target.value as VendorStatus)}
-                  className="w-full p-2 text-xs border border-[#E7DFD5] rounded-lg bg-white font-mono font-bold text-[#211A19]"
-                >
-                  <option value="active">ACTIVE</option>
-                  <option value="pending">PENDING</option>
-                  <option value="on_hold">ON_HOLD</option>
-                  <option value="rejected">REJECTED</option>
-                  <option value="suspended">SUSPENDED</option>
-                </select>
-              ) : (
-                <span className="font-bold text-[#211A19] uppercase">{vendor.status}</span>
-              )}
+              <span className="font-bold text-[#211A19] uppercase">{vendor.status}</span>
             </div>
 
             {/* 18. hold_reason */}
@@ -1004,15 +1080,7 @@ export const VendorDetailsDrawer: React.FC<VendorDetailsDrawerProps> = ({
               <span className="text-[10px] font-bold text-[#78716C] uppercase tracking-wider font-mono">
                 18. hold_reason
               </span>
-              {isEditMode ? (
-                <Input
-                  value={formData.holdReason}
-                  onChange={(e) => handleInputChange('holdReason', e.target.value)}
-                  placeholder="Enter hold reason..."
-                />
-              ) : (
-                <span className="font-medium text-[#211A19]">{vendor.holdReason || 'N/A (None)'}</span>
-              )}
+              <span className="font-medium text-[#211A19]">{vendor.holdReason || 'N/A (None)'}</span>
             </div>
 
             {/* 19. hold_email_subject */}
@@ -1020,15 +1088,7 @@ export const VendorDetailsDrawer: React.FC<VendorDetailsDrawerProps> = ({
               <span className="text-[10px] font-bold text-[#78716C] uppercase tracking-wider font-mono">
                 19. hold_email_subject
               </span>
-              {isEditMode ? (
-                <Input
-                  value={formData.holdEmailSubject}
-                  onChange={(e) => handleInputChange('holdEmailSubject', e.target.value)}
-                  placeholder="Action Required for Vendor Registration"
-                />
-              ) : (
-                <span className="font-medium text-[#211A19]">{vendor.holdEmailSubject || 'N/A (None)'}</span>
-              )}
+              <span className="font-medium text-[#211A19]">{vendor.holdEmailSubject || 'N/A (None)'}</span>
             </div>
 
             {/* 20. has_resubmitted */}
@@ -1036,21 +1096,9 @@ export const VendorDetailsDrawer: React.FC<VendorDetailsDrawerProps> = ({
               <span className="text-[10px] font-bold text-[#78716C] uppercase tracking-wider font-mono">
                 20. has_resubmitted
               </span>
-              {isEditMode ? (
-                <label className="flex items-center gap-2 font-mono font-bold cursor-pointer mt-1">
-                  <input
-                    type="checkbox"
-                    checked={formData.hasResubmitted}
-                    onChange={(e) => handleInputChange('hasResubmitted', e.target.checked)}
-                    className="w-4 h-4 rounded text-[#211A19]"
-                  />
-                  {formData.hasResubmitted ? 'true' : 'false'}
-                </label>
-              ) : (
-                <span className="font-mono font-bold text-[#211A19]">
-                  {vendor.hasResubmitted ? 'true' : 'false'}
-                </span>
-              )}
+              <span className="font-mono font-bold text-[#211A19]">
+                {vendor.hasResubmitted ? 'true' : 'false'}
+              </span>
             </div>
 
             {/* 21. resubmitted_at / resubmitted_at_readable */}
@@ -1058,34 +1106,18 @@ export const VendorDetailsDrawer: React.FC<VendorDetailsDrawerProps> = ({
               <span className="text-[10px] font-bold text-[#78716C] uppercase tracking-wider font-mono">
                 21. resubmitted_at / readable
               </span>
-              {isEditMode ? (
-                <Input
-                  value={formData.resubmittedAtReadable}
-                  onChange={(e) => handleInputChange('resubmittedAtReadable', e.target.value)}
-                  placeholder="31 Aug 2026, 07:10 pm IST"
-                />
-              ) : (
-                <span className="font-mono text-[#211A19]">{vendor.resubmittedAtReadable || vendor.resubmittedAt || 'null'}</span>
-              )}
+              <span className="font-mono text-[#211A19]">{vendor.resubmittedAtReadable || vendor.resubmittedAt || 'null'}</span>
             </div>
 
-            {/* 22. created_at / created_at_readable / created_at_time — READ ONLY (IMMUTABLE) */}
-            <div className="p-3 bg-amber-50/60 border border-amber-300 rounded-xl flex flex-col gap-1">
-              <div className="flex items-center justify-between">
-                <span className="text-[10px] font-bold text-amber-900 uppercase tracking-wider font-mono flex items-center gap-1">
-                  <Lock size={12} className="text-amber-700" /> 22. created_at / readable / time
-                </span>
-                <span className="text-[9px] font-bold font-mono text-amber-800 bg-amber-200/80 px-1.5 py-0.5 rounded border border-amber-300">
-                  SYSTEM READ-ONLY
-                </span>
-              </div>
+            {/* 22. created_at / created_at_readable / created_at_time */}
+            <div className="p-3 bg-[#FAF8F5] border border-[#E7DFD5] rounded-xl flex flex-col gap-1">
+              <span className="text-[10px] font-bold text-[#78716C] uppercase tracking-wider font-mono">
+                22. created_at / readable / time
+              </span>
               <span className="font-mono font-bold text-[#211A19]">
                 {vendor.createdAtReadable || formatDate(vendor.createdAt)}
                 {vendor.createdAtTime ? ` (${vendor.createdAtTime})` : ''}
               </span>
-              <p className="text-[9px] text-amber-800 font-sans italic mt-0.5">
-                Vendor registration creation timestamp is immutable and locked.
-              </p>
             </div>
           </div>
 
@@ -1198,8 +1230,9 @@ export const VendorDetailsDrawer: React.FC<VendorDetailsDrawerProps> = ({
                 variant="warning"
                 leftIcon={<PauseCircle size={14} />}
                 onClick={() => {
-                  onClose();
-                  onHold?.(vendor);
+                  setActiveTab('profile');
+                  setIsRejectFormOpen(false);
+                  setIsHoldFormOpen(!isHoldFormOpen);
                 }}
               >
                 {vendor.status === 'on_hold' ? 'Re-Hold Application' : 'Hold Application'}
@@ -1210,8 +1243,9 @@ export const VendorDetailsDrawer: React.FC<VendorDetailsDrawerProps> = ({
                 variant="danger"
                 leftIcon={<XCircle size={14} />}
                 onClick={() => {
-                  onClose();
-                  onReject?.(vendor);
+                  setActiveTab('profile');
+                  setIsHoldFormOpen(false);
+                  setIsRejectFormOpen(!isRejectFormOpen);
                 }}
               >
                 Reject Application
@@ -1484,6 +1518,26 @@ export const VendorDetailsDrawer: React.FC<VendorDetailsDrawerProps> = ({
         isOpen={Boolean(selectedOrderIdForModal)}
         onClose={() => setSelectedOrderIdForModal(null)}
         orderId={selectedOrderIdForModal}
+      />
+
+      {/* Separate Hold Side Drawer emerging beside Vendor Details Drawer */}
+      <VendorHoldDrawer
+        isOpen={isHoldFormOpen}
+        onClose={() => setIsHoldFormOpen(false)}
+        onConfirmHold={handleHoldFormSubmit}
+        vendor={vendor}
+        isLoading={isHoldSubmitting}
+        isVendorDetailsOpen={true}
+      />
+
+      {/* Separate Reject Side Drawer emerging beside Vendor Details Drawer */}
+      <VendorRejectDrawer
+        isOpen={isRejectFormOpen}
+        onClose={() => setIsRejectFormOpen(false)}
+        onConfirmReject={handleRejectFormSubmit}
+        vendor={vendor}
+        isLoading={isRejectSubmitting}
+        isVendorDetailsOpen={true}
       />
     </Drawer>
   );

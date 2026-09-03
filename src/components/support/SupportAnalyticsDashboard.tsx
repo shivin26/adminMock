@@ -53,60 +53,7 @@ export interface SupportAnalyticsDashboardProps {
   onOpenSettings?: () => void;
 }
 
-const DAILY_TICKETS_DATA = [
-  { day: 'Mon', incoming: 42, resolved: 38 },
-  { day: 'Tue', incoming: 58, resolved: 52 },
-  { day: 'Wed', incoming: 65, resolved: 60 },
-  { day: 'Thu', incoming: 49, resolved: 47 },
-  { day: 'Fri', incoming: 72, resolved: 68 },
-  { day: 'Sat', incoming: 35, resolved: 34 },
-  { day: 'Sun', incoming: 28, resolved: 28 },
-];
 
-const MONTHLY_TICKETS_DATA = [
-  { month: 'Jan', volume: 840, slaMet: 810 },
-  { month: 'Feb', volume: 920, slaMet: 890 },
-  { month: 'Mar', volume: 1100, slaMet: 1040 },
-  { month: 'Apr', volume: 1250, slaMet: 1190 },
-  { month: 'May', volume: 1380, slaMet: 1320 },
-  { month: 'Jun', volume: 1482, slaMet: 1420 },
-];
-
-const CATEGORY_DISTRIBUTION = [
-  { name: 'Technical Issues', value: 485, color: '#211A19' },
-  { name: 'Billing & Payments', value: 412, color: '#C8A878' },
-  { name: 'Vendor Onboarding', value: 340, color: '#3B82F6' },
-  { name: 'General Inquiries', value: 245, color: '#10B981' },
-];
-
-const PRIORITY_DISTRIBUTION = [
-  { name: 'Urgent SLA', count: 42, color: '#EF4444' },
-  { name: 'High Priority', count: 185, color: '#F59E0B' },
-  { name: 'Medium Priority', count: 680, color: '#3B82F6' },
-  { name: 'Low Priority', count: 575, color: '#78716C' },
-];
-
-const AGENT_PERFORMANCE = [
-  { name: 'Super Admin', resolved: 412, avgTime: '1.8 hrs', csat: '98.2%' },
-  { name: 'Vikram Mehta', resolved: 385, avgTime: '2.1 hrs', csat: '97.4%' },
-  { name: 'Ananya Sharma', resolved: 340, avgTime: '2.4 hrs', csat: '96.1%' },
-  { name: 'Rahul Verma', resolved: 248, avgTime: '2.9 hrs', csat: '95.0%' },
-];
-
-const TOP_RECURRING_ISSUES = [
-  { issue: 'Razorpay UPI Payout Delay', count: 184, category: 'Billing' },
-  { issue: 'Society Entry Gate QR Scanner Failure', count: 142, category: 'Technical' },
-  { issue: 'Vendor GSTIN Document Verification', count: 96, category: 'Onboarding' },
-  { issue: 'Store Product Inventory Sync Error', count: 78, category: 'Technical' },
-  { issue: 'Resident Delivery Pass Generation', count: 65, category: 'General' },
-];
-
-const HEATMAP_LOAD_DATA = [
-  { time: '00:00 - 06:00', load: 'Low (4%)', color: '#FAF8F5' },
-  { time: '06:00 - 12:00', load: 'Peak (42%)', color: '#FEF3C7' },
-  { time: '12:00 - 18:00', load: 'High (38%)', color: '#FDE68A' },
-  { time: '18:00 - 24:00', load: 'Moderate (16%)', color: '#FAF8F5' },
-];
 
 export const SupportAnalyticsDashboard: React.FC<SupportAnalyticsDashboardProps> = ({
   tickets,

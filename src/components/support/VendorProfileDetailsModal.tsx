@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { Modal } from '../common/Modal/Modal';
+import { Drawer } from '../common/Drawer/Drawer';
 import { Button } from '../common/Button/Button';
 import { Badge } from '../common/Badge/Badge';
 import { LoadingSpinner } from '../ui/LoadingSpinner';
@@ -32,31 +32,51 @@ export const VendorProfileDetailsModal: React.FC<VendorProfileDetailsModalProps>
   const toggleVendorMutation = useToggleVendorStatus();
   const [showHistory, setShowHistory] = useState(false);
 
-  const foundVendor =
-    detailVendor ||
-    vendors.find(
-      (v) =>
-        v.id === vendorIdentifier ||
-        v.storeName.toLowerCase().includes((vendorIdentifier || '').toLowerCase())
+  // Memoize found vendor safely at top level
+  const foundVendor = useMemo(() => {
+    if (!vendorIdentifier) return null;
+    return (
+      detailVendor ||
+      vendors.find(
+        (v) =>
+          v.id === vendorIdentifier ||
+          v.storeName.toLowerCase().includes((vendorIdentifier || '').toLowerCase())
+      ) ||
+      null
     );
+  }, [detailVendor, vendors, vendorIdentifier]);
 
-  if (!foundVendor) return null;
-
-  const vendor: Vendor = foundVendor;
-
-  const ratingVal = (vendor as any).rating || 1.8;
-
+  // Memoize past tickets safely at top level
   const vendorPastTickets = useMemo(() => {
+    if (!foundVendor) return [];
     return allTickets.filter(
       (t) =>
-        (t.entityName && t.entityName.toLowerCase().includes(vendor.storeName.toLowerCase())) ||
-        (t.reporterName && t.reporterName.toLowerCase().includes(vendor.ownerName.toLowerCase())) ||
-        (t.targetVendor && t.targetVendor.toLowerCase().includes(vendor.storeName.toLowerCase()))
+        (t.entityName && t.entityName.toLowerCase().includes(foundVendor.storeName.toLowerCase())) ||
+        (t.reporterName && t.reporterName.toLowerCase().includes(foundVendor.ownerName.toLowerCase())) ||
+        (t.targetVendor && t.targetVendor.toLowerCase().includes(foundVendor.storeName.toLowerCase()))
     );
-  }, [allTickets, vendor]);
+  }, [allTickets, foundVendor]);
 
-  if (!vendorIdentifier) return null;
+  if (!isOpen || !vendorIdentifier) return null;
 
+  if (!foundVendor) {
+    return (
+      <Drawer
+        isOpen={isOpen}
+        onClose={onClose}
+        title="Vendor Profile Details"
+        subtitle={`Searching registry for ${vendorIdentifier}...`}
+        size="xl"
+      >
+        <div className="p-8 text-center">
+          <LoadingSpinner size="md" label="Loading vendor merchant profile..." />
+        </div>
+      </Drawer>
+    );
+  }
+
+  const vendor: Vendor = foundVendor;
+  const ratingVal = (vendor as any).rating || 1.8;
   const isBlocked = ratingVal < 2.0 || vendor.status === 'suspended';
 
   const handleRestoreVendor = () => {
@@ -74,15 +94,15 @@ export const VendorProfileDetailsModal: React.FC<VendorProfileDetailsModalProps>
     );
   };
 
-  const handleBlockVendor = () => {
+  const handleSuspendVendor = () => {
     toggleVendorMutation.mutate(
       { vendorId: vendor.id, status: 'suspended' },
       {
         onSuccess: () => {
           addToast({
-            type: 'error',
-            title: 'Vendor Store Blocked',
-            description: `Store ${vendor.storeName} rating (${ratingVal} ⭐) is below 2.0 threshold. Store blocked from taking new orders.`,
+            type: 'warning',
+            title: 'Vendor Suspended',
+            description: `Store ${vendor.storeName} status updated to suspended due to compliance review.`,
           });
         },
       }
@@ -90,189 +110,190 @@ export const VendorProfileDetailsModal: React.FC<VendorProfileDetailsModalProps>
   };
 
   return (
-    <Modal
+    <Drawer
       isOpen={isOpen}
       onClose={onClose}
-      title="Vendor Store Profile"
-      subtitle={`Vendor ID: ${vendor.id} • Category: ${vendor.category}`}
+      title={`${vendor.storeName} - Merchant Profile`}
+      subtitle={`Owner: ${vendor.ownerName} • ${vendor.societyName || 'Network Vendor'}`}
+      size="xl"
     >
-      {isLoading && !foundVendor ? (
-        <div className="p-8 text-center">
-          <LoadingSpinner size="md" label="Fetching vendor store details..." />
-        </div>
-      ) : (
-        <div className="flex flex-col gap-4">
-          {/* Header Card */}
-          <div className="p-4 bg-[#FAF8F5] border border-[#E7DFD5] rounded-2xl flex items-center justify-between">
+      <div className="flex flex-col gap-5 p-4 text-xs font-sans">
+        {/* Banner Alert for Blocked/Low Rated Vendors */}
+        {isBlocked && (
+          <div className="p-4 bg-rose-50 border border-rose-300 rounded-2xl flex items-center justify-between gap-3 text-xs text-rose-950 shadow-2xs">
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-2xl bg-[#211A19] text-[#C8A878] flex items-center justify-center font-bold text-lg">
-                <Store size={24} />
-              </div>
-              <div className="flex flex-col">
-                <span className="font-bold text-[#211A19] text-sm flex items-center gap-1.5 font-serif">
-                  {vendor.storeName}
+              <Ban size={20} className="text-rose-600 shrink-0" />
+              <div>
+                <span className="font-bold block text-rose-900 text-xs">
+                  Merchant Under Operational Hold / Low Rating Strike ({ratingVal} ★)
                 </span>
-                <span className="text-xs text-[#78716C]">{vendor.email}</span>
+                <span className="text-[11px] text-rose-800 block mt-0.5">
+                  Rating fell below 2.0★ thresholds or active dispute investigations exist. Store order intake is restricted.
+                </span>
               </div>
             </div>
-
-            <Badge variant={isBlocked ? 'danger' : 'success'}>
-              {isBlocked ? 'STORE BLOCKED (Rating < 2.0 ⭐)' : 'ACTIVE STORE'}
-            </Badge>
-          </div>
-
-          {/* Rating Threshold Block Warning Meter */}
-          <div className="p-4 bg-white border border-[#E7DFD5] rounded-2xl flex flex-col gap-2.5 shadow-sm">
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-bold text-[#211A19] uppercase tracking-wider flex items-center gap-1.5">
-                <Star size={14} className={isBlocked ? 'text-rose-500 fill-rose-500' : 'text-amber-500 fill-amber-500'} />
-                Store Performance &amp; Auto-Block Threshold
-              </span>
-              <span className="text-xs font-bold font-mono text-[#211A19]">
-                {ratingVal.toFixed(1)} / 5.0 ⭐
-              </span>
-            </div>
-
-            <div className="h-3 w-full bg-gray-200 rounded-full overflow-hidden flex">
-              <div
-                className={`h-full transition-all ${
-                  ratingVal < 2.0 ? 'bg-rose-600 animate-pulse' : ratingVal < 3.5 ? 'bg-amber-400' : 'bg-emerald-600'
-                }`}
-                style={{ width: `${(ratingVal / 5) * 100}%` }}
-              />
-            </div>
-
-            <span className="text-[11px] text-[#78716C]">
-              {isBlocked
-                ? 'CRITICAL: Rating fell below 2.0 ⭐ threshold. Store is automatically BLOCKED from receiving orders.'
-                : `Store rating is currently healthy (${ratingVal} ⭐). Auto-block triggers if rating drops below 2.0 ⭐.`}
-            </span>
-          </div>
-
-          {/* Vendor Details Grid */}
-          <div className="grid grid-cols-2 gap-3 text-xs">
-            <div className="p-3 bg-[#FAF8F5] border border-[#E7DFD5] rounded-xl flex items-center gap-2.5">
-              <User size={16} className="text-[#C8A878]" />
-              <div>
-                <span className="text-[#78716C] block text-[10px] uppercase font-bold">Store Owner</span>
-                <span className="font-bold text-[#211A19]">{vendor.ownerName}</span>
-              </div>
-            </div>
-
-            <div className="p-3 bg-[#FAF8F5] border border-[#E7DFD5] rounded-xl flex items-center gap-2.5">
-              <Phone size={16} className="text-[#C8A878]" />
-              <div>
-                <span className="text-[#78716C] block text-[10px] uppercase font-bold">Contact Phone</span>
-                <span className="font-bold text-[#211A19]">{vendor.phone || '+91 98765 43210'}</span>
-              </div>
-            </div>
-
-            <div className="p-3 bg-[#FAF8F5] border border-[#E7DFD5] rounded-xl flex items-center gap-2.5">
-              <Home size={16} className="text-[#C8A878]" />
-              <div>
-                <span className="text-[#78716C] block text-[10px] uppercase font-bold">Associated Society</span>
-                <span className="font-bold text-[#211A19]">{vendor.societyName}</span>
-              </div>
-            </div>
-
-            {/* Interactive Store Complaints / Tickets Card */}
-            <div
-              onClick={() => setShowHistory((prev) => !prev)}
-              className="p-3 bg-[#FAF8F5] border border-[#E7DFD5] rounded-xl flex items-center justify-between cursor-pointer hover:bg-[#EEE5DA] hover:border-[#C8A878] transition-all shadow-xs"
-            >
-              <div className="flex items-center gap-2.5">
-                <Headphones size={16} className="text-[#C8A878]" />
-                <div>
-                  <span className="text-[#78716C] block text-[10px] uppercase font-bold flex items-center gap-1">
-                    Store Tickets <ChevronRight size={12} className={`transition-transform ${showHistory ? 'rotate-90' : ''}`} />
-                  </span>
-                  <span className="font-bold text-[#211A19] underline">
-                    {vendorPastTickets.length} Support Complaints
-                  </span>
-                </div>
-              </div>
-              <Badge variant="primary">VIEW HISTORY</Badge>
-            </div>
-          </div>
-
-          {/* Ticket History Expansion Section */}
-          {showHistory && (
-            <div className="p-4 bg-white border border-[#E7DFD5] rounded-2xl shadow-sm flex flex-col gap-2.5 animate-fadeIn">
-              <span className="text-xs font-bold text-[#211A19] uppercase tracking-wider flex items-center gap-1.5">
-                <History size={14} className="text-[#C8A878]" /> Store Complaint History ({vendorPastTickets.length})
-              </span>
-
-              {vendorPastTickets.length === 0 ? (
-                <div className="p-3 bg-[#FAF8F5] border border-[#E7DFD5] rounded-xl text-center text-xs text-[#78716C]">
-                  No ticket records on file for {vendor.storeName}.
-                </div>
-              ) : (
-                <div className="flex flex-col gap-2 text-xs">
-                  {vendorPastTickets.map((pt) => (
-                    <div
-                      key={pt.id}
-                      onClick={() => {
-                        onClose();
-                        if (onSelectTicket) onSelectTicket(pt.id);
-                      }}
-                      className="p-2.5 bg-[#FAF8F5] border border-[#E7DFD5] rounded-xl flex items-center justify-between cursor-pointer hover:bg-[#EEE5DA] hover:border-[#C8A878] transition-all shadow-xs"
-                    >
-                      <div className="flex flex-col min-w-0 flex-1 pr-2">
-                        <div className="flex items-center gap-1.5">
-                          <span className="font-mono font-bold text-[#C8A878]">#{pt.ticketNumber}</span>
-                          <span className="text-[10px] text-[#78716C]">• {formatDate(pt.createdAt)}</span>
-                        </div>
-                        <span className="text-[#211A19] font-semibold text-[11px] truncate">{pt.subject}</span>
-                      </div>
-
-                      <SupportTicketStatusBadge status={pt.status} />
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          )}
-
-          {/* Unified Website Purchasing Privileges Card */}
-          <div className="p-3 bg-[#EEE5DA]/70 border border-[#C8A878]/40 rounded-xl flex items-center justify-between text-xs">
-            <div className="flex items-center gap-2.5">
-              <ShoppingBag size={16} className="text-[#C8A878] shrink-0" />
-              <div>
-                <span className="font-bold text-[#211A19] block">Unified Website Ordering Privilege</span>
-                <span className="text-[11px] text-[#78716C]">Can order from other partner stores directly using Vendor ID (No separate user login required)</span>
-              </div>
-            </div>
-            <Badge variant="primary">SINGLE LOGIN</Badge>
-          </div>
-
-          {/* Action Buttons */}
-          <div className="flex items-center justify-between gap-3 pt-3 border-t border-[#E7DFD5]">
-            {isBlocked && (
+            {vendor.status === 'suspended' ? (
               <Button
-                variant="outline"
+                variant="primary"
                 size="sm"
-                leftIcon={<CheckCircle2 size={14} className="text-emerald-600" />}
                 onClick={handleRestoreVendor}
                 isLoading={toggleVendorMutation.isPending}
+                leftIcon={<CheckCircle2 size={14} />}
+                className="bg-emerald-700 text-white hover:bg-emerald-800 shrink-0"
               >
-                Unblock &amp; Restore Store
+                Reinstate Store
+              </Button>
+            ) : (
+              <Button
+                variant="danger"
+                size="sm"
+                onClick={handleSuspendVendor}
+                isLoading={toggleVendorMutation.isPending}
+                leftIcon={<Ban size={14} />}
+                className="shrink-0"
+              >
+                Suspend Store
               </Button>
             )}
+          </div>
+        )}
 
-            <Button
-              variant="outline"
-              size="sm"
-              leftIcon={<Ban size={14} className="text-rose-500" />}
-              className="text-rose-600 hover:bg-rose-50 border-rose-200 font-bold ml-auto"
-              onClick={handleBlockVendor}
-              isLoading={toggleVendorMutation.isPending}
-              disabled={isBlocked}
-            >
-              {isBlocked ? 'Store Already Blocked' : 'Block Vendor Store ⛔'}
-            </Button>
+        {/* Vendor Header Card */}
+        <div className="p-4 bg-white border border-[#E7DFD5] rounded-2xl shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <div className="w-12 h-12 rounded-2xl bg-amber-100 border border-amber-300 flex items-center justify-center text-[#541D26] font-bold text-lg">
+              <Store size={24} className="text-[#C8A878]" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <h3 className="text-base font-bold text-[#211A19] font-serif">{vendor.storeName}</h3>
+                <Badge variant={vendor.status === 'active' ? 'success' : 'danger'}>
+                  {vendor.status.toUpperCase()}
+                </Badge>
+              </div>
+              <span className="text-xs text-[#78716C] flex items-center gap-1.5 mt-0.5">
+                <User size={13} className="text-[#C8A878]" /> Owner: <strong>{vendor.ownerName}</strong> • Category: <strong className="uppercase">{vendor.category}</strong>
+              </span>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <div className="p-2.5 bg-amber-50 border border-amber-200 rounded-xl text-center">
+              <span className="text-[10px] text-amber-800 font-bold uppercase block">CSAT Rating</span>
+              <span className="text-sm font-bold text-amber-900 font-mono flex items-center gap-1">
+                <Star size={14} className="text-amber-500 fill-amber-500" /> {ratingVal} / 5.0
+              </span>
+            </div>
+            <div className="p-2.5 bg-[#FAF8F5] border border-[#E7DFD5] rounded-xl text-center">
+              <span className="text-[10px] text-[#78716C] font-bold uppercase block">Past Tickets</span>
+              <span className="text-sm font-bold text-[#211A19] font-mono">{vendorPastTickets.length}</span>
+            </div>
           </div>
         </div>
-      )}
-    </Modal>
+
+        {/* Contact & Store Operational Info */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div className="p-3 bg-white border border-[#E7DFD5] rounded-xl flex flex-col gap-1">
+            <span className="text-[11px] text-[#78716C] font-semibold flex items-center gap-1">
+              <Phone size={13} className="text-[#C8A878]" /> Phone Number
+            </span>
+            <span className="font-bold text-[#211A19] font-mono">{vendor.phone || '+91 98765 43210'}</span>
+          </div>
+
+          <div className="p-3 bg-white border border-[#E7DFD5] rounded-xl flex flex-col gap-1">
+            <span className="text-[11px] text-[#78716C] font-semibold flex items-center gap-1">
+              <Home size={13} className="text-[#C8A878]" /> Society Hub
+            </span>
+            <span className="font-bold text-[#211A19] truncate">{vendor.societyName || 'Greenwood Residency'}</span>
+          </div>
+
+          <div className="p-3 bg-white border border-[#E7DFD5] rounded-xl flex flex-col gap-1">
+            <span className="text-[11px] text-[#78716C] font-semibold flex items-center gap-1">
+              <ShoppingBag size={13} className="text-[#C8A878]" /> Total Orders Fulfilled
+            </span>
+            <span className="font-bold text-[#211A19] font-mono">{vendor.totalOrders || 412} Orders</span>
+          </div>
+        </div>
+
+        {/* Support History Snapshot */}
+        <div className="p-4 bg-white border border-[#E7DFD5] rounded-2xl shadow-xs flex flex-col gap-3">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-bold text-[#211A19] uppercase tracking-wider flex items-center gap-1.5 font-mono">
+              <History size={14} className="text-[#C8A878]" /> Support Tickets Involving Store ({vendorPastTickets.length})
+            </span>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setShowHistory(!showHistory)}
+              rightIcon={<ChevronRight size={14} className={showHistory ? 'rotate-90 transition-transform' : 'transition-transform'} />}
+            >
+              {showHistory ? 'Collapse History' : 'View Inquiries'}
+            </Button>
+          </div>
+
+          {vendorPastTickets.length === 0 ? (
+            <div className="p-4 text-center bg-[#FAF8F5] border border-[#E7DFD5] rounded-xl text-[#78716C] text-xs font-medium">
+              Clean Record: 0 support tickets or disputes filed against {vendor.storeName}.
+            </div>
+          ) : (
+            <div className="flex flex-col gap-2">
+              {vendorPastTickets.map((t) => (
+                <div
+                  key={t.id}
+                  onClick={() => onSelectTicket && onSelectTicket(t.id)}
+                  className="p-3 bg-[#FAF8F5] border border-[#E7DFD5] rounded-xl flex items-center justify-between gap-3 hover:bg-[#EEE5DA] hover:border-[#C8A878] transition-all cursor-pointer shadow-2xs"
+                >
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center gap-2">
+                      <span className="font-mono font-bold text-[#C8A878] text-xs">{t.ticketNumber || t.id}</span>
+                      <span className="text-[11px] text-[#78716C]">
+                        • {formatDate(t.createdAt)}
+                      </span>
+                    </div>
+                    <span className="font-bold text-[#211A19] block truncate text-xs mt-0.5">{t.subject}</span>
+                    <span className="text-[11px] text-[#78716C] block truncate">
+                      Reporter: {t.reporterName} ({t.userType})
+                    </span>
+                  </div>
+
+                  <div className="flex items-center gap-2 shrink-0">
+                    <SupportTicketStatusBadge status={t.status} />
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Action Controls */}
+        <div className="flex items-center justify-end gap-2 pt-3 border-t border-[#E7DFD5] mt-2">
+          <Button type="button" variant="ghost" onClick={onClose}>
+            Close Drawer
+          </Button>
+          {isBlocked ? (
+            <Button
+              type="button"
+              variant="primary"
+              onClick={handleRestoreVendor}
+              isLoading={toggleVendorMutation.isPending}
+              leftIcon={<CheckCircle2 size={14} />}
+              className="bg-emerald-700 text-white hover:bg-emerald-800"
+            >
+              Reinstate Vendor
+            </Button>
+          ) : (
+            <Button
+              type="button"
+              variant="danger"
+              onClick={handleSuspendVendor}
+              isLoading={toggleVendorMutation.isPending}
+              leftIcon={<Ban size={14} />}
+            >
+              Suspend Vendor Store
+            </Button>
+          )}
+        </div>
+      </div>
+    </Drawer>
   );
 };

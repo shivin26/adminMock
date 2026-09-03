@@ -39,6 +39,9 @@ import { OrderDetailsModal } from './OrderDetailsModal';
 import { formatDate } from '../../utils/formatters.utils';
 
 import { useToast } from '../../context/ToastContext';
+import { useUsers } from '../../hooks/useUsers';
+import { useVendors } from '../../hooks/useVendors';
+import { isPhoneMatch, findUserByPhoneOrWhatsapp, findVendorByPhoneOrWhatsapp } from '../../utils/phone.utils';
 
 export interface SupportTicketDetailsDrawerProps {
   isOpen: boolean;
@@ -49,40 +52,7 @@ export interface SupportTicketDetailsDrawerProps {
   onOpenVendorProfile?: (vendorName: string) => void;
 }
 
-const INITIAL_MERGED_MAP: Record<string, Array<{ ticketNumber: string; subject: string; mergedBy: string; mergedAt: string }>> = {
-  't-101': [
-    {
-      ticketNumber: 'TICK-8042',
-      subject: 'Razorpay UPI Settlement Batch #9081 Verification',
-      mergedBy: 'Vikram Mehta',
-      mergedAt: 'Aug 7, 02:15 PM',
-    },
-  ],
-  't-102': [
-    {
-      ticketNumber: 'TICK-7911',
-      subject: 'Resident Delivery GPS Refresh Sync Issue',
-      mergedBy: 'Super Admin',
-      mergedAt: 'Aug 7, 01:30 PM',
-    },
-    {
-      ticketNumber: 'TICK-7890',
-      subject: 'Delivery Pass Location Latency',
-      mergedBy: 'Ananya Sharma',
-      mergedAt: 'Aug 7, 11:45 AM',
-    },
-  ],
-  't-103': [],
-  't-104': [],
-  't-105': [
-    {
-      ticketNumber: 'TICK-8010',
-      subject: 'Store Category Update Intake',
-      mergedBy: 'Super Admin',
-      mergedAt: 'Aug 7, 10:00 AM',
-    },
-  ],
-};
+const INITIAL_MERGED_MAP: Record<string, Array<{ ticketNumber: string; subject: string; mergedBy: string; mergedAt: string }>> = {};
 
 export const SupportTicketDetailsDrawer: React.FC<SupportTicketDetailsDrawerProps> = ({
   isOpen,
@@ -100,19 +70,43 @@ export const SupportTicketDetailsDrawer: React.FC<SupportTicketDetailsDrawerProp
   const sendReplyMutation = useSendTicketReply();
   const updateStatusMutation = useUpdateTicketStatus();
 
+  const { data: rawUsers = [] } = useUsers();
+  const { data: rawVendors = [] } = useVendors();
+
+  const matchedReporterUser = React.useMemo(() => {
+    if (!ticket?.reporterPhone) return null;
+    return findUserByPhoneOrWhatsapp(rawUsers, ticket.reporterPhone);
+  }, [rawUsers, ticket?.reporterPhone]);
+
+  const matchedReporterVendor = React.useMemo(() => {
+    if (!ticket?.reporterPhone) return null;
+    return findVendorByPhoneOrWhatsapp(rawVendors, ticket.reporterPhone);
+  }, [rawVendors, ticket?.reporterPhone]);
+
+  const matchedTargetUser = React.useMemo(() => {
+    if (!ticket?.targetResident) return null;
+    return findUserByPhoneOrWhatsapp(rawUsers, ticket.targetResident);
+  }, [rawUsers, ticket?.targetResident]);
+
+  const matchedTargetVendor = React.useMemo(() => {
+    if (!ticket?.targetVendor) return null;
+    return findVendorByPhoneOrWhatsapp(rawVendors, ticket.targetVendor);
+  }, [rawVendors, ticket?.targetVendor]);
+
   // Dynamically filter all past tickets by this ticket's creator
   const creatorPastTickets = React.useMemo(() => {
     if (!ticket) return [];
-    return allTickets.filter(
-      (t) =>
-        t.id !== ticket.id &&
-        t.ticketNumber !== ticket.ticketNumber &&
-        (
-          (t.reporterName && t.reporterName.toLowerCase() === ticket.reporterName.toLowerCase()) ||
-          (t.reporterEmail && t.reporterEmail.toLowerCase() === ticket.reporterEmail.toLowerCase()) ||
-          (t.entityName && ticket.entityName && t.entityName.toLowerCase() === ticket.entityName.toLowerCase())
-        )
-    );
+    const tPhone = ticket.reporterPhone;
+
+    return allTickets.filter((t) => {
+      if (t.id === ticket.id || t.ticketNumber === ticket.ticketNumber) return false;
+
+      const isPhoneMatchSame = isPhoneMatch(tPhone, t.reporterPhone);
+      const isEmailMatchSame = ticket.reporterEmail && t.reporterEmail && t.reporterEmail.toLowerCase() === ticket.reporterEmail.toLowerCase();
+      const isNameMatchSame = ticket.reporterName && t.reporterName && t.reporterName.toLowerCase() === ticket.reporterName.toLowerCase();
+
+      return isPhoneMatchSame || isEmailMatchSame || isNameMatchSame;
+    });
   }, [allTickets, ticket]);
 
   // Tab State: 'conversation' | 'notes' | 'attachments' | 'audit'
@@ -166,8 +160,6 @@ export const SupportTicketDetailsDrawer: React.FC<SupportTicketDetailsDrawerProp
     const s = totalSeconds % 60;
     return `${String(h).padStart(2, '0')}h ${String(m).padStart(2, '0')}m ${String(s).padStart(2, '0')}s`;
   };
-
-  if (!ticketId) return null;
 
   const handleSendReply = (e: React.FormEvent) => {
     e.preventDefault();
@@ -390,7 +382,7 @@ export const SupportTicketDetailsDrawer: React.FC<SupportTicketDetailsDrawerProp
 
   return (
     <Drawer
-      isOpen={isOpen}
+      isOpen={isOpen && Boolean(ticketId)}
       onClose={hasUnsavedChanges ? handleSaveAndClose : onClose}
       title={ticket ? `${ticket.ticketNumber} - ${ticket.subject}` : 'Support Ticket Details'}
       subtitle={ticket ? `Reporter: ${ticket.reporterName} • ${ticket.entityName}` : 'Loading...'}
@@ -486,7 +478,7 @@ export const SupportTicketDetailsDrawer: React.FC<SupportTicketDetailsDrawerProp
                 <div>
                   <span className="text-[#78716C] block font-medium">Phone Number:</span>
                   <span className="font-bold text-[#211A19] flex items-center gap-1 mt-0.5">
-                    <Phone size={13} className="text-[#C8A878]" /> +91 98765 43210
+                    <Phone size={13} className="text-[#C8A878]" /> {ticket.reporterPhone || 'N/A'}
                   </span>
                 </div>
 
@@ -509,43 +501,43 @@ export const SupportTicketDetailsDrawer: React.FC<SupportTicketDetailsDrawerProp
                       <span className="font-bold uppercase tracking-wider text-amber-900 flex items-center gap-1.5">
                         <Store size={14} className="text-amber-600" /> Vendor → Resident Customer Complaint
                       </span>
-                      <Badge variant="warning">VENDOR &amp; RESIDENT</Badge>
+                      <Badge variant="warning">VENDOR COMPLAINT</Badge>
                     </div>
                     <p className="mt-0.5">
-                      Complainant <strong>{ticket.reporterName}</strong> (Store: {ticket.entityName}) filed a complaint against Resident Customer <strong className="text-[#211A19]">{ticket.reportedPartyName || 'Resident Customer'}</strong>.
+                      Complainant Vendor Partner <strong>{ticket.reporterName}</strong> (Store: {ticket.entityName || 'Merchant Store'}) filed a complaint against Resident Customer <strong className="text-[#211A19]">{ticket.targetResident || ticket.reportedPartyName || (ticket.targetVendor !== ticket.entityName ? ticket.targetVendor : undefined) || 'Resident Customer'}</strong>.
                     </p>
                     {ticket.orderId && (
-                      <span className="font-mono text-[11px] text-amber-800">Associated Order ID: {ticket.orderId} ({formatCurrency(ticket.orderAmount || 0)})</span>
+                      <span className="font-mono text-[11px] text-amber-800">Associated Order ID: {ticket.orderId}</span>
                     )}
                   </div>
                 ) : ticket.category === 'vendor_vs_vendor' ? (
                   <div className="col-span-2 bg-emerald-50 p-3 rounded-xl border border-emerald-200 flex flex-col gap-1 text-xs text-emerald-950">
                     <div className="flex items-center justify-between">
                       <span className="font-bold uppercase tracking-wider text-emerald-900 flex items-center gap-1.5">
-                        <Store size={14} className="text-emerald-600" /> Vendor → Vendor B2B Purchase Complaint
+                        <Store size={14} className="text-emerald-600" /> Vendor → Vendor B2B Complaint
                       </span>
-                      <Badge variant="primary">VENDOR &amp; RESIDENT</Badge>
+                      <Badge variant="primary">VENDOR B2B</Badge>
                     </div>
                     <p className="mt-0.5">
-                      Vendor <strong>{ticket.reporterName}</strong> (buying in resident role) filed a complaint against Vendor Store <strong className="text-[#211A19]">{ticket.reportedPartyName || ticket.targetVendor}</strong>.
+                      Vendor <strong>{ticket.reporterName}</strong> filed a B2B complaint against Vendor Store <strong className="text-[#211A19]">{ticket.targetVendor || ticket.reportedPartyName || 'Target Vendor Store'}</strong>.
                     </p>
                     {ticket.orderId && (
-                      <span className="font-mono text-[11px] text-emerald-800">Associated Order ID: {ticket.orderId} ({formatCurrency(ticket.orderAmount || 0)})</span>
+                      <span className="font-mono text-[11px] text-emerald-800">Associated Order ID: {ticket.orderId}</span>
                     )}
                   </div>
-                ) : ticket.category === 'user_vs_vendor' ? (
+                ) : (ticket.category === 'user_vs_vendor' || (ticket.userType === 'user' && ticket.targetVendor)) ? (
                   <div className="col-span-2 bg-rose-50 p-3 rounded-xl border border-rose-200 flex flex-col gap-1 text-xs text-rose-950">
                     <div className="flex items-center justify-between">
                       <span className="font-bold uppercase tracking-wider text-rose-900 flex items-center gap-1.5">
-                        <User size={14} className="text-rose-600" /> Resident Customer → Vendor Complaint
+                        <User size={14} className="text-rose-600" /> Resident Customer → Vendor Store Complaint
                       </span>
                       <Badge variant="danger">RESIDENT COMPLAINT</Badge>
                     </div>
                     <p className="mt-0.5">
-                      Resident <strong>{ticket.reporterName}</strong> filed a complaint against Vendor Store <strong className="text-[#211A19]">{ticket.reportedPartyName || ticket.targetVendor}</strong>.
+                      Resident Customer <strong>{ticket.reporterName}</strong> filed a complaint against Vendor Store <strong className="text-[#211A19]">{ticket.targetVendor || ticket.reportedPartyName || ticket.entityName || 'Vendor Store'}</strong>.
                     </p>
                     {ticket.orderId && (
-                      <span className="font-mono text-[11px] text-rose-800">Associated Order ID: {ticket.orderId} ({formatCurrency(ticket.orderAmount || 0)})</span>
+                      <span className="font-mono text-[11px] text-rose-800">Associated Order ID: {ticket.orderId}</span>
                     )}
                   </div>
                 ) : ticket.userType === 'user_vendor' ? (
@@ -563,7 +555,7 @@ export const SupportTicketDetailsDrawer: React.FC<SupportTicketDetailsDrawerProp
                     <div className="flex items-center gap-2">
                       <ShoppingBag size={14} className="text-[#C8A878] shrink-0" />
                       <span>
-                        <strong>Vendor Intake Channel:</strong> App created exclusively for vendors (Vendor Mobile App &amp; Vendor Web Portal).
+                        <strong>Vendor Intake Channel ({ticket.source === 'mobile_app' ? 'Vendor Mobile App' : 'Vendor Web Portal'}):</strong> Merchant <strong>{ticket.reporterName}</strong> (Store: {ticket.entityName || 'Merchant Store'}) filed a platform support request.
                       </span>
                     </div>
                     <Badge variant="primary">{ticket.source === 'mobile_app' ? 'VENDOR APP' : 'VENDOR PORTAL'}</Badge>
@@ -573,7 +565,7 @@ export const SupportTicketDetailsDrawer: React.FC<SupportTicketDetailsDrawerProp
                     <div className="flex items-center gap-2">
                       <Globe size={14} className="text-[#D97706] shrink-0" />
                       <span>
-                        <strong>User Intake Channel:</strong> Intake strictly from Website orders &amp; resident contact portal.
+                        <strong>Resident Website Intake (landing_website):</strong> Resident Customer <strong>{ticket.reporterName}</strong> filed a platform support request via Website.
                       </span>
                     </div>
                     <Badge variant="warning">WEBSITE ONLY</Badge>
@@ -826,16 +818,7 @@ export const SupportTicketDetailsDrawer: React.FC<SupportTicketDetailsDrawerProp
 
               {/* Assign Agent */}
               <div className="flex flex-col gap-1.5 text-xs">
-                <div className="flex items-center justify-between">
-                  <label className="text-[#78716C] font-medium">Assigned Agent:</label>
-                  <button
-                    type="button"
-                    onClick={() => setIsAssignModalOpen(true)}
-                    className="text-[11px] font-bold text-[#C8A878] hover:underline"
-                  >
-                    Advanced Reassign
-                  </button>
-                </div>
+                <label className="text-[#78716C] font-medium">Assigned Agent:</label>
                 <select
                   value={assignedAgent}
                   onChange={(e) => handleAgentChange(e.target.value)}

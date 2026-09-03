@@ -111,22 +111,14 @@ export const UsersPage: React.FC = () => {
           title="User Directory Management"
           description="Unified directory of resident customer accounts and user-vendor dual role accounts."
           action={
-            <div className="flex items-center gap-2">
-              <Button
-                variant="outline"
-                leftIcon={<RefreshCw size={14} />}
-                onClick={() => refetch()}
-                isLoading={isLoading}
-              >
-                Refresh Directory
-              </Button>
-              <Button
-                leftIcon={<UserPlus size={14} />}
-                onClick={() => setIsAddModalOpen(true)}
-              >
-                Add User Profile
-              </Button>
-            </div>
+            <Button
+              variant="outline"
+              leftIcon={<RefreshCw size={14} />}
+              onClick={() => refetch()}
+              isLoading={isLoading}
+            >
+              Refresh Directory
+            </Button>
           }
         />
       </div>

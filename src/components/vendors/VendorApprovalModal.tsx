@@ -21,6 +21,7 @@ import {
 } from 'lucide-react';
 
 import { ImagePreviewModal } from '../common/Modal/ImagePreviewModal';
+import { VendorReapplicationDiffCard } from './VendorReapplicationDiffCard';
 
 export interface VendorApprovalModalProps {
   isOpen: boolean;
@@ -124,74 +125,12 @@ export const VendorApprovalModal: React.FC<VendorApprovalModalProps> = ({
         </div>
 
         {/* Resubmitted Vendor Setting Changes Highlight Card */}
-        {(vendor.hasResubmitted || vendor.hasVendorUpdate) && !vendor.isUpdateViewed && (
-          <div className="p-4 bg-emerald-50/90 border border-emerald-300 rounded-2xl shadow-xs flex flex-col gap-2.5 font-sans">
-            <div className="flex items-center justify-between border-b border-emerald-200 pb-2">
-              <h5 className="text-xs font-bold text-emerald-950 uppercase tracking-wider flex items-center gap-1.5 font-mono">
-                <Bell size={15} className="text-emerald-600 animate-bounce shrink-0" />
-                NEW VENDOR RESUBMISSION &amp; UPDATED DETAILS
-              </h5>
-              <div className="flex items-center gap-2">
-                <span className="px-2 py-0.5 bg-emerald-700 text-white font-mono text-[10px] font-bold rounded-full">
-                  {vendor.resubmittedAtReadable || (vendor.resubmittedAt ? `Resubmitted at ${vendor.resubmittedAt}` : 'Updated in Settings')}
-                </span>
-                {onMarkViewed && (
-                  <Button
-                    type="button"
-                    size="sm"
-                    variant="outline"
-                    onClick={() => onMarkViewed(vendor.id)}
-                    className="bg-white text-emerald-900 border-emerald-300 hover:bg-emerald-100 text-[11px] font-bold font-mono py-1 px-2.5 shadow-xs"
-                    title="Click to mark update as viewed and remove the green notification badge"
-                  >
-                    <CheckCircle2 size={13} className="text-emerald-700 shrink-0" /> Mark as Viewed
-                  </Button>
-                )}
-              </div>
-            </div>
-
-            <p className="text-xs text-emerald-900 leading-relaxed font-medium">
-              The vendor updated their store settings in response to your hold request. Below are the specific field(s) modified:
-            </p>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-1">
-              {(vendor.resubmittedChanges && vendor.resubmittedChanges.length > 0
-                ? vendor.resubmittedChanges
-                : (vendor.updatedFieldKeys && vendor.updatedFieldKeys.length > 0
-                    ? vendor.updatedFieldKeys.map((key) => {
-                        const match = fieldsConfig.find((f) => f.key === key);
-                        return {
-                          field: key,
-                          label: match?.label || key,
-                          oldValue: undefined,
-                          newValue: (vendor as any)[key] || '',
-                        };
-                      })
-                    : (vendor.gstin ? [{ field: 'gstin', label: '1. GSTIN Tax Code', oldValue: undefined, newValue: vendor.gstin }] : [])
-                  )
-              ).map((change, idx) => (
-                <div key={idx} className={`p-2.5 bg-white rounded-xl border border-emerald-200 text-xs flex flex-col gap-1 ${change.field === 'address' ? 'sm:col-span-2' : ''}`}>
-                  <div className="flex items-center justify-between">
-                    <span className="font-bold text-[#211A19] uppercase text-[11px] flex items-center gap-1">
-                      <span className="w-2 h-2 rounded-full bg-emerald-600 inline-block shrink-0" />
-                      {change.label}
-                    </span>
-                    <Badge variant="success" className="text-[10px]">UPDATED BY VENDOR</Badge>
-                  </div>
-                  <div className="flex items-center justify-between gap-2 font-mono text-xs mt-0.5">
-                    {change.oldValue && (
-                      <span className="text-gray-400 line-through truncate max-w-[45%]" title={change.oldValue}>
-                        Original: {change.oldValue}
-                      </span>
-                    )}
-                    <span className="font-bold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200 truncate" title={change.newValue}>
-                      New: {change.newValue}
-                    </span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
+        {(vendor.hasResubmitted || vendor.hasVendorUpdate || vendor.status === 'on_hold') && (
+          <VendorReapplicationDiffCard
+            vendorId={vendor.id}
+            fallbackChanges={vendor.resubmittedChanges}
+            fallbackHoldReason={vendor.holdReason}
+          />
         )}
 
         {/* 7 Mandatory Registration Fields Checklist */}
@@ -224,7 +163,7 @@ export const VendorApprovalModal: React.FC<VendorApprovalModalProps> = ({
                 ? vendor.updatedFieldKeys
                 : (vendor.resubmittedChanges && vendor.resubmittedChanges.length > 0)
                 ? vendor.resubmittedChanges.map((c) => c.field)
-                : ['gstin'];
+                : [];
               const isFieldUpdated = updatedKeys.includes(field.key);
 
               return (

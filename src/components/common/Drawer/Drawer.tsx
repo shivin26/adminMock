@@ -9,7 +9,7 @@ export interface DrawerProps {
   title: string;
   subtitle?: React.ReactNode;
   children: React.ReactNode;
-  size?: 'md' | 'lg' | 'xl';
+  size?: 'md' | 'lg' | 'xl' | '2xl';
 }
 
 export const Drawer: React.FC<DrawerProps> = ({

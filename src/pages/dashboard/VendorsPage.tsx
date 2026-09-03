@@ -16,6 +16,7 @@ import {
   useHoldVendor,
   useRejectVendor,
   useToggleVendorStatus,
+  useBlockVendor,
 } from '../../hooks/useVendors';
 import { useDebounce } from '../../hooks/useDebounce';
 import type { Vendor, VendorStatus } from '../../types/vendor.types';
@@ -24,8 +25,8 @@ import { Search, XCircle, ShieldCheck, Ban, ShoppingBag, PauseCircle, Clock, Map
 import { useQueryClient } from '@tanstack/react-query';
 import { saveLocalVendors, saveLocalPendingVendors, getLocalVendors, getLocalPendingVendors } from '../../services/api/vendors.api';
 import { VendorApprovalModal } from '../../components/vendors/VendorApprovalModal';
-import { VendorHoldModal } from '../../components/vendors/VendorHoldModal';
-import { VendorRejectModal } from '../../components/vendors/VendorRejectModal';
+import { VendorHoldDrawer } from '../../components/vendors/VendorHoldDrawer';
+import { VendorRejectDrawer } from '../../components/vendors/VendorRejectDrawer';
 import { VendorDetailsDrawer } from '../../components/vendors/VendorDetailsDrawer';
 import { VendorBlockConfirmModal } from '../../components/vendors/VendorBlockConfirmModal';
 import { PeopleDetailsDrawer } from '../../components/people/PeopleDetailsDrawer';
@@ -71,6 +72,7 @@ export const VendorsPage: React.FC = () => {
   const holdVendorMutation = useHoldVendor();
   const rejectVendorMutation = useRejectVendor();
   const toggleStatusMutation = useToggleVendorStatus();
+  const blockVendorMutation = useBlockVendor();
 
   // Modals & Drawer State
   const [approvingVendor, setApprovingVendor] = useState<Vendor | null>(null);
@@ -78,6 +80,7 @@ export const VendorsPage: React.FC = () => {
   const [rejectingVendor, setRejectingVendor] = useState<Vendor | null>(null);
   const [blockingVendor, setBlockingVendor] = useState<Vendor | null>(null);
   const [selectedDrawerVendor, setSelectedDrawerVendor] = useState<Vendor | null>(null);
+  const [isDrawerHoldFormOpen, setIsDrawerHoldFormOpen] = useState(false);
   const [selectedOwnerId, setSelectedOwnerId] = useState<string | null>(null);
 
   // Active vendors dataset directly from backend status
@@ -151,9 +154,19 @@ export const VendorsPage: React.FC = () => {
     });
   };
 
-  const handleHold = (vendorId: string | number, payload: { subject: string; email_content: string }) => {
+  const handleHold = (vendorId: string | number, payload: HoldVendorPayload) => {
+    const subj = payload.subject || payload.hold_email_subject || 'Document Correction Required';
+    const content = payload.email_content || payload.hold_reason || payload.reason || '';
     holdVendorMutation.mutate(
-      { vendorId, subject: payload.subject, email_content: payload.email_content },
+      {
+        vendorId,
+        subject: subj,
+        email_content: content,
+        hold_email_subject: subj,
+        hold_reason: content,
+        reason: content,
+        remarks: content,
+      },
       {
         onSuccess: () => setHoldingVendor(null),
       }
@@ -169,18 +182,32 @@ export const VendorsPage: React.FC = () => {
     );
   };
 
-  const handleToggleStatus = (vendorId: string | number, status: 'active' | 'suspended') => {
-    toggleStatusMutation.mutate(
-      { vendorId, status },
-      {
-        onSuccess: () => {
-          setBlockingVendor(null);
-          if (selectedDrawerVendor && selectedDrawerVendor.id === String(vendorId)) {
-            setSelectedDrawerVendor((prev) => (prev ? { ...prev, status } : null));
-          }
-        },
-      }
-    );
+  const handleToggleStatus = (vendorId: string | number, status: 'active' | 'suspended', customMessage?: string) => {
+    if (status === 'suspended') {
+      blockVendorMutation.mutate(
+        { vendorId, reason: customMessage || 'Fraudulent listing / policy violation' },
+        {
+          onSuccess: () => {
+            setBlockingVendor(null);
+            if (selectedDrawerVendor && selectedDrawerVendor.id === String(vendorId)) {
+              setSelectedDrawerVendor((prev) => (prev ? { ...prev, status: 'suspended' } : null));
+            }
+          },
+        }
+      );
+    } else {
+      toggleStatusMutation.mutate(
+        { vendorId, status: 'active' },
+        {
+          onSuccess: () => {
+            setBlockingVendor(null);
+            if (selectedDrawerVendor && selectedDrawerVendor.id === String(vendorId)) {
+              setSelectedDrawerVendor((prev) => (prev ? { ...prev, status: 'active' } : null));
+            }
+          },
+        }
+      );
+    }
   };
 
   const queryClient = useQueryClient();
@@ -301,10 +328,11 @@ export const VendorsPage: React.FC = () => {
 
           {/* On-Hold Queue Specific Badge Rules */}
           {(vendor.status === 'on_hold' || vendor.status === 'hold') && (
-            vendor.hasResubmitted ? (
+            (vendor.hasResubmitted || vendor.hasVendorUpdate || (vendor.resubmittedChanges && vendor.resubmittedChanges.length > 0) || (vendor.updatedFieldKeys && vendor.updatedFieldKeys.length > 0)) ? (
               <span
-                className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-extrabold bg-emerald-600 text-white shadow-xs animate-pulse font-mono"
+                className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-extrabold bg-emerald-600 text-white shadow-xs animate-pulse font-mono cursor-pointer hover:bg-emerald-700 transition-all"
                 title={vendor.resubmittedAtReadable ? `Resubmitted: ${vendor.resubmittedAtReadable}` : 'Vendor updated details in portal settings'}
+                onClick={() => setSelectedDrawerVendor(vendor)}
               >
                 <Bell size={11} className="fill-current text-white animate-bounce shrink-0" />
                 🟢 Resubmitted &amp; Updated
@@ -348,10 +376,10 @@ export const VendorsPage: React.FC = () => {
               </Button>
 
               <Button
-                variant="ghost"
+                variant="warning"
                 size="sm"
                 leftIcon={<PauseCircle size={15} />}
-                className="text-amber-700 bg-amber-50 hover:bg-amber-100 border border-amber-200"
+                className="font-bold shadow-2xs"
                 title={vendor.status === 'on_hold' ? 'Re-Hold Application (Dispatch new SMTP email)' : 'Place Application On Hold'}
                 aria-label="Hold or Re-Hold Application"
                 onClick={() => setHoldingVendor(vendor)}
@@ -511,8 +539,8 @@ export const VendorsPage: React.FC = () => {
         isLoading={approveVendorMutation.isPending}
       />
 
-      {/* Vendor Hold Modal */}
-      <VendorHoldModal
+      {/* Vendor Hold Side Drawer */}
+      <VendorHoldDrawer
         isOpen={!!holdingVendor}
         onClose={() => setHoldingVendor(null)}
         onConfirmHold={handleHold}
@@ -520,8 +548,8 @@ export const VendorsPage: React.FC = () => {
         isLoading={holdVendorMutation.isPending}
       />
 
-      {/* Vendor Rejection Modal */}
-      <VendorRejectModal
+      {/* Vendor Rejection Side Drawer */}
+      <VendorRejectDrawer
         isOpen={!!rejectingVendor}
         onClose={() => setRejectingVendor(null)}
         onConfirmReject={handleReject}
@@ -541,14 +569,22 @@ export const VendorsPage: React.FC = () => {
       {/* Vendor Details Drawer */}
       <VendorDetailsDrawer
         isOpen={!!selectedDrawerVendor}
-        onClose={() => setSelectedDrawerVendor(null)}
+        onClose={() => {
+          setSelectedDrawerVendor(null);
+          setIsDrawerHoldFormOpen(false);
+        }}
         onToggleBlock={(v) => setBlockingVendor(v)}
         onSelectOwner={(ownerName) => setSelectedOwnerId(ownerName)}
         onConfirmApprove={(vendorId) => handleApprove(vendorId)}
+        onConfirmHold={(vendorId, payload) => handleHold(vendorId, payload)}
         onMarkViewed={handleMarkViewed}
-        onHold={(v) => setHoldingVendor(v)}
+        onHold={(v) => {
+          setSelectedDrawerVendor(v);
+          setIsDrawerHoldFormOpen(true);
+        }}
         onReject={(v) => setRejectingVendor(v)}
         vendor={selectedDrawerVendor}
+        initialOpenHoldForm={isDrawerHoldFormOpen}
       />
 
       {/* Owner Profile CRM Drawer */}

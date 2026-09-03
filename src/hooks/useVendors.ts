@@ -69,14 +69,32 @@ export const useHoldVendor = () => {
       vendorId,
       subject,
       email_content,
+      hold_email_subject,
+      hold_reason,
+      reason,
+      remarks,
     }: {
       vendorId: string | number;
       subject: string;
       email_content: string;
-    }) => vendorsApi.holdVendor(vendorId, { subject, email_content }),
+      hold_email_subject?: string;
+      hold_reason?: string;
+      reason?: string;
+      remarks?: string;
+    }) =>
+      vendorsApi.holdVendor(vendorId, {
+        subject,
+        email_content,
+        hold_email_subject: hold_email_subject || subject,
+        hold_reason: hold_reason || reason || email_content,
+        reason: reason || hold_reason || email_content,
+        remarks: remarks || email_content,
+      }),
     onSuccess: (data, variables) => {
       queryClient.invalidateQueries({ queryKey: CACHE_KEYS.vendors.all });
-      logBackendMutation('VENDORS', 'STATUS_CHANGE', `Placed vendor #${variables.vendorId} on hold`, `Subject: ${variables.subject}`, String(variables.vendorId));
+      queryClient.invalidateQueries({ queryKey: ['vendors', 'on_hold'] });
+      queryClient.invalidateQueries({ queryKey: CACHE_KEYS.vendors.pending });
+      logBackendMutation('VENDORS', 'STATUS_CHANGE', `Placed vendor #${variables.vendorId} on hold`, `Reason: ${variables.email_content || variables.hold_reason}`, String(variables.vendorId));
       addToast({
         type: 'warning',
         title: 'Application Placed On Hold',
@@ -235,6 +253,43 @@ export const useResubmitVendor = () => {
       addToast({
         type: 'error',
         title: 'Resubmission Failed',
+        description: appErr.message,
+      });
+    },
+  });
+};
+
+export const useVendorReapplicationChanges = (vendorId?: string | number) => {
+  return useQuery({
+    queryKey: ['vendors', 'reapplication-changes', vendorId],
+    queryFn: () => vendorsApi.getReapplicationChanges(vendorId!),
+    enabled: Boolean(vendorId),
+    staleTime: 0,
+  });
+};
+
+export const useBlockVendor = () => {
+  const queryClient = useQueryClient();
+  const { addToast } = useToast();
+
+  return useMutation({
+    mutationFn: ({ vendorId, reason }: { vendorId: string | number; reason: string }) =>
+      vendorsApi.blockVendor(vendorId, reason),
+    onSuccess: (data, variables) => {
+      queryClient.invalidateQueries({ queryKey: ['vendors'] });
+      queryClient.invalidateQueries({ queryKey: CACHE_KEYS.vendors.all });
+      logBackendMutation('VENDORS', 'STATUS_CHANGE', `Blocked merchant #${variables.vendorId}`, `Reason: ${variables.reason}`, String(variables.vendorId));
+      addToast({
+        type: 'warning',
+        title: 'Merchant Account Blocked',
+        description: data.message || 'Merchant account blocked successfully by admin.',
+      });
+    },
+    onError: (error: unknown) => {
+      const appErr = ErrorHandler.handle(error);
+      addToast({
+        type: 'error',
+        title: 'Block Action Failed',
         description: appErr.message,
       });
     },

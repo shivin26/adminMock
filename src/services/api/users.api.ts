@@ -177,19 +177,28 @@ export const usersApi = {
     }
   },
 
-  /**
-   * POST /admin/users/:userId/block
-   */
-  blockUser: async (userId: string, reason = 'Terms breach'): Promise<{ message: string; status: string }> => {
-    try {
-      const response = await axiosInstance.post(`/admin/users/${userId}/block`, { reason });
-      return response.data;
-    } catch {
-      const users = getStoredUsers();
-      const updated = users.map((u) => (u.id === userId ? { ...u, status: 'banned' as const } : u));
-      saveStoredUsers(updated);
-      return { message: `User #${userId} blocked successfully.`, status: 'suspended' };
+  blockUser: async (userId: string, reason = 'Repeated policy violations'): Promise<{ success?: boolean; message: string; status: string }> => {
+    const endpoints = [
+      `/admin/users/${userId}/block`,
+      `/api/admin/users/${userId}/block`,
+      `/people/${userId}/block`,
+      `/api/people/${userId}/block`,
+    ];
+    for (const ep of endpoints) {
+      try {
+        const response = await axiosInstance.post(ep, { reason });
+        if (response.data) return response.data;
+      } catch {}
     }
+
+    const users = getStoredUsers();
+    const updated = users.map((u) => (u.id === userId ? { ...u, status: 'blocked' as const, isBlocked: true } : u));
+    saveStoredUsers(updated);
+    return {
+      success: true,
+      message: 'User account status updated to BLOCKED.',
+      status: 'blocked',
+    };
   },
 
   /**

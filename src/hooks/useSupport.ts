@@ -277,3 +277,45 @@ export const useManageFollowers = () => {
     },
   });
 };
+
+export const useSupportAnalytics = () => {
+  return useQuery({
+    queryKey: ['support', 'analytics'],
+    queryFn: () => supportApi.getAnalytics(),
+    staleTime: 60 * 1000,
+  });
+};
+
+export const useSupportSLA = () => {
+  return useQuery({
+    queryKey: ['support', 'sla'],
+    queryFn: () => supportApi.getSLAPolicy(),
+    staleTime: 5 * 60 * 1000,
+  });
+};
+
+export const useUpdateSupportSLA = () => {
+  const queryClient = useQueryClient();
+  const { addToast } = useToast();
+
+  return useMutation({
+    mutationFn: (payload: Parameters<typeof supportApi.updateSLAPolicy>[0]) =>
+      supportApi.updateSLAPolicy(payload),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['support', 'sla'] });
+      addToast({
+        type: 'success',
+        title: 'SLA Policy Updated',
+        description: 'Target response and resolution SLAs configured successfully.',
+      });
+    },
+  });
+};
+
+export const useSupportTags = () => {
+  return useQuery({
+    queryKey: ['support', 'tags'],
+    queryFn: () => supportApi.getTags(),
+    staleTime: 5 * 60 * 1000,
+  });
+};

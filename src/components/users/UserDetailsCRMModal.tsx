@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { Modal } from '../common/Modal/Modal';
+import { Drawer } from '../common/Drawer/Drawer';
 import { Button } from '../common/Button/Button';
 import { Badge } from '../common/Badge/Badge';
 import { LoadingSpinner } from '../ui/LoadingSpinner';
@@ -19,6 +19,7 @@ import { useTickets } from '../../hooks/useSupport';
 import { useToast } from '../../context/ToastContext';
 import { SupportTicketStatusBadge } from '../support/SupportTicketStatusBadge';
 import { formatDate } from '../../utils/formatters.utils';
+import { isPhoneMatch } from '../../utils/phone.utils';
 import {
   User,
   Phone,
@@ -84,12 +85,28 @@ export const UserDetailsCRMModal: React.FC<UserDetailsCRMModalProps> = ({
 
   const userPastTickets = useMemo(() => {
     if (!user) return [];
-    return allTickets.filter(
-      (t: any) =>
-        (t.reporterEmail && t.reporterEmail.toLowerCase() === user.email.toLowerCase()) ||
-        (t.reporterName && t.reporterName.toLowerCase().includes(user.name.toLowerCase())) ||
-        (t.entityName && t.entityName.toLowerCase().includes(user.name.toLowerCase()))
-    );
+    const uPhone = user.phone || user.phoneNumber || user.mobile;
+    const uWhatsapp = user.whatsappNumber || user.whatsapp_number;
+    const uName = (user.name || '').toLowerCase();
+    const uEmail = (user.email || '').toLowerCase();
+
+    return allTickets.filter((t: any) => {
+      const tPhone = t.reporterPhone;
+      const tTargetRes = t.targetResident || t.reportedPartyName;
+
+      // Primary Identification: Strict Phone & WhatsApp matching
+      const isPhoneReporter = isPhoneMatch(uPhone, tPhone) || isPhoneMatch(uWhatsapp, tPhone);
+      const isPhoneTarget = isPhoneMatch(uPhone, tTargetRes) || isPhoneMatch(uWhatsapp, tTargetRes);
+
+      // Secondary Identification: Email & Name matching
+      const isEmailMatch = uEmail && t.reporterEmail && t.reporterEmail.toLowerCase() === uEmail;
+      const isNameMatch = uName && (
+        (t.reporterName && t.reporterName.toLowerCase().includes(uName)) ||
+        (t.targetResident && t.targetResident.toLowerCase().includes(uName))
+      );
+
+      return isPhoneReporter || isPhoneTarget || isEmailMatch || isNameMatch;
+    });
   }, [allTickets, user]);
 
   if (!userIdentifier) return null;
@@ -171,12 +188,12 @@ export const UserDetailsCRMModal: React.FC<UserDetailsCRMModalProps> = ({
   };
 
   return (
-    <Modal
+    <Drawer
       isOpen={isOpen}
       onClose={onClose}
       title="Enterprise CRM Customer Profile"
       subtitle={user ? `User ID: ${user.id} • ${user.societyName}` : 'Loading...'}
-      size="xl"
+      size="2xl"
     >
       {isLoading || !user ? (
         <div className="p-12 text-center">
@@ -725,6 +742,6 @@ export const UserDetailsCRMModal: React.FC<UserDetailsCRMModalProps> = ({
           </div>
         </div>
       )}
-    </Modal>
+    </Drawer>
   );
 };

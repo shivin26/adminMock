@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Modal } from '../common/Modal/Modal';
+import { Drawer } from '../common/Drawer/Drawer';
 import { Input } from '../common/Input/Input';
 import { Button } from '../common/Button/Button';
 import { PowerSectionCheckboxGrid } from './PowerSectionCheckboxGrid';
@@ -63,14 +63,14 @@ export const CreateSubAdminModal: React.FC<CreateSubAdminModalProps> = ({
   };
 
   return (
-    <Modal
+    <Drawer
       isOpen={isOpen}
       onClose={onClose}
       title="Create Sub-Admin Account"
       subtitle="Delegate specific power sections to a company team member."
-      size="lg"
+      size="xl"
     >
-      <form onSubmit={handleSubmit} className="flex flex-col gap-5 font-sans">
+      <form onSubmit={handleSubmit} className="flex flex-col gap-5 p-4 text-xs font-sans">
         <Input
           label="Sub-Admin Full Name"
           placeholder="e.g. Vikram Mehta"
@@ -158,8 +158,8 @@ export const CreateSubAdminModal: React.FC<CreateSubAdminModalProps> = ({
           </div>
         )}
 
-        <div className="flex justify-end gap-3 pt-4 border-t border-slate-700/50">
-          <Button type="button" variant="secondary" onClick={onClose}>
+        <div className="flex justify-end gap-3 pt-4 border-t border-[#E7DFD5] mt-2">
+          <Button type="button" variant="ghost" onClick={onClose}>
             Cancel
           </Button>
           <Button
@@ -173,6 +173,6 @@ export const CreateSubAdminModal: React.FC<CreateSubAdminModalProps> = ({
           </Button>
         </div>
       </form>
-    </Modal>
+    </Drawer>
   );
 };

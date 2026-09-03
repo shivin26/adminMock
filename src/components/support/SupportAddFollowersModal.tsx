@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Modal } from '../common/Modal/Modal';
+import { Drawer } from '../common/Drawer/Drawer';
 import { Button } from '../common/Button/Button';
 import { UserPlus, Check, User } from 'lucide-react';
 
@@ -36,11 +36,12 @@ export const SupportAddFollowersModal: React.FC<SupportAddFollowersModalProps> =
   };
 
   return (
-    <Modal
+    <Drawer
       isOpen={isOpen}
       onClose={onClose}
       title={`Add Staff Follower to ${ticketNumber || 'Ticket'}`}
       subtitle="Followers receive real-time notifications for updates and SLA alerts."
+      size="lg"
     >
       <div className="flex flex-col gap-4">
         <div className="flex flex-col gap-2 max-h-60 overflow-y-auto pr-1">
@@ -97,6 +98,6 @@ export const SupportAddFollowersModal: React.FC<SupportAddFollowersModalProps> =
           </Button>
         </div>
       </div>
-    </Modal>
+    </Drawer>
   );
 };

@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
-import type { SubAdminUser } from '../../types/rbac.types';
+import type { SubAdminUser, PowerSection } from '../../types/rbac.types';
 import { Badge } from '../common/Badge/Badge';
-import { Button } from '../common/Button/Button';
 import {
   ShieldCheck,
   UserCheck,
@@ -10,8 +9,14 @@ import {
   Lock,
   ChevronDown,
   ChevronRight,
+  Building2,
   Users,
+  CreditCard,
+  Headphones,
+  Settings,
+  ShieldAlert,
   CornerDownRight,
+  Sparkles,
 } from 'lucide-react';
 import { formatDate } from '../../utils/formatters.utils';
 
@@ -26,6 +31,39 @@ export interface SubAdminNestedTableProps {
   onSelectSubAdmin: (subAdmin: SubAdminUser) => void;
 }
 
+const POWER_META: Record<string, { label: string; icon: React.ReactNode; style: string }> = {
+  SOCIETIES: {
+    label: 'Societies',
+    icon: <Building2 size={12} />,
+    style: 'bg-emerald-50 text-emerald-800 border-emerald-200/80 hover:bg-emerald-100/70',
+  },
+  VENDORS: {
+    label: 'Vendors',
+    icon: <Users size={12} />,
+    style: 'bg-sky-50 text-sky-800 border-sky-200/80 hover:bg-sky-100/70',
+  },
+  SUBSCRIPTIONS: {
+    label: 'Financials',
+    icon: <CreditCard size={12} />,
+    style: 'bg-purple-50 text-purple-800 border-purple-200/80 hover:bg-purple-100/70',
+  },
+  SUPPORT: {
+    label: 'Support Desk',
+    icon: <Headphones size={12} />,
+    style: 'bg-amber-50 text-amber-800 border-amber-200/80 hover:bg-amber-100/70',
+  },
+  SETTINGS: {
+    label: 'Platform Settings',
+    icon: <Settings size={12} />,
+    style: 'bg-stone-100 text-stone-800 border-stone-200/80 hover:bg-stone-200/60',
+  },
+  SUB_ADMINS: {
+    label: 'Sub-Admins',
+    icon: <ShieldAlert size={12} />,
+    style: 'bg-rose-50 text-rose-800 border-rose-200/80 hover:bg-rose-100/70',
+  },
+};
+
 export const SubAdminNestedTable: React.FC<SubAdminNestedTableProps> = ({
   subAdmins,
   currentUserId,
@@ -36,7 +74,7 @@ export const SubAdminNestedTable: React.FC<SubAdminNestedTableProps> = ({
   onRevoke,
   onSelectSubAdmin,
 }) => {
-  // Store expanded parent IDs (default all expanded so user sees hierarchy immediately)
+  // Store expanded parent IDs (default expanded so user sees hierarchy immediately)
   const [expandedParents, setExpandedParents] = useState<Record<string, boolean>>({
     'sub-aarushi': true,
     'sub-1': true,
@@ -86,20 +124,44 @@ export const SubAdminNestedTable: React.FC<SubAdminNestedTableProps> = ({
     );
   };
 
+  const renderPowerPills = (powers: PowerSection[]) => {
+    return (
+      <div className="flex flex-wrap gap-1.5 items-center">
+        {powers.map((power) => {
+          const meta = POWER_META[power] || {
+            label: power,
+            icon: <Sparkles size={11} />,
+            style: 'bg-gray-100 text-gray-800 border-gray-200',
+          };
+
+          return (
+            <span
+              key={power}
+              className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-semibold border transition-all shadow-2xs ${meta.style}`}
+            >
+              {meta.icon}
+              <span>{meta.label}</span>
+            </span>
+          );
+        })}
+      </div>
+    );
+  };
+
   return (
     <div className="w-full bg-white border border-[#E7DFD5] rounded-2xl shadow-xs overflow-hidden font-sans">
-      <div className="datatable-scroll-area">
-        <table className="w-full text-left font-sans">
-          <thead className="bg-[#FAF8F5] border-b border-[#E7DFD5] text-[11px] font-bold font-mono uppercase tracking-wider text-[#211A19]">
+      <div className="overflow-x-auto">
+        <table className="w-full text-left font-sans border-collapse">
+          <thead className="bg-[#FAF8F5] border-b border-[#E7DFD5] text-xs font-semibold uppercase tracking-wider text-[#524B47]">
             <tr>
-              <th className="py-3.5 px-4 w-14">S.NO.</th>
-              <th className="py-3.5 px-4">SUB-ADMIN USER</th>
-              <th className="py-3.5 px-4">CREATED BY (ATTRIBUTION TAG)</th>
-              <th className="py-3.5 px-4">ROLE TITLE</th>
-              <th className="py-3.5 px-4">DELEGATED POWER SECTIONS</th>
-              <th className="py-3.5 px-4">ACCOUNT STATUS</th>
-              <th className="py-3.5 px-4">CREATED DATE</th>
-              <th className="py-3.5 px-4 text-right">ACTIONS</th>
+              <th className="py-4 px-4 w-14 text-center">S.NO.</th>
+              <th className="py-4 px-4">Sub-Admin Profile</th>
+              <th className="py-4 px-4">Attribution & Creator</th>
+              <th className="py-4 px-4">Privilege Role</th>
+              <th className="py-4 px-4">Delegated Operational Powers</th>
+              <th className="py-4 px-4">Status</th>
+              <th className="py-4 px-4">Created Date</th>
+              <th className="py-4 px-4 text-right">Actions</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-[#E7DFD5]/60 text-xs text-[#211A19]">
@@ -118,31 +180,33 @@ export const SubAdminNestedTable: React.FC<SubAdminNestedTableProps> = ({
                 <React.Fragment key={parent.id}>
                   {/* Top-Level Super Admin Created Sub-Admin Row */}
                   <tr
-                    className={`hover:bg-[#FAF8F5] transition-colors cursor-pointer ${isSelfParent ? 'bg-amber-50/50' : ''}`}
+                    className={`hover:bg-[#FAF8F5]/80 transition-colors cursor-pointer group ${
+                      isSelfParent ? 'bg-amber-50/40' : ''
+                    }`}
                     onClick={() => onSelectSubAdmin(parent)}
                   >
-                    <td className="py-4 px-4 font-mono font-bold text-[#211A19]">
+                    <td className="py-4 px-4 font-mono font-bold text-[#78716C] text-center text-xs">
                       {pIdx + 1}
                     </td>
 
-                    {/* Sub-Admin User Column with Dropdown Toggle */}
+                    {/* Sub-Admin User Profile */}
                     <td className="py-4 px-4">
-                      <div className="flex items-center gap-2.5">
-                        <div className="w-8 h-8 rounded-xl bg-[#211A19] text-[#C8A878] flex items-center justify-center shrink-0 font-serif font-bold text-xs">
+                      <div className="flex items-center gap-3">
+                        <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#211A19] to-[#3B2D2B] text-[#C8A878] flex items-center justify-center shrink-0 font-serif font-bold text-sm shadow-2xs border border-[#3B2D2B]">
                           {parent.name.charAt(0).toUpperCase()}
                         </div>
                         <div className="flex flex-col min-w-0">
-                          <div className="flex items-center gap-1.5 flex-wrap">
-                            <span className="font-bold text-sm text-[#211A19] font-serif hover:text-[#C8A878] transition-colors">
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <span className="font-bold text-sm text-[#211A19] font-serif group-hover:text-[#C8A878] transition-colors leading-tight">
                               {parent.name}
                             </span>
                             {isSelfParent && (
-                              <span className="px-1.5 py-0.2 bg-[#211A19] text-white text-[9px] font-bold font-mono rounded">
+                              <span className="px-2 py-0.5 bg-[#211A19] text-[#C8A878] text-[9px] font-bold font-mono rounded-full uppercase tracking-wider shadow-2xs">
                                 YOU (ACTIVE)
                               </span>
                             )}
                           </div>
-                          <span className="text-xs text-[#78716C] font-mono">{parent.email}</span>
+                          <span className="text-xs text-[#78716C] font-mono mt-0.5">{parent.email}</span>
 
                           {/* Dropdown Toggle Trigger Button for Created Sub-Admins */}
                           {hasChildren && (
@@ -152,10 +216,10 @@ export const SubAdminNestedTable: React.FC<SubAdminNestedTableProps> = ({
                                 e.stopPropagation();
                                 toggleExpand(parent.id);
                               }}
-                              className="mt-1.5 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[10px] font-bold font-mono bg-amber-100/80 text-amber-950 border border-amber-300 hover:bg-amber-200 transition-all cursor-pointer w-fit"
-                              title={isExpanded ? 'Hide child sub-admins dropdown' : 'Expand child sub-admins dropdown'}
+                              className="mt-2 inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold text-amber-900 bg-amber-100/80 border border-amber-300/80 hover:bg-amber-200/90 transition-all shadow-2xs cursor-pointer w-fit"
+                              title={isExpanded ? 'Hide child sub-admins list' : 'Show child sub-admins list'}
                             >
-                              {isExpanded ? <ChevronDown size={12} /> : <ChevronRight size={12} />}
+                              {isExpanded ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
                               <span>{children.length} Sub-Admin{children.length > 1 ? 's' : ''} Created Below</span>
                             </button>
                           )}
@@ -165,33 +229,27 @@ export const SubAdminNestedTable: React.FC<SubAdminNestedTableProps> = ({
 
                     {/* Created By Attribution Tag */}
                     <td className="py-4 px-4">
-                      <Badge variant="primary" className="text-[10px] font-mono tracking-tight">
-                        <span className="flex items-center gap-1">
-                          <ShieldCheck size={11} className="shrink-0" />
-                          SUPER ADMIN
-                        </span>
-                      </Badge>
+                      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-gradient-to-r from-[#211A19] to-[#3B2D2B] text-[#F8F6F0] border border-[#541D26] shadow-2xs">
+                        <ShieldCheck size={13} className="text-[#C8A878] shrink-0" />
+                        <span>SUPER ADMIN</span>
+                      </span>
                     </td>
 
-                    {/* Role Title */}
+                    {/* Role Privilege */}
                     <td className="py-4 px-4">
-                      <Badge variant="primary">SUB-ADMIN</Badge>
+                      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-bold font-mono bg-[#541D26] text-[#F8F6F0] shadow-2xs uppercase">
+                        SUB-ADMIN
+                      </span>
                     </td>
 
                     {/* Delegated Power Sections */}
                     <td className="py-4 px-4">
-                      <div className="flex flex-wrap gap-1">
-                        {parent.powers.map((power) => (
-                          <Badge key={power} variant="info" size="sm">
-                            {power}
-                          </Badge>
-                        ))}
-                      </div>
+                      {renderPowerPills(parent.powers)}
                     </td>
 
                     {/* Account Status */}
                     <td className="py-4 px-4">
-                      <Badge variant={parent.status === 'active' ? 'success' : 'danger'}>
+                      <Badge variant={parent.status === 'active' ? 'success' : 'danger'} size="md">
                         {parent.status.toUpperCase()}
                       </Badge>
                     </td>
@@ -202,55 +260,70 @@ export const SubAdminNestedTable: React.FC<SubAdminNestedTableProps> = ({
                     </td>
 
                     {/* Actions */}
-                    <td className="py-4 px-4 text-right">
+                    <td className="py-4 px-4 text-right" onClick={(e) => e.stopPropagation()}>
                       <div className="flex items-center justify-end gap-1.5">
-                        <Button
-                          variant="outline"
-                          size="sm"
+                        <button
+                          type="button"
                           disabled={isSelfParent}
-                          title={isSelfParent ? 'Self-power escalation restricted.' : 'Edit Sub-Admin Delegated Power Sections'}
+                          title={isSelfParent ? 'Self-power escalation restricted.' : 'Edit Sub-Admin Delegated Powers'}
                           onClick={() => !isSelfParent && onEditPowers(parent)}
+                          className={`w-8 h-8 rounded-xl border border-[#E7DFD5] flex items-center justify-center transition-all ${
+                            isSelfParent
+                              ? 'opacity-40 cursor-not-allowed bg-slate-50 text-slate-400'
+                              : 'bg-white text-[#211A19] hover:border-[#C8A878] hover:bg-[#FAF8F5] shadow-2xs cursor-pointer'
+                          }`}
                         >
-                          {isSelfParent ? <Lock size={14} className="text-amber-600" /> : <Edit3 size={15} />}
-                        </Button>
+                          {isSelfParent ? <Lock size={14} className="text-amber-600" /> : <Edit3 size={14} />}
+                        </button>
 
-                        <Button
-                          variant="ghost"
-                          size="sm"
+                        <button
+                          type="button"
                           disabled={!canRevokeParent}
-                          className={!canRevokeParent ? 'opacity-40 cursor-not-allowed text-slate-400' : 'text-rose-500 hover:bg-rose-500/10'}
-                          title={!canRevokeParent ? 'REVOKE RESTRICTED: Only Super Admin can delete top-level sub-admin' : 'Revoke Sub-Admin Access'}
+                          title={
+                            !canRevokeParent
+                              ? 'REVOKE RESTRICTED: Only Super Admin or direct creator can delete this sub-admin'
+                              : 'Revoke Sub-Admin Access'
+                          }
                           onClick={() => canRevokeParent && onRevoke(parent)}
+                          className={`w-8 h-8 rounded-xl border border-[#E7DFD5] flex items-center justify-center transition-all ${
+                            !canRevokeParent
+                              ? 'opacity-40 cursor-not-allowed bg-slate-50 text-slate-400'
+                              : 'bg-white text-rose-600 hover:border-rose-300 hover:bg-rose-50 shadow-2xs cursor-pointer'
+                          }`}
                         >
-                          {!canRevokeParent && !isSelfParent ? <Lock size={14} className="text-amber-600" /> : <Trash2 size={15} />}
-                        </Button>
+                          {!canRevokeParent && !isSelfParent ? (
+                            <Lock size={14} className="text-amber-600" />
+                          ) : (
+                            <Trash2 size={14} />
+                          )}
+                        </button>
                       </div>
                     </td>
                   </tr>
 
                   {/* Expanded Dropdown Menu Row for Child Sub-Admins */}
                   {hasChildren && isExpanded && (
-                    <tr className="bg-amber-50/30">
-                      <td colSpan={8} className="p-0">
-                        <div className="pl-12 pr-4 py-3 bg-[#FAF8F5] border-y border-amber-200/60 shadow-inner flex flex-col gap-2">
-                          <div className="flex items-center gap-2 text-[11px] font-bold text-amber-950 uppercase font-mono tracking-wider">
-                            <CornerDownRight size={14} className="text-amber-700" />
+                    <tr>
+                      <td colSpan={8} className="p-0 border-b border-[#E7DFD5]">
+                        <div className="p-4 bg-gradient-to-b from-amber-50/60 via-[#FAF8F5]/80 to-amber-50/30 border-l-4 border-amber-400/90 shadow-inner">
+                          <div className="flex items-center gap-2 text-xs font-bold text-amber-950 uppercase font-mono tracking-wider mb-3">
+                            <CornerDownRight size={15} className="text-amber-700" />
                             <span>Child Sub-Admins Created by {parent.name} ({children.length})</span>
                           </div>
 
-                          <div className="w-full bg-white border border-amber-200 rounded-xl overflow-hidden shadow-xs">
+                          <div className="w-full bg-white border border-amber-200/80 rounded-2xl overflow-hidden shadow-xs">
                             <table className="w-full text-left border-collapse">
                               <thead>
-                                <tr className="bg-amber-100/50 border-b border-amber-200 text-[10px] font-bold text-amber-900 font-mono uppercase">
-                                  <th className="py-2.5 px-3">CHILD SUB-ADMIN</th>
-                                  <th className="py-2.5 px-3">CREATOR ATTRIBUTION</th>
-                                  <th className="py-2.5 px-3">DELEGATED POWERS</th>
-                                  <th className="py-2.5 px-3">STATUS</th>
-                                  <th className="py-2.5 px-3">CREATED DATE</th>
-                                  <th className="py-2.5 px-3 text-right">ACTIONS</th>
+                                <tr className="bg-amber-100/60 border-b border-amber-200 text-xs font-semibold text-amber-950 uppercase tracking-wider">
+                                  <th className="py-3 px-4">Child Sub-Admin</th>
+                                  <th className="py-3 px-4">Creator Attribution</th>
+                                  <th className="py-3 px-4">Delegated Powers</th>
+                                  <th className="py-3 px-4">Status</th>
+                                  <th className="py-3 px-4">Created Date</th>
+                                  <th className="py-3 px-4 text-right">Actions</th>
                                 </tr>
                               </thead>
-                              <tbody className="divide-y divide-amber-100 text-xs">
+                              <tbody className="divide-y divide-amber-100/70 text-xs text-[#211A19]">
                                 {children.map((child) => {
                                   const isSelfChild = !isSuperAdmin && (
                                     child.id === currentUserId ||
@@ -261,23 +334,23 @@ export const SubAdminNestedTable: React.FC<SubAdminNestedTableProps> = ({
                                   return (
                                     <tr
                                       key={child.id}
-                                      className="hover:bg-amber-100/60 transition-colors cursor-pointer"
+                                      className="hover:bg-amber-50/80 transition-colors cursor-pointer group"
                                       onClick={() => onSelectSubAdmin(child)}
                                     >
                                       {/* Child Sub-Admin Name & Email */}
-                                      <td className="py-3 px-3">
-                                        <div className="flex items-center gap-2">
+                                      <td className="py-3.5 px-4">
+                                        <div className="flex items-center gap-2.5">
                                           <CornerDownRight size={14} className="text-amber-600 shrink-0" />
-                                          <div className="w-7 h-7 rounded-lg bg-amber-800 text-white flex items-center justify-center font-bold text-xs shrink-0 font-serif">
+                                          <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-amber-700 to-amber-900 text-white flex items-center justify-center font-bold text-xs shrink-0 font-serif shadow-2xs">
                                             {child.name.charAt(0).toUpperCase()}
                                           </div>
                                           <div>
                                             <div className="flex items-center gap-1.5">
-                                              <span className="font-bold text-xs text-[#211A19]">
+                                              <span className="font-bold text-xs text-[#211A19] group-hover:text-amber-800 transition-colors">
                                                 {child.name}
                                               </span>
                                               {isSelfChild && (
-                                                <span className="px-1.5 py-0.2 bg-[#211A19] text-white text-[8px] font-bold font-mono rounded">
+                                                <span className="px-1.5 py-0.2 bg-[#211A19] text-white text-[8px] font-bold font-mono rounded-full uppercase">
                                                   YOU
                                                 </span>
                                               )}
@@ -288,73 +361,68 @@ export const SubAdminNestedTable: React.FC<SubAdminNestedTableProps> = ({
                                       </td>
 
                                       {/* Creator Attribution */}
-                                      <td className="py-3 px-3">
-                                        <Badge variant="info" className="text-[9px] font-mono tracking-tight bg-cyan-100 text-cyan-950 border border-cyan-300">
-                                          <span className="flex items-center gap-1">
-                                            <UserCheck size={10} className="shrink-0" />
-                                            CREATED BY SUB-ADMIN {parent.name.toUpperCase()}
-                                          </span>
-                                        </Badge>
+                                      <td className="py-3.5 px-4">
+                                        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-medium bg-indigo-50 text-indigo-700 border border-indigo-200/80 shadow-2xs">
+                                          <UserCheck size={12} className="shrink-0 text-indigo-600" />
+                                          <span>Created by Sub-Admin {parent.name}</span>
+                                        </span>
                                       </td>
 
                                       {/* Delegated Powers */}
-                                      <td className="py-3 px-3">
-                                        <div className="flex flex-wrap gap-1">
-                                          {child.powers.map((pw) => (
-                                            <span
-                                              key={pw}
-                                              className="px-1.5 py-0.5 bg-white border border-amber-300 rounded font-mono text-[9px] font-bold uppercase text-amber-950"
-                                            >
-                                              {pw}
-                                            </span>
-                                          ))}
-                                        </div>
+                                      <td className="py-3.5 px-4">
+                                        {renderPowerPills(child.powers)}
                                       </td>
 
                                       {/* Status */}
-                                      <td className="py-3 px-3">
+                                      <td className="py-3.5 px-4">
                                         <Badge variant={child.status === 'active' ? 'success' : 'danger'} size="sm">
                                           {child.status.toUpperCase()}
                                         </Badge>
                                       </td>
 
                                       {/* Created Date */}
-                                      <td className="py-3 px-3 font-mono text-[11px] text-[#78716C]">
+                                      <td className="py-3.5 px-4 font-mono text-xs text-[#78716C]">
                                         {formatDate(child.createdAt)}
                                       </td>
 
                                       {/* Actions */}
-                                      <td className="py-3 px-3 text-right">
+                                      <td className="py-3.5 px-4 text-right" onClick={(e) => e.stopPropagation()}>
                                         <div className="flex items-center justify-end gap-1.5">
-                                          <Button
-                                            variant="outline"
-                                            size="sm"
+                                          <button
+                                            type="button"
                                             disabled={isSelfChild}
                                             title={isSelfChild ? 'Self-power escalation restricted.' : 'Edit Sub-Admin Powers'}
                                             onClick={() => !isSelfChild && onEditPowers(child)}
-                                            className="text-xs px-2 py-1"
+                                            className={`w-7 h-7 rounded-lg border border-[#E7DFD5] flex items-center justify-center transition-all ${
+                                              isSelfChild
+                                                ? 'opacity-40 cursor-not-allowed bg-slate-50 text-slate-400'
+                                                : 'bg-white text-[#211A19] hover:border-[#C8A878] hover:bg-[#FAF8F5] shadow-2xs cursor-pointer'
+                                            }`}
                                           >
                                             <Edit3 size={13} />
-                                          </Button>
+                                          </button>
 
-                                          <Button
-                                            variant="ghost"
-                                            size="sm"
+                                          <button
+                                            type="button"
                                             disabled={!canRevokeChild}
-                                            className={!canRevokeChild ? 'opacity-40 cursor-not-allowed text-slate-400' : 'text-rose-500 hover:bg-rose-500/10'}
                                             title={
                                               !canRevokeChild
                                                 ? 'REVOKE RESTRICTED: Only Parent Sub-Admin Creator or Super Admin can delete this child'
                                                 : 'Revoke Child Sub-Admin Access'
                                             }
                                             onClick={() => canRevokeChild && onRevoke(child)}
+                                            className={`w-7 h-7 rounded-lg border border-[#E7DFD5] flex items-center justify-center transition-all ${
+                                              !canRevokeChild
+                                                ? 'opacity-40 cursor-not-allowed bg-slate-50 text-slate-400'
+                                                : 'bg-white text-rose-600 hover:border-rose-300 hover:bg-rose-50 shadow-2xs cursor-pointer'
+                                            }`}
                                           >
                                             {!canRevokeChild && !isSelfChild ? (
                                               <Lock size={13} className="text-amber-600" />
                                             ) : (
                                               <Trash2 size={13} />
                                             )}
-                                          </Button>
+                                          </button>
                                         </div>
                                       </td>
                                     </tr>

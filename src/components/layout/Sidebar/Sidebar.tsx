@@ -12,6 +12,7 @@ import {
   LifeBuoy,
   Menu,
   ChevronLeft,
+  Activity,
 } from 'lucide-react';
 import './Sidebar.css';
 import { MAIN_MENU_CONFIG } from '../../../config/menu.config';
@@ -36,6 +37,7 @@ const ICON_MAP: Record<string, React.ReactNode> = {
   LifeBuoy: <LifeBuoy size={20} />,
   ShieldAlert: <ShieldAlert size={20} />,
   Settings: <Settings size={20} />,
+  Activity: <Activity size={20} />,
 };
 
 export const Sidebar: React.FC<SidebarProps> = ({
@@ -78,7 +80,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             </div>
             <div className="brand-text">
               <span className="brand-name">DigiLocal</span>
-              <span className="brand-badge">SUPER ADMIN</span>
+              <span className="brand-badge">{isSuperAdmin ? 'SUPER ADMIN' : 'SUB ADMIN'}</span>
             </div>
           </div>
 

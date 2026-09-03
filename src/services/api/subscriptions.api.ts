@@ -155,16 +155,17 @@ export const subscriptionsApi = {
     }
 
     try {
-      const vendors = await vendorsApi.getAllVendors();
-      const activeCount = vendors.filter((v) => v.status === 'active').length;
+      const subs = await subscriptionsApi.getSubscriptions();
+      const activeSubs = subs.filter((s) => s.status === 'active' || s.daysRemaining > 0);
+      const mrrSum = activeSubs.reduce((sum, s) => sum + (s.price || 0), 0);
       return {
-        totalActiveSubscriptions: activeCount,
-        mrr: activeCount * 2999,
-        upcomingRenewalsCount: 0,
+        totalActiveSubscriptions: activeSubs.length,
+        mrr: mrrSum,
+        upcomingRenewalsCount: subs.filter((s) => s.daysRemaining <= 15).length,
         tierBreakdown: {
-          free: 0,
-          pro: activeCount,
-          enterprise: 0,
+          free: subs.filter((s) => s.tier === 'free').length,
+          pro: subs.filter((s) => s.tier === 'pro').length,
+          enterprise: subs.filter((s) => s.tier === 'enterprise').length,
         },
       };
     } catch {}

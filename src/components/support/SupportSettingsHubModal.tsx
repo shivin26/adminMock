@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import './SupportSettingsHubModal.css';
-import { Modal } from '../common/Modal/Modal';
+import { Drawer } from '../common/Drawer/Drawer';
 import { Button } from '../common/Button/Button';
 import { Badge } from '../common/Badge/Badge';
 import { Input } from '../common/Input/Input';
@@ -56,11 +56,12 @@ export const SupportSettingsHubModal: React.FC<SupportSettingsHubModalProps> = (
   };
 
   return (
-    <Modal
+    <Drawer
       isOpen={isOpen}
       onClose={onClose}
       title="Enterprise Support Configuration Hub"
       subtitle="Manage platform categories, SLA rules, email templates, agents, business hours, and notification policies."
+      size="xl"
     >
       <form onSubmit={handleSaveAllSettings} className="flex flex-col gap-5 max-h-[74vh] overflow-y-auto pr-1">
         {/* Navigation Tabs */}
@@ -252,6 +253,6 @@ export const SupportSettingsHubModal: React.FC<SupportSettingsHubModalProps> = (
           </Button>
         </div>
       </form>
-    </Modal>
+    </Drawer>
   );
 };

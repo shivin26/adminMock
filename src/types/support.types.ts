@@ -37,13 +37,18 @@ export interface SupportTicket {
   source?: TicketSource;
   reporterName: string;
   reporterEmail: string;
+  reporterPhone?: string;
+  reporterUserId?: string;
   entityName?: string; // Society or Vendor Store name
   targetVendor?: string; // Target Vendor Store name if complaint against a vendor
+  targetResident?: string; // Target Resident Customer if vendor complaint against resident
   orderId?: string; // Associated Order ID e.g. "ORD-9842"
   orderAmount?: number;
   assignedTo?: string; // Admin name
   slaMinutesRemaining?: number;
   createdAt: string;
+  createdAtIst?: string;
+  createdAtReadable?: string;
   updatedAt: string;
 }
 
@@ -54,6 +59,7 @@ export interface CreateTicketRequest {
   priority: TicketPriority;
   reporterName: string;
   reporterEmail: string;
+  reporterPhone?: string;
   entityName?: string;
   targetVendor?: string;
   userType?: TicketUserType;

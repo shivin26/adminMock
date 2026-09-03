@@ -39,6 +39,11 @@ export interface VendorFieldChange {
 export interface HoldVendorPayload {
   subject: string;
   email_content: string;
+  hold_email_subject?: string;
+  hold_reason?: string;
+  reason?: string;
+  remarks?: string;
+  message?: string;
 }
 
 export interface Vendor {
@@ -53,6 +58,7 @@ export interface Vendor {
   phoneNumber?: string;
   whatsappNumber?: string;
   address: string;
+  description?: string;
   shopNumber?: string;
   area?: string;
   city?: string;

@@ -43,6 +43,10 @@ const SettingsPage = lazy(() =>
   import('../pages/dashboard/SettingsPage').then((m) => ({ default: m.SettingsPage }))
 );
 
+const AuditLogsPage = lazy(() =>
+  import('../pages/dashboard/AuditLogsPage').then((m) => ({ default: m.AuditLogsPage }))
+);
+
 export const AppRoutes: React.FC = () => {
   useDocumentTitle();
 
@@ -89,6 +93,8 @@ export const AppRoutes: React.FC = () => {
             <Route element={<ProtectedRoute requiredPower="SETTINGS" />}>
               <Route path="dashboard/settings" element={<SettingsPage />} />
             </Route>
+
+            <Route path="dashboard/audit-logs" element={<AuditLogsPage />} />
           </Route>
         </Route>
 

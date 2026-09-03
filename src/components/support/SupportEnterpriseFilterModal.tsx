@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Modal } from '../common/Modal/Modal';
+import { Drawer } from '../common/Drawer/Drawer';
 import { Button } from '../common/Button/Button';
 import {
   Filter,
@@ -104,11 +104,12 @@ export const SupportEnterpriseFilterModal: React.FC<SupportEnterpriseFilterModal
   };
 
   return (
-    <Modal
+    <Drawer
       isOpen={isOpen}
       onClose={onClose}
       title="Enterprise Support Filters"
-      subtitle="Refine ticket inquiries across 19 parameters, quick date ranges, and saved presets."
+      subtitle="Filter ticket queues by SLA deadlines, user types, categories, escalation flags, and custom date ranges."
+      size="xl"
     >
       <div className="flex flex-col gap-5 max-h-[72vh] overflow-y-auto pr-1">
         {/* Quick Presets Bar */}
@@ -324,10 +325,10 @@ export const SupportEnterpriseFilterModal: React.FC<SupportEnterpriseFilterModal
               onChange={(e) => setDraftFilters({ ...draftFilters, source: e.target.value })}
               className="p-2.5 bg-[#FAF8F5] border border-[#E7DFD5] rounded-xl text-xs font-medium text-[#211A19] outline-none"
             >
-              <option value="all">All Sources</option>
-              <option value="portal">Vendor Portal</option>
-              <option value="gate_scanner">Gate Scanner API</option>
-              <option value="email">Email Support</option>
+              <option value="all">All Origin Channels</option>
+              <option value="landing_website">Resident Website Intake (landing_website)</option>
+              <option value="vendor_portal">Vendor Web Portal (vendor_portal)</option>
+              <option value="mobile_app">Vendor Mobile App (mobile_app)</option>
             </select>
           </div>
 
@@ -411,6 +412,6 @@ export const SupportEnterpriseFilterModal: React.FC<SupportEnterpriseFilterModal
           </Button>
         </div>
       </div>
-    </Modal>
+    </Drawer>
   );
 };

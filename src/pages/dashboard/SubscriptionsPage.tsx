@@ -235,21 +235,21 @@ export const SubscriptionsPage: React.FC = () => {
       <div className="kpi-grid">
         <StatCard
           title="Active Subscriptions"
-          value={stats?.totalActiveSubscriptions ?? activeCount}
+          value={activeCount}
           change={`${activeCount} Active Plans`}
           isPositive={true}
           icon={<CreditCard size={22} />}
         />
         <StatCard
           title="Monthly Recurring Revenue"
-          value={formatCurrency(stats?.mrr ?? (activeCount * 2999))}
+          value={formatCurrency(stats?.mrr !== undefined ? stats.mrr : subscriptions.filter((s) => s.daysRemaining > 0 && !s.isVendorBlocked).reduce((sum, s) => sum + (s.price || 0), 0))}
           change="Real-time Subscriptions MRR"
           isPositive={true}
           icon={<IndianRupee size={22} />}
         />
         <StatCard
           title="Upcoming Renewals (30 Days)"
-          value={`${stats?.upcomingRenewalsCount ?? expiringSoonCount} Vendors`}
+          value={`${expiringSoonCount} Vendors`}
           change={`${expiringSoonCount} Expediting Renewal`}
           isPositive={true}
           icon={<Calendar size={22} />}

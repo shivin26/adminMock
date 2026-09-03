@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Modal } from '../common/Modal/Modal';
+import { Drawer } from '../common/Drawer/Drawer';
 import { Button } from '../common/Button/Button';
 import { GitMerge, Search, Check, ArrowRight } from 'lucide-react';
 import type { SupportTicket } from '../../types/support.types';
@@ -37,11 +37,12 @@ export const SupportMergeTicketModal: React.FC<SupportMergeTicketModalProps> = (
   };
 
   return (
-    <Modal
+    <Drawer
       isOpen={isOpen}
       onClose={onClose}
       title={`Merge Ticket ${currentTicket?.ticketNumber || ''}`}
       subtitle="Combine duplicate inquiries into a primary master ticket."
+      size="lg"
     >
       <div className="flex flex-col gap-4">
         <div className="p-3 bg-[#FEF3C7]/60 border border-[#F59E0B]/30 rounded-xl text-xs text-[#D97706]">
@@ -143,6 +144,6 @@ export const SupportMergeTicketModal: React.FC<SupportMergeTicketModalProps> = (
           </Button>
         </div>
       </div>
-    </Modal>
+    </Drawer>
   );
 };
