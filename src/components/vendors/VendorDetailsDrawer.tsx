@@ -230,9 +230,16 @@ export const VendorDetailsDrawer: React.FC<VendorDetailsDrawerProps> = ({
     }
   }, [vendor?.id, isOpen, initialOpenHoldForm]);
 
-  const handleHoldFormSubmit = async () => {
+  const handleHoldFormSubmit = async (
+    vendorIdParam?: string | number,
+    payloadParam?: HoldVendorPayload
+  ) => {
     if (!vendor) return;
-    if (!holdSubject.trim() || !holdContent.trim()) {
+
+    const subjectToUse = (payloadParam?.subject || payloadParam?.hold_email_subject || holdSubject).trim();
+    const contentToUse = (payloadParam?.email_content || payloadParam?.hold_reason || payloadParam?.reason || holdContent).trim();
+
+    if (!subjectToUse || !contentToUse) {
       addToast({
         type: 'error',
         title: 'Missing Required Fields',
@@ -243,19 +250,20 @@ export const VendorDetailsDrawer: React.FC<VendorDetailsDrawerProps> = ({
 
     setIsHoldSubmitting(true);
     try {
-      const payload = {
-        subject: holdSubject.trim(),
-        email_content: holdContent.trim(),
-        hold_email_subject: holdSubject.trim(),
-        hold_reason: holdContent.trim(),
-        reason: holdContent.trim(),
-        remarks: holdContent.trim(),
+      const payload: HoldVendorPayload = {
+        subject: subjectToUse,
+        email_content: contentToUse,
+        hold_email_subject: subjectToUse,
+        hold_reason: contentToUse,
+        reason: contentToUse,
+        remarks: contentToUse,
       };
+      const targetVendorId = vendorIdParam || vendor.id;
       if (onConfirmHold) {
-        await onConfirmHold(vendor.id, payload);
+        await onConfirmHold(targetVendorId, payload);
       } else {
         await holdVendorMutation.mutateAsync({
-          vendorId: vendor.id,
+          vendorId: targetVendorId,
           ...payload,
         });
       }

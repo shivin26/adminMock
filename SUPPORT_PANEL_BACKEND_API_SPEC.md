@@ -85,16 +85,7 @@ CREATE TABLE ticket_attachments (
 
 ### 1. Fetch All Support Tickets (`GET /api/admin/support/tickets`)
 
-#### Request Query Parameters:
-- `status`: `all`, `open`, `in_progress`, `resolved`, `closed`
-- `category`: `user_vs_vendor`, `billing`, `technical`, etc.
-- `search`: `Garvit`, `TICK-9082`, `aarushi@gmail.com`
-
-#### Response Example (`HTTP 200 OK`):
-```json
-{
-  "code": 200,
-  "status": "success",
+#### Request Query Parameters:   "status": "success",
   "message": "Support tickets retrieved successfully.",
   "data": [
     {

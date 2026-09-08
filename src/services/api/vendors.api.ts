@@ -250,7 +250,7 @@ export const vendorsApi = {
   ): Promise<VendorApprovalResponse> => {
     const sId = String(vendorId);
     const holdSubj = payload.subject || payload.hold_email_subject || 'Document Correction Required for DigiLocal Registration';
-    const holdMsg = payload.hold_reason || payload.reason || payload.email_content || payload.remarks || payload.message || 'Please upload required documents and update details in settings.';
+    const holdMsg = payload.email_content || payload.hold_reason || payload.reason || payload.remarks || payload.message || 'Please upload required documents and update details in settings.';
 
     const apiPayload = {
       subject: holdSubj,

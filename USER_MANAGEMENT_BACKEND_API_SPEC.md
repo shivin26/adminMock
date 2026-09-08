@@ -641,35 +641,6 @@ export interface UserOrderDTO {
   subtotal: number;
   delivery_charge: number;
   tax_amount: number;
-  discount: number;
-  total_amount: number;
-  created_at: string;
-  created_at_readable: string;
-  items: OrderItemDTO[];
-}
-```
-
----
-
-### Standard Error Responses
-
-#### `HTTP 400 Bad Request`
-```json
-{
-  "success": false,
-  "error": "BAD_REQUEST",
-  "message": "Invalid email format or missing required field 'name'."
-}
-```
-
-#### `HTTP 404 Not Found`
-```json
-{
-  "success": false,
-  "error": "USER_NOT_FOUND",
-  "message": "No resident user account found matching ID 'usr_999999'."
-}
-```
 
 #### `HTTP 500 Internal Server Error`
 ```json
