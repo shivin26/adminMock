@@ -1123,8 +1123,33 @@ export const VendorDetailsDrawer: React.FC<VendorDetailsDrawerProps> = ({
                 22. created_at / readable / time
               </span>
               <span className="font-mono font-bold text-[#211A19]">
-                {vendor.createdAtReadable || formatDate(vendor.createdAt)}
-                {vendor.createdAtTime ? ` (${vendor.createdAtTime})` : ''}
+                {(() => {
+                  const bracketTime = vendor.createdAtTime
+                    ? String(vendor.createdAtTime).replace(/[()]/g, '').trim()
+                    : undefined;
+
+                  let rawReadable = vendor.createdAtReadable || '';
+                  const matchInReadable = rawReadable.match(/\(([^)]+)\)/);
+                  const finalBracketTime = bracketTime || (matchInReadable ? matchInReadable[1].trim() : undefined);
+
+                  if (finalBracketTime) {
+                    let dateStr = rawReadable
+                      .replace(/\s*\([^)]*\)/g, '')
+                      .replace(/,\s*\d{1,2}:\d{2}\s*(?:am|pm)?\s*(?:IST)?/gi, '')
+                      .trim();
+
+                    if (!dateStr || dateStr.length < 4) {
+                      dateStr = formatDate(vendor.createdAt);
+                    }
+                    return `${dateStr}, ${finalBracketTime}`;
+                  }
+
+                  if (rawReadable) {
+                    return rawReadable.replace(/,\s*\d{1,2}:\d{2}\s*(?:am|pm)?\s*IST/gi, '').replace(/\s*IST/gi, '').trim();
+                  }
+
+                  return formatDate(vendor.createdAt);
+                })()}
               </span>
             </div>
           </div>

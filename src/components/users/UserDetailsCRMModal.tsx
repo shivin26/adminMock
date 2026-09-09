@@ -210,9 +210,22 @@ export const UserDetailsCRMModal: React.FC<UserDetailsCRMModalProps> = ({
               <div className="flex flex-col">
                 <div className="flex items-center gap-2">
                   <h2 className="font-bold text-[#211A19] text-base font-serif">{user.name}</h2>
-                  <Badge variant={user.flagsCount >= 3 ? 'danger' : user.flagsCount >= 2 ? 'warning' : 'success'}>
-                    {user.flagsCount >= 3 ? 'BANNED' : user.flagsCount >= 2 ? 'WARNED' : 'ACTIVE'}
-                  </Badge>
+                  {(() => {
+                    const rawF = Math.max(user.flagsCount ?? 0, user.strikes ?? 0);
+                    const isAutoBanned = Boolean(user.isAutoBanned || rawF >= 3);
+                    const isUserBanned = user.status === 'banned' || user.status === 'blocked' || user.isBlocked || isAutoBanned;
+                    return (
+                      <Badge variant={isUserBanned ? 'danger' : rawF >= 1 || user.status === 'warned' ? 'warning' : 'success'}>
+                        {isAutoBanned
+                          ? 'AUTO-BANNED (3/3)'
+                          : isUserBanned
+                          ? `DIRECT ADMIN BAN (${rawF}/3)`
+                          : rawF >= 1 || user.status === 'warned'
+                          ? 'WARNED'
+                          : 'ACTIVE'}
+                      </Badge>
+                    );
+                  })()}
                 </div>
                 <span className="text-xs text-[#78716C] flex items-center gap-2 mt-0.5">
                   <span className="flex items-center gap-1"><Mail size={12} className="text-[#C8A878]" /> {user.email}</span>
@@ -322,24 +335,36 @@ export const UserDetailsCRMModal: React.FC<UserDetailsCRMModalProps> = ({
               {activeTab === 'overview' && (
                 <div className="flex flex-col gap-4 text-xs animate-fadeIn">
                   {/* Strike Meter */}
-                  <div className="p-4 bg-white border border-[#E7DFD5] rounded-2xl shadow-sm flex flex-col gap-2">
-                    <div className="flex items-center justify-between">
-                      <span className="font-bold text-[#211A19] uppercase tracking-wider flex items-center gap-1.5">
-                        <Flag size={14} className="text-[#D97706]" /> Dispute Flags &amp; Strike Meter
-                      </span>
-                      <span className="font-mono font-bold text-[#211A19]">{user.flagsCount} / 3 Strikes</span>
-                    </div>
-                    <div className="grid grid-cols-3 gap-2">
-                      <div className={`h-2.5 rounded-full ${user.flagsCount >= 1 ? 'bg-amber-400' : 'bg-gray-200'}`} />
-                      <div className={`h-2.5 rounded-full ${user.flagsCount >= 2 ? 'bg-orange-500' : 'bg-gray-200'}`} />
-                      <div className={`h-2.5 rounded-full ${user.flagsCount >= 3 ? 'bg-rose-600 animate-pulse' : 'bg-gray-200'}`} />
-                    </div>
-                    <span className="text-[11px] text-[#78716C]">
-                      {user.flagsCount >= 3
-                        ? 'CRITICAL: Account reached 3 strikes limit and is automatically BANNED.'
-                        : `Account has ${user.flagsCount} flag(s). If 3 flags are reached, system auto-bans this user.`}
-                    </span>
-                  </div>
+                  {(() => {
+                    const rawF = Math.max(user.flagsCount ?? 0, user.strikes ?? 0);
+                    const isAutoBanned = Boolean(user.isAutoBanned || rawF >= 3);
+                    const isUserBanned = user.status === 'banned' || user.status === 'blocked' || user.isBlocked || isAutoBanned;
+                    const currentFlags = isAutoBanned ? Math.max(rawF, 3) : rawF;
+                    return (
+                      <div className="p-4 bg-white border border-[#E7DFD5] rounded-2xl shadow-sm flex flex-col gap-2">
+                        <div className="flex items-center justify-between">
+                          <span className="font-bold text-[#211A19] uppercase tracking-wider flex items-center gap-1.5">
+                            <Flag size={14} className="text-[#D97706]" /> Dispute Flags &amp; Strike Meter
+                          </span>
+                          <span className="font-mono font-bold text-[#211A19]">{currentFlags} / 3 Strikes</span>
+                        </div>
+                        <div className="grid grid-cols-3 gap-2">
+                          <div className={`h-2.5 rounded-full ${currentFlags >= 1 ? 'bg-amber-400' : 'bg-gray-200'}`} />
+                          <div className={`h-2.5 rounded-full ${currentFlags >= 2 ? 'bg-orange-500' : 'bg-gray-200'}`} />
+                          <div className={`h-2.5 rounded-full ${currentFlags >= 3 ? 'bg-rose-600 animate-pulse' : 'bg-gray-200'}`} />
+                        </div>
+                        <span className="text-[11px] text-[#78716C]">
+                          {isAutoBanned
+                            ? 'CRITICAL: Account reached 3 strikes limit and is automatically BANNED.'
+                            : isUserBanned
+                            ? `DIRECT ADMIN BAN: Admin directly banned this account without 3 strikes (${currentFlags}/3 strikes).`
+                            : currentFlags > 0
+                            ? `Account has ${currentFlags} flag(s). If 3 flags are reached, system auto-bans this user.`
+                            : 'Account is clean with 0 warning strikes.'}
+                        </span>
+                      </div>
+                    );
+                  })()}
 
                   {/* Profile Details Cards Grid */}
                   <div className="grid grid-cols-2 gap-3">

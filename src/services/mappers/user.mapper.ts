@@ -89,18 +89,15 @@ export const mapUserDTOToDomain = (raw: any): UserProfile & PersonProfile => {
 
   const statusLower = String(savedStatus || raw.status || 'active').toLowerCase();
 
-  let strikesCount = savedStrike !== undefined ? savedStrike : rawStrikes;
-  if (strikesCount === 0 && (statusLower === 'warned' || statusLower === 'flagged')) {
-    strikesCount = 1;
-  }
+  const strikesCount = savedStrike !== undefined ? savedStrike : rawStrikes;
 
-  const isBlocked = Boolean(raw.is_blocked || raw.isBlocked || raw.is_auto_banned || raw.isAutoBanned || statusLower === 'blocked' || statusLower === 'banned' || strikesCount >= 3);
-  const isAutoBanned = Boolean(raw.is_auto_banned || raw.isAutoBanned || strikesCount >= 3 || isBlocked);
+  const isAutoBanned = Boolean(raw.is_auto_banned || raw.isAutoBanned || strikesCount >= 3);
+  const isBlocked = Boolean(raw.is_blocked || raw.isBlocked || statusLower === 'blocked' || statusLower === 'banned' || isAutoBanned);
 
   let status: 'active' | 'warned' | 'suspended' | 'banned' | 'blocked' = 'active';
   if (isBlocked || isAutoBanned || statusLower === 'suspended' || statusLower === 'banned' || statusLower === 'blocked') {
     status = 'banned';
-  } else if (strikesCount > 0 || statusLower === 'warned') {
+  } else if (strikesCount > 0 || statusLower === 'warned' || statusLower === 'flagged') {
     status = 'warned';
   } else {
     status = 'active';

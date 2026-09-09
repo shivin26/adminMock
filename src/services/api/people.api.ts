@@ -268,8 +268,9 @@ export const peopleApi = {
           strikesCount = prev > 0 ? prev + 1 : 1;
         }
 
-        const isBlocked = Boolean(rawObj?.is_blocked || rawObj?.is_auto_banned || rawObj?.status === 'blocked' || rawObj?.status === 'banned' || strikesCount >= 3);
-        
+        const isAutoBanned = Boolean(rawObj?.is_auto_banned || rawObj?.isAutoBanned || strikesCount >= 3);
+        const isBlocked = Boolean(rawObj?.is_blocked || rawObj?.isBlocked || rawObj?.status === 'blocked' || rawObj?.status === 'banned' || isAutoBanned);
+
         USER_FLAGS_MAP.set(id, strikesCount);
         USER_STATUS_MAP.set(id, isBlocked ? 'banned' : 'warned');
 
@@ -278,7 +279,7 @@ export const peopleApi = {
         domainPerson.strikes = strikesCount;
         domainPerson.status = isBlocked ? 'banned' : 'warned';
         domainPerson.isBlocked = isBlocked;
-        domainPerson.isAutoBanned = isBlocked;
+        domainPerson.isAutoBanned = isAutoBanned;
 
         savePersistentStrike(id, strikesCount, domainPerson);
         savePersistentStatus(id, isBlocked ? 'banned' : 'warned', domainPerson);

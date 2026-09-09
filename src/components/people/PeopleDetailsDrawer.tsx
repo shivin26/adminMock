@@ -81,7 +81,10 @@ export const PeopleDetailsDrawer: React.FC<PeopleDetailsDrawerProps> = ({
   const updateStatusMutation = useUpdatePersonStatus();
   const resetStrikesMutation = useResetPersonStrikes();
 
-  const currentStrikesCount = person ? Math.max(person.strikes ?? 0, person.flagsCount ?? 0) : 0;
+  const rawS = person ? Math.max(person.strikes ?? 0, person.flagsCount ?? 0) : 0;
+  const isAutoBanned = person ? Boolean(person.isAutoBanned || rawS >= 3) : false;
+  const isPersonBanned = person ? (person.status === 'banned' || person.status === 'blocked' || person.isBlocked || isAutoBanned) : false;
+  const currentStrikesCount = isAutoBanned ? Math.max(rawS, 3) : rawS;
 
   const [activeTab, setActiveTab] = useState<'overview' | 'activity' | 'tickets'>('overview');
   const [isEditMode, setIsEditMode] = useState(false);
@@ -324,8 +327,12 @@ export const PeopleDetailsDrawer: React.FC<PeopleDetailsDrawerProps> = ({
               </div>
             </div>
 
-            <Badge variant={person.status === 'banned' || person.status === 'blocked' ? 'danger' : person.status === 'warned' ? 'warning' : 'success'}>
-              {person.status.toUpperCase()}
+            <Badge variant={isPersonBanned ? 'danger' : person.status === 'warned' ? 'warning' : 'success'}>
+              {isAutoBanned
+                ? 'AUTO-BANNED (3/3 STRIKES)'
+                : isPersonBanned
+                ? `DIRECT ADMIN BAN (${currentStrikesCount}/3 STRIKES)`
+                : person.status.toUpperCase()}
             </Badge>
           </div>
 
@@ -387,9 +394,13 @@ export const PeopleDetailsDrawer: React.FC<PeopleDetailsDrawerProps> = ({
                 </div>
 
                 <span className="text-[11px] text-[#78716C]">
-                  {currentStrikesCount >= 3
+                  {isAutoBanned
                     ? 'CRITICAL: Account reached 3 strikes limit and is automatically BANNED / BLOCKED from platform access.'
-                    : `Account has ${currentStrikesCount} flag(s). If 3 flags are reached, the system auto-bans this account.`}
+                    : isPersonBanned
+                    ? `DIRECT ADMIN BAN: Admin directly banned this account without 3 strikes (${currentStrikesCount}/3 strikes recorded).`
+                    : currentStrikesCount > 0
+                    ? `Account has ${currentStrikesCount} flag(s). If 3 flags are reached, the system auto-bans this account.`
+                    : 'Account is clean with 0 warning strikes.'}
                 </span>
               </div>
 

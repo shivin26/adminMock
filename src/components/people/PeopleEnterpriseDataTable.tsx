@@ -83,21 +83,25 @@ export const PeopleEnterpriseDataTable: React.FC<PeopleEnterpriseDataTableProps>
     },
     {
       header: 'Strike & Rating Meter',
-      cell: (p) => (
-        <div className="flex flex-col text-xs gap-0.5">
-          {p.personType === 'vendor' && p.rating !== undefined ? (
-            <span className="font-mono font-bold text-amber-700 flex items-center gap-1 text-[11px]">
-              <Star size={12} className="fill-amber-500 text-amber-500" /> {p.rating.toFixed(1)} / 5.0 ⭐
-            </span>
-          ) : (
-            <div className="flex items-center gap-1">
-              <span className="text-[11px] font-mono font-bold text-[#211A19]">
-                ⚡ {p.strikes ?? p.flagsCount ?? 0} / 3 Strikes
+      cell: (p) => {
+        const rawS = Math.max(p.strikes ?? 0, p.flagsCount ?? 0);
+        const isAutoBanned = Boolean(p.isAutoBanned || rawS >= 3);
+        const isBanned = p.status === 'banned' || p.status === 'blocked' || p.isBlocked || isAutoBanned;
+        const currentS = isAutoBanned ? Math.max(rawS, 3) : rawS;
+
+        return (
+          <div className="flex flex-col text-xs gap-0.5">
+            {p.personType === 'vendor' && p.rating !== undefined ? (
+              <span className="font-mono font-bold text-amber-700 flex items-center gap-1 text-[11px]">
+                <Star size={12} className="fill-amber-500 text-amber-500" /> {p.rating.toFixed(1)} / 5.0 ⭐
               </span>
-              <div className="flex items-center gap-0.5 ml-1">
-                {[1, 2, 3].map((dot) => {
-                  const currentS = p.strikes ?? p.flagsCount ?? 0;
-                  return (
+            ) : (
+              <div className="flex items-center gap-1">
+                <span className="text-[11px] font-mono font-bold text-[#211A19]">
+                  ⚡ {currentS} / 3 Strikes
+                </span>
+                <div className="flex items-center gap-0.5 ml-1">
+                  {[1, 2, 3].map((dot) => (
                     <div
                       key={dot}
                       className={`w-2 h-2 rounded-full ${
@@ -110,27 +114,32 @@ export const PeopleEnterpriseDataTable: React.FC<PeopleEnterpriseDataTableProps>
                           : 'bg-gray-200'
                       }`}
                     />
-                  );
-                })}
+                  ))}
+                </div>
               </div>
-            </div>
-          )}
-          <span className="text-[10px] text-[#78716C]">
-            {p.totalOrdersCount} orders • {p.totalComplaintsCount} tickets
-          </span>
-        </div>
-      ),
+            )}
+            <span className="text-[10px] text-[#78716C]">
+              {p.totalOrdersCount} orders • {p.totalComplaintsCount} tickets
+            </span>
+          </div>
+        );
+      },
     },
     {
       header: 'Status',
       cell: (p) => {
-        const sCount = p.strikes ?? p.flagsCount ?? 0;
-        const isBannedOrBlocked = p.status === 'banned' || p.status === 'blocked' || p.isBlocked || p.isAutoBanned || sCount >= 3;
-        if (isBannedOrBlocked) {
-          return <Badge variant="danger">🔴 BLOCKED (3/3 STRIKES)</Badge>;
+        const rawS = Math.max(p.strikes ?? 0, p.flagsCount ?? 0);
+        const isAutoBanned = Boolean(p.isAutoBanned || rawS >= 3);
+        const isBanned = p.status === 'banned' || p.status === 'blocked' || p.isBlocked || isAutoBanned;
+
+        if (isAutoBanned) {
+          return <Badge variant="danger">🔴 AUTO-BANNED (3/3 STRIKES)</Badge>;
         }
-        if (p.status === 'warned' || sCount > 0) {
-          return <Badge variant="warning">⚡ WARNED ({sCount}/3 STRIKES)</Badge>;
+        if (isBanned) {
+          return <Badge variant="danger">🔴 DIRECT ADMIN BAN ({rawS}/3 STRIKES)</Badge>;
+        }
+        if (p.status === 'warned' || rawS > 0) {
+          return <Badge variant="warning">⚡ WARNED ({rawS}/3 STRIKES)</Badge>;
         }
         return <Badge variant="success">ACTIVE ACCOUNT</Badge>;
       },

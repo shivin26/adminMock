@@ -271,28 +271,6 @@ export const VendorsPage: React.FC = () => {
     },
 
     {
-      header: 'Submitted Date',
-      cell: (vendor) => (
-        <div>
-          <span className="cell-primary-text font-mono text-xs text-[#211A19]">
-            {vendor.createdAtReadable || formatDate(vendor.submissionTimestamp || vendor.createdAt)}
-          </span>
-          <span className="cell-sub-text font-mono text-[11px]">
-            {vendor.createdAtTime ? `@ ${vendor.createdAtTime}` : (vendor.status === 'on_hold' ? (
-              <span className="text-amber-700 font-semibold flex items-center gap-0.5">
-                <AlertTriangle size={11} /> Hold Notice Dispatched
-              </span>
-            ) : vendor.status === 'rejected' ? (
-              <span className="text-red-600 font-semibold">Application Rejected</span>
-            ) : (
-              'Application Received'
-            ))}
-          </span>
-        </div>
-      ),
-    },
-
-    {
       header: 'Location & Area',
       cell: (vendor) => (
         <div>
