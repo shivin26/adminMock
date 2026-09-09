@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import {
   Search,
   Bell,
@@ -48,6 +48,27 @@ export const Navbar: React.FC<NavbarProps> = () => {
   const { user, logout } = useAuth();
   const { isSuperAdmin } = usePermission();
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const [canGoBack, setCanGoBack] = useState(false);
+  const initialPathRef = useRef<string | null>(null);
+  const navCountRef = useRef(0);
+
+  useEffect(() => {
+    const currentPath = location.pathname + location.search;
+    if (initialPathRef.current === null) {
+      initialPathRef.current = currentPath;
+    } else if (initialPathRef.current !== currentPath) {
+      navCountRef.current += 1;
+    }
+
+    const idx = window.history.state?.idx;
+    if (typeof idx === 'number') {
+      setCanGoBack(idx > 0);
+    } else {
+      setCanGoBack(navCountRef.current > 0);
+    }
+  }, [location]);
 
   const userInitial = user
     ? (user.firstName?.charAt(0) || (user as any).name?.charAt(0) || user.email?.charAt(0) || 'A').toUpperCase()
@@ -191,14 +212,16 @@ export const Navbar: React.FC<NavbarProps> = () => {
   return (
     <header className="navbar-header">
       <div className="navbar-left">
-        {/* Back Navigation Button */}
-        <button
-          className="nav-icon-btn toggle-arrow-btn"
-          onClick={() => navigate(-1)}
-          title="Go Back"
-        >
-          <ArrowLeft size={18} />
-        </button>
+        {/* Back Navigation Button - appears only after admin changes panel */}
+        {canGoBack && (
+          <button
+            className="nav-icon-btn toggle-arrow-btn"
+            onClick={() => navigate(-1)}
+            title="Go Back"
+          >
+            <ArrowLeft size={18} />
+          </button>
+        )}
       </div>
 
       {/* Global Interactive Search Bar */}

@@ -91,9 +91,9 @@ export const VendorsPage: React.FC = () => {
   // Combine datasets for tabs filtering
   const allApplications = useMemo(() => {
     const map = new Map<string, Vendor>();
-    allVendors.forEach((v) => map.set(v.id, v));
     pendingVendors.forEach((v) => map.set(v.id, v));
     onHoldVendors.forEach((v) => map.set(v.id, v));
+    allVendors.forEach((v) => map.set(v.id, v));
     return Array.from(map.values());
   }, [allVendors, pendingVendors, onHoldVendors]);
 
@@ -109,9 +109,7 @@ export const VendorsPage: React.FC = () => {
   if (activeTab === 'pending') {
     currentDataset = allApplications.filter((v) => v.status === 'pending');
   } else if (activeTab === 'on_hold') {
-    currentDataset = onHoldVendors.length > 0
-      ? onHoldVendors
-      : allApplications.filter((v) => v.status === 'on_hold');
+    currentDataset = allApplications.filter((v) => v.status === 'on_hold');
   } else if (activeTab === 'active') {
     currentDataset = allApplications.filter((v) => v.status === 'active');
   } else if (activeTab === 'rejected') {

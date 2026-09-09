@@ -167,15 +167,33 @@ export const vendorsApi = {
   approveVendor: async (vendorId: string | number): Promise<VendorApprovalResponse> => {
     const sId = String(vendorId);
     try {
+      let backendRes: any = null;
       try {
-        const response = await axiosInstance.post<VendorApprovalResponse>(`/vendors/${vendorId}/approve`, {
+        const response = await axiosInstance.post<any>(`/vendors/${vendorId}/approve`, {
           status: 'ACTIVE',
         });
-        return response.data;
+        backendRes = response.data?.data || response.data;
       } catch {
-        const response = await axiosInstance.post<VendorApprovalResponse>(`/admin/requests/${vendorId}/approve`);
-        return response.data;
+        const response = await axiosInstance.post<any>(`/admin/requests/${vendorId}/approve`);
+        backendRes = response.data?.data || response.data;
       }
+
+      saveVendorEditOverride(sId, {
+        status: 'active',
+        holdReason: undefined,
+        holdEmailSubject: undefined,
+        holdTimestamp: undefined,
+      });
+      setVendorStatusOverride(sId, 'active');
+
+      const remainingPending = getLocalPendingVendors().filter((v) => v.id !== sId);
+      saveLocalPendingVendors(remainingPending);
+
+      return {
+        message: backendRes?.message || `Vendor #${sId} application approved successfully.`,
+        vendor_id: vendorId,
+        status: 'active',
+      };
     } catch {
       const pending = getLocalPendingVendors();
       const allVendors = getLocalVendors();
@@ -191,11 +209,22 @@ export const vendorsApi = {
         const updatedTarget: Vendor = {
           ...target,
           status: 'active',
+          holdReason: undefined,
+          holdEmailSubject: undefined,
+          holdTimestamp: undefined,
           updatedAt: new Date().toISOString(),
         };
         const remainingAll = allVendors.filter((v) => v.id !== sId);
         saveLocalVendors([...remainingAll, updatedTarget]);
       }
+
+      saveVendorEditOverride(sId, {
+        status: 'active',
+        holdReason: undefined,
+        holdEmailSubject: undefined,
+        holdTimestamp: undefined,
+      });
+      setVendorStatusOverride(sId, 'active');
 
       return {
         message: `Vendor #${sId} application approved successfully.`,
@@ -375,18 +404,31 @@ export const vendorsApi = {
     const sId = String(vendorId);
     const rejReason = _reason || 'Documentation incomplete or unverified';
     try {
+      let backendRes: any = null;
       try {
-        const response = await axiosInstance.post<VendorApprovalResponse>(`/vendors/${vendorId}/reject`, {
+        const response = await axiosInstance.post<any>(`/vendors/${vendorId}/reject`, {
           status: 'REJECTED',
           reason: rejReason,
         });
-        return response.data;
+        backendRes = response.data?.data || response.data;
       } catch {
-        const response = await axiosInstance.post<VendorApprovalResponse>(`/admin/requests/${vendorId}/reject`, {
+        const response = await axiosInstance.post<any>(`/admin/requests/${vendorId}/reject`, {
           reason: rejReason,
         });
-        return response.data;
+        backendRes = response.data?.data || response.data;
       }
+
+      saveVendorEditOverride(sId, { status: 'rejected', rejectionReason: rejReason });
+      setVendorStatusOverride(sId, 'rejected');
+
+      const remainingPending = getLocalPendingVendors().filter((v) => v.id !== sId);
+      saveLocalPendingVendors(remainingPending);
+
+      return {
+        message: backendRes?.message || `Vendor #${sId} application rejected.`,
+        vendor_id: vendorId,
+        status: 'rejected',
+      };
     } catch {
       const pending = getLocalPendingVendors();
       const allVendors = getLocalVendors();

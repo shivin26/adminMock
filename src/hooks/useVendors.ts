@@ -41,7 +41,11 @@ export const useApproveVendor = () => {
   return useMutation({
     mutationFn: (vendorId: string | number) => vendorsApi.approveVendor(vendorId),
     onSuccess: (data, vendorId) => {
+      queryClient.invalidateQueries({ queryKey: ['vendors'] });
       queryClient.invalidateQueries({ queryKey: CACHE_KEYS.vendors.all });
+      queryClient.invalidateQueries({ queryKey: CACHE_KEYS.vendors.pending });
+      queryClient.invalidateQueries({ queryKey: ['vendors', 'on_hold'] });
+      queryClient.invalidateQueries({ queryKey: CACHE_KEYS.vendors.detail(vendorId) });
       logBackendMutation('VENDORS', 'STATUS_CHANGE', `Approved vendor application #${vendorId}`, data.message, String(vendorId));
       addToast({
         type: 'success',
@@ -91,9 +95,11 @@ export const useHoldVendor = () => {
         remarks: remarks || email_content,
       }),
     onSuccess: (data, variables) => {
+      queryClient.invalidateQueries({ queryKey: ['vendors'] });
       queryClient.invalidateQueries({ queryKey: CACHE_KEYS.vendors.all });
-      queryClient.invalidateQueries({ queryKey: ['vendors', 'on_hold'] });
       queryClient.invalidateQueries({ queryKey: CACHE_KEYS.vendors.pending });
+      queryClient.invalidateQueries({ queryKey: ['vendors', 'on_hold'] });
+      queryClient.invalidateQueries({ queryKey: CACHE_KEYS.vendors.detail(variables.vendorId) });
       logBackendMutation('VENDORS', 'STATUS_CHANGE', `Placed vendor #${variables.vendorId} on hold`, `Reason: ${variables.email_content || variables.hold_reason}`, String(variables.vendorId));
       addToast({
         type: 'warning',
@@ -120,7 +126,11 @@ export const useRejectVendor = () => {
     mutationFn: ({ vendorId, reason }: { vendorId: string | number; reason?: string }) =>
       vendorsApi.rejectVendor(vendorId, reason),
     onSuccess: (data, variables) => {
+      queryClient.invalidateQueries({ queryKey: ['vendors'] });
       queryClient.invalidateQueries({ queryKey: CACHE_KEYS.vendors.all });
+      queryClient.invalidateQueries({ queryKey: CACHE_KEYS.vendors.pending });
+      queryClient.invalidateQueries({ queryKey: ['vendors', 'on_hold'] });
+      queryClient.invalidateQueries({ queryKey: CACHE_KEYS.vendors.detail(variables.vendorId) });
       logBackendMutation('VENDORS', 'STATUS_CHANGE', `Rejected vendor #${variables.vendorId} application`, `Reason: ${variables.reason || 'Unspecified'}`, String(variables.vendorId));
       addToast({
         type: 'info',
