@@ -1,5 +1,6 @@
 import type { UserProfile } from '../../types/user.types';
 import type { PersonProfile } from '../../types/people.types';
+import { getPersistentStrikeReasons } from '../api/people.api';
 
 const USER_EDITS_STORAGE_KEY = 'digilocal_user_edit_overrides';
 
@@ -128,6 +129,10 @@ export const mapUserDTOToDomain = (raw: any): UserProfile & PersonProfile => {
   const lastActive = raw.last_active_at || raw.lastActiveAt || raw.lastActive || createdAt;
   const id = String(raw.id || raw.user_id || raw.userId || `usr-${Date.now()}`);
 
+  const persistentReasons = getPersistentStrikeReasons(id, email, phone, name);
+  const rawReasons = Array.isArray(raw.strike_reasons || raw.strike_history || raw.strikes_list) ? (raw.strike_reasons || raw.strike_history || raw.strikes_list) : [];
+  const strikeReasons = persistentReasons.length > 0 ? persistentReasons : rawReasons;
+
   const userObj = {
     id,
     name,
@@ -146,6 +151,7 @@ export const mapUserDTOToDomain = (raw: any): UserProfile & PersonProfile => {
     rating,
     flagsCount,
     strikes: strikesCount,
+    strikeReasons,
     maxStrikesAllowed: Number(raw.max_strikes_allowed ?? 3),
     isBlocked,
     isAutoBanned,

@@ -195,13 +195,14 @@ export const PeopleDetailsDrawer: React.FC<PeopleDetailsDrawerProps> = ({
   }, [person, apiOrders]);
 
   const [showStrikePrompt, setShowStrikePrompt] = useState(false);
+  const [strikeReason, setStrikeReason] = useState('Policy violation / moderation strike');
   const [showResetStrikePrompt, setShowResetStrikePrompt] = useState(false);
   const [showBanPrompt, setShowBanPrompt] = useState(false);
 
   const confirmIssueStrike = () => {
     if (!person) return;
     flagMutation.mutate(
-      { id: person.id, reason: 'Policy violation / moderation strike' },
+      { id: person.id, reason: strikeReason.trim() || 'Policy violation / moderation strike' },
       {
         onSuccess: (res) => {
           setShowStrikePrompt(false);
@@ -402,6 +403,41 @@ export const PeopleDetailsDrawer: React.FC<PeopleDetailsDrawerProps> = ({
                     ? `Account has ${currentStrikesCount} flag(s). If 3 flags are reached, the system auto-bans this account.`
                     : 'Account is clean with 0 warning strikes.'}
                 </span>
+
+                {/* Strike Reasons Breakdown List */}
+                {currentStrikesCount > 0 && (
+                  <div className="flex flex-col gap-2 pt-2.5 border-t border-[#E7DFD5]/80 mt-1">
+                    <span className="text-[10px] font-bold text-[#78716C] uppercase tracking-wider flex items-center gap-1">
+                      <Flag size={12} className="text-[#D97706]" /> Strike Warning Reasons ({currentStrikesCount} recorded)
+                    </span>
+                    <div className="flex flex-col gap-1.5">
+                      {Array.from({ length: currentStrikesCount }).map((_, idx) => {
+                        const strikeNum = idx + 1;
+                        const saved = (person?.strikeReasons || []).find((s: any) => s.strikeNumber === strikeNum);
+                        const reasonText = saved?.reason || 'Policy violation / moderation strike';
+                        const dateText = saved?.date ? formatDate(saved.date) : null;
+                        return (
+                          <div
+                            key={strikeNum}
+                            className="p-2.5 bg-[#FAF8F5] border border-[#E7DFD5] rounded-xl flex items-start gap-2.5 text-xs"
+                          >
+                            <span className="px-2 py-0.5 rounded-lg bg-amber-100 text-amber-900 border border-amber-300 font-mono font-bold text-[10px] shrink-0 mt-0.5">
+                              STRIKE #{strikeNum}
+                            </span>
+                            <div className="flex flex-col min-w-0 flex-1">
+                              <span className="font-semibold text-[#211A19] leading-snug">{reasonText}</span>
+                              {dateText && (
+                                <span className="text-[10px] text-[#78716C] font-mono mt-0.5">
+                                  Timestamp: {dateText}
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* Information Grid */}
@@ -606,7 +642,10 @@ export const PeopleDetailsDrawer: React.FC<PeopleDetailsDrawerProps> = ({
                       variant="outline"
                       size="sm"
                       leftIcon={<Flag size={14} className="text-rose-500" />}
-                      onClick={() => setShowStrikePrompt(true)}
+                      onClick={() => {
+                        setStrikeReason('Policy violation / moderation strike');
+                        setShowStrikePrompt(true);
+                      }}
                       isLoading={flagMutation.isPending}
                       disabled={currentStrikesCount >= 3 || person.isBlocked}
                     >
@@ -854,6 +893,19 @@ export const PeopleDetailsDrawer: React.FC<PeopleDetailsDrawerProps> = ({
                 If an account reaches 3 strikes, it will be automatically BANNED / BLOCKED from platform access.
               </span>
             </div>
+          </div>
+
+          <div className="flex flex-col gap-1.5">
+            <label className="block text-xs font-bold text-[#211A19] uppercase tracking-wider">
+              Strike Reason / Warning Message <span className="text-rose-600">*</span>
+            </label>
+            <textarea
+              rows={2}
+              value={strikeReason}
+              onChange={(e) => setStrikeReason(e.target.value)}
+              placeholder="Enter custom strike reason or warning message for backend payload..."
+              className="w-full p-2.5 text-xs bg-white border border-[#E7DFD5] rounded-xl text-[#211A19] focus:outline-none focus:border-[#541D26] focus:ring-1 focus:ring-[#541D26] font-sans font-medium"
+            />
           </div>
 
           <div className="flex items-center justify-end gap-2 pt-3 border-t border-[#E7DFD5]">

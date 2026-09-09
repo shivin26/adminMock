@@ -59,6 +59,100 @@ export const savePersistentStatus = (userId: string, status: PersonProfile['stat
   } catch {}
 };
 
+const STRIKE_REASONS_STORAGE_KEY = 'digilocal_user_strike_reasons_persistent';
+
+export const savePersistentStrikeReason = (userId: string, strikeNum: number, reason: string, personObj?: Partial<PersonProfile>) => {
+  try {
+    const raw = localStorage.getItem(STRIKE_REASONS_STORAGE_KEY);
+    const map: Record<string, Array<{ strikeNumber: number; reason: string; date?: string }>> = raw ? JSON.parse(raw) : {};
+
+    const newItem = {
+      strikeNumber: strikeNum,
+      reason: reason || 'Policy violation / moderation strike',
+      date: new Date().toISOString(),
+    };
+
+    const keysToSave = [
+      String(userId).trim(),
+      `usr_${String(userId).trim()}`,
+      `usr_v_${String(userId).trim()}`,
+      String(userId).trim().replace(/^usr_v_|^usr_|^user_/, ''),
+    ];
+
+    if (personObj) {
+      if (personObj.email) keysToSave.push(personObj.email.toLowerCase().trim());
+      if (personObj.phone) keysToSave.push(personObj.phone.trim());
+      if (personObj.name) keysToSave.push(personObj.name.toLowerCase().trim());
+    }
+
+    for (const key of keysToSave) {
+      if (!key) continue;
+      const list = map[key] || [];
+      const existingIdx = list.findIndex((item) => item.strikeNumber === strikeNum);
+      if (existingIdx >= 0) {
+        list[existingIdx] = newItem;
+      } else {
+        list.push(newItem);
+      }
+      map[key] = list;
+    }
+
+    localStorage.setItem(STRIKE_REASONS_STORAGE_KEY, JSON.stringify(map));
+  } catch {}
+};
+
+export const clearPersistentStrikeReasons = (userId: string, personObj?: Partial<PersonProfile>) => {
+  try {
+    const raw = localStorage.getItem(STRIKE_REASONS_STORAGE_KEY);
+    if (!raw) return;
+    const map: Record<string, any> = JSON.parse(raw);
+
+    const keysToClear = [
+      String(userId).trim(),
+      `usr_${String(userId).trim()}`,
+      `usr_v_${String(userId).trim()}`,
+      String(userId).trim().replace(/^usr_v_|^usr_|^user_/, ''),
+    ];
+
+    if (personObj) {
+      if (personObj.email) keysToClear.push(personObj.email.toLowerCase().trim());
+      if (personObj.phone) keysToClear.push(personObj.phone.trim());
+      if (personObj.name) keysToClear.push(personObj.name.toLowerCase().trim());
+    }
+
+    for (const key of keysToClear) {
+      delete map[key];
+    }
+
+    localStorage.setItem(STRIKE_REASONS_STORAGE_KEY, JSON.stringify(map));
+  } catch {}
+};
+
+export const getPersistentStrikeReasons = (userId: string, email?: string, phone?: string, name?: string) => {
+  try {
+    const raw = localStorage.getItem(STRIKE_REASONS_STORAGE_KEY);
+    if (!raw) return [];
+    const map: Record<string, Array<{ strikeNumber: number; reason: string; date?: string }>> = JSON.parse(raw);
+
+    const keysToTry = [
+      String(userId).trim(),
+      `usr_${String(userId).trim()}`,
+      `usr_v_${String(userId).trim()}`,
+      String(userId).trim().replace(/^usr_v_|^usr_|^user_/, ''),
+      email?.toLowerCase().trim(),
+      phone?.trim(),
+      name?.toLowerCase().trim(),
+    ].filter(Boolean) as string[];
+
+    for (const k of keysToTry) {
+      if (map[k] && Array.isArray(map[k]) && map[k].length > 0) {
+        return map[k];
+      }
+    }
+  } catch {}
+  return [];
+};
+
 export const peopleApi = {
   getPeople: async (filters?: PeopleFilterOptions): Promise<PersonProfile[]> => {
     const cleaned = cleanQueryParams(filters);
@@ -283,6 +377,7 @@ export const peopleApi = {
 
         savePersistentStrike(id, strikesCount, domainPerson);
         savePersistentStatus(id, isBlocked ? 'banned' : 'warned', domainPerson);
+        savePersistentStrikeReason(id, strikesCount, reason || 'Policy violation / moderation strike', domainPerson);
 
         return { person: domainPerson, wasBanned: isBlocked, message: msg };
       }
@@ -302,12 +397,14 @@ export const peopleApi = {
       USER_STATUS_MAP.set(id, 'banned');
       savePersistentStrike(id, currentFlags, person);
       savePersistentStatus(id, 'banned', person);
+      savePersistentStrikeReason(id, currentFlags, reason || 'Policy violation / moderation strike', person);
       wasBanned = true;
     } else {
       person.status = 'warned';
       USER_STATUS_MAP.set(id, 'warned');
       savePersistentStrike(id, currentFlags, person);
       savePersistentStatus(id, 'warned', person);
+      savePersistentStrikeReason(id, currentFlags, reason || 'Policy violation / moderation strike', person);
     }
 
     return {
@@ -348,6 +445,7 @@ export const peopleApi = {
 
         savePersistentStrike(id, 0, domainPerson);
         savePersistentStatus(id, 'active', domainPerson);
+        clearPersistentStrikeReasons(id, domainPerson);
         return domainPerson;
       }
     } catch {}
@@ -362,6 +460,7 @@ export const peopleApi = {
     person.isAutoBanned = false;
     savePersistentStrike(id, 0, person);
     savePersistentStatus(id, 'active', person);
+    clearPersistentStrikeReasons(id, person);
     return person;
   },
 

@@ -56,6 +56,7 @@ export const UsersPage: React.FC = () => {
   }
 
   const [strikeTargetPerson, setStrikeTargetPerson] = useState<PersonProfile | null>(null);
+  const [strikeReason, setStrikeReason] = useState('Policy violation / moderation strike');
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFilters((prev) => ({ ...prev, search: e.target.value }));
@@ -65,13 +66,14 @@ export const UsersPage: React.FC = () => {
     const target = peopleList.find((p) => p.id === id);
     if (target) {
       setStrikeTargetPerson(target);
+      setStrikeReason('Policy violation / moderation strike');
     }
   };
 
   const confirmIssueStrike = () => {
     if (!strikeTargetPerson) return;
     flagPersonMutation.mutate(
-      { id: strikeTargetPerson.id, reason: 'Policy violation / moderation strike' },
+      { id: strikeTargetPerson.id, reason: strikeReason.trim() || 'Policy violation / moderation strike' },
       {
         onSuccess: (res) => {
           setStrikeTargetPerson(null);
@@ -268,6 +270,19 @@ export const UsersPage: React.FC = () => {
                 If an account reaches 3 strikes, it will be automatically BANNED from platform access.
               </span>
             </div>
+          </div>
+
+          <div className="flex flex-col gap-1.5">
+            <label className="block text-xs font-bold text-[#211A19] uppercase tracking-wider">
+              Strike Reason / Warning Message <span className="text-rose-600">*</span>
+            </label>
+            <textarea
+              rows={2}
+              value={strikeReason}
+              onChange={(e) => setStrikeReason(e.target.value)}
+              placeholder="Enter custom strike reason or warning message for backend payload..."
+              className="w-full p-2.5 text-xs bg-white border border-[#E7DFD5] rounded-xl text-[#211A19] focus:outline-none focus:border-[#541D26] focus:ring-1 focus:ring-[#541D26] font-sans font-medium"
+            />
           </div>
 
           <div className="flex items-center justify-end gap-2 pt-3 border-t border-[#E7DFD5]">

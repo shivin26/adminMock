@@ -362,6 +362,41 @@ export const UserDetailsCRMModal: React.FC<UserDetailsCRMModalProps> = ({
                             ? `Account has ${currentFlags} flag(s). If 3 flags are reached, system auto-bans this user.`
                             : 'Account is clean with 0 warning strikes.'}
                         </span>
+
+                        {/* Strike Reasons Breakdown List */}
+                        {currentFlags > 0 && (
+                          <div className="flex flex-col gap-2 pt-2.5 border-t border-[#E7DFD5]/80 mt-1">
+                            <span className="text-[10px] font-bold text-[#78716C] uppercase tracking-wider flex items-center gap-1">
+                              <Flag size={12} className="text-[#D97706]" /> Strike Warning Reasons ({currentFlags} recorded)
+                            </span>
+                            <div className="flex flex-col gap-1.5">
+                              {Array.from({ length: currentFlags }).map((_, idx) => {
+                                const strikeNum = idx + 1;
+                                const saved = (user?.strikeReasons || []).find((s: any) => s.strikeNumber === strikeNum);
+                                const reasonText = saved?.reason || 'Policy violation / moderation strike';
+                                const dateText = saved?.date ? formatDate(saved.date) : null;
+                                return (
+                                  <div
+                                    key={strikeNum}
+                                    className="p-2.5 bg-[#FAF8F5] border border-[#E7DFD5] rounded-xl flex items-start gap-2.5 text-xs"
+                                  >
+                                    <span className="px-2 py-0.5 rounded-lg bg-amber-100 text-amber-900 border border-amber-300 font-mono font-bold text-[10px] shrink-0 mt-0.5">
+                                      STRIKE #{strikeNum}
+                                    </span>
+                                    <div className="flex flex-col min-w-0 flex-1">
+                                      <span className="font-semibold text-[#211A19] leading-snug">{reasonText}</span>
+                                      {dateText && (
+                                        <span className="text-[10px] text-[#78716C] font-mono mt-0.5">
+                                          Timestamp: {dateText}
+                                        </span>
+                                      )}
+                                    </div>
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          </div>
+                        )}
                       </div>
                     );
                   })()}

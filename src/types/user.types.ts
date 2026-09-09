@@ -1,3 +1,5 @@
+import type { StrikeDetail } from './people.types';
+
 export interface UserProfile {
   id: string;
   name: string;
@@ -11,6 +13,7 @@ export interface UserProfile {
   pincode?: string;
   flagsCount: number; // 0 to 3
   strikes?: number;
+  strikeReasons?: StrikeDetail[];
   maxStrikesAllowed?: number;
   isBlocked?: boolean;
   isAutoBanned?: boolean;
